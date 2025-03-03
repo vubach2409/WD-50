@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 
 /*
@@ -20,6 +21,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route cho trang chính (home) sau khi đăng nhập cho người dùng thông thường
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Route::get('/admin', [AdminController::class, 'index'])->middleware(['auth', 'admin']);
+// Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    // Thêm các route khác nếu cần cho các trang trong template SB Admin 2
+    // Ví dụ:
+    // Route::get('/users', [AdminController::class, 'users'])->name('users');
+    // Route::get('/charts', [AdminController::class, 'charts'])->name('charts');
+    // Route::get('/tables', [AdminController::class, 'tables'])->name('tables');
+});
