@@ -46,14 +46,3 @@ Route::prefix('admin')->group(function () {
     Route::resource('products', ProductController::class);
 
 });
-// Hiển thị danh sách biến thể của sản phẩm
-Route::get('admin/products/{product}/variants', [ProductVariantController::class, 'index'])
-    ->name('admin.products.variants.index');
-
-// Hiển thị form thêm biến thể
-Route::get('admin/products/{product}/variants/create', [ProductVariantController::class, 'create'])
-    ->name('admin.product_variants.create');
-
-// Xử lý lưu biến thể
-Route::post('admin/products/{product}/variants', [ProductVariantController::class, 'store'])
-    ->name('admin.product_variants.store');
