@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\ProductVariantController;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -38,4 +42,18 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 
 Route::prefix('admin')->group(function () {
     Route::resource('categories', CategoryController::class);
+    Route::resource('brands', BrandController::class);
+    Route::resource('products', ProductController::class);
+
 });
+// Hiển thị danh sách biến thể của sản phẩm
+Route::get('admin/products/{product}/variants', [ProductVariantController::class, 'index'])
+    ->name('admin.products.variants.index');
+
+// Hiển thị form thêm biến thể
+Route::get('admin/products/{product}/variants/create', [ProductVariantController::class, 'create'])
+    ->name('admin.product_variants.create');
+
+// Xử lý lưu biến thể
+Route::post('admin/products/{product}/variants', [ProductVariantController::class, 'store'])
+    ->name('admin.product_variants.store');
