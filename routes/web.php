@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +34,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     // Route::get('/users', [AdminController::class, 'users'])->name('users');
     // Route::get('/charts', [AdminController::class, 'charts'])->name('charts');
     // Route::get('/tables', [AdminController::class, 'tables'])->name('tables');
+});
+
+Route::prefix('admin')->group(function () {
+    Route::resource('categories', CategoryController::class);
 });
