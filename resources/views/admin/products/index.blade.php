@@ -34,10 +34,6 @@
                     <td><img src="{{ asset('storage/' . $product->image) }}" width="50"></td>
                     <td>
                         <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        
-                        <!-- Nút Biến thể -->
-                        <a href="{{ route('admin.product_variants.create', $product->id) }}" class="btn btn-info btn-sm">Biến thể</a>
-
                         <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
