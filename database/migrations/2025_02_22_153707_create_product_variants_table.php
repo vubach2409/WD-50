@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->string('variation_name');
             $table->string('sku')->unique();
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 15, 2);
             $table->decimal('weight', 10, 2)->nullable();
             $table->text('image')->nullable();
             $table->integer('stock')->default(0);
