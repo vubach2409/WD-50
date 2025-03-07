@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <h2>Thêm mới danh mục</h2>
-    <form action="{{ route('categories.store') }}" method="POST">
+    <form action="{{ route('admin.categories.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label">Tên danh mục</label>
@@ -18,7 +18,9 @@
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
-        <button type="submit" class="btn btn-success">Thêm mới</button>
+
+        <button type="submit" class="btn btn-primary">Thêm</button>
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Hủy</a>    
     </form>
 </div>
 @endsection

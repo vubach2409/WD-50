@@ -14,7 +14,7 @@ return new class extends Migration
             $table->enum('payment_method', ['credit_card', 'paypal', 'bank_transfer'])->default('credit_card');
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
             $table->timestamps();
-
+            $table->decimal('amount', 15, 2);
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });
     }
