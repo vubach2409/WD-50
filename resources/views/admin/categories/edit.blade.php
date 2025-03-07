@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <h2>Chỉnh sửa danh mục</h2>
-    <form action="{{ route('categories.update', $category->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật danh mục này?');">
+    <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật danh mục này?');">
         @csrf
         @method('PUT')
         <div class="mb-3">
@@ -20,6 +20,8 @@
             @enderror
         </div>
         <button type="submit" class="btn btn-primary">Cập nhật</button>
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Hủy</a>    
+
     </form>
 </div>
 @endsection

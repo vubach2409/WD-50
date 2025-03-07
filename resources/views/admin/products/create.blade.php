@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Thêm sản phẩm</h2>
-    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label class="form-label">Tên sản phẩm</label>
@@ -49,6 +49,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Thêm</button>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Hủy</a>
     </form>
 </div>
 @endsection

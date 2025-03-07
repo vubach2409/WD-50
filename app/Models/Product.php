@@ -30,5 +30,13 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+    public function updateStock()
+    {
+        $this->stock = $this->variants()->sum('stock');
+        $this->save();
+    }
 }

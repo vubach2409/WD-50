@@ -33,8 +33,8 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('products.index') }}">Sản phẩm</a>
-                <a class="collapse-item" href="">
+                <a class="collapse-item" href="{{ route('admin.products.index') }}">Sản phẩm</a>
+                <a class="collapse-item" href="{{ route('admin.product_variants.list') }}">
                     Biến thể
                 </a>
             </div>
@@ -49,8 +49,8 @@
         </a>
         <div id="collapseCategory" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('categories.index') }}">Danh sách danh mục</a>
-                <a class="collapse-item" href="{{ route('categories.create') }}">Thêm danh mục</a>
+                <a class="collapse-item" href="{{ route('admin.categories.index') }}">Danh sách danh mục</a>
+                <a class="collapse-item" href="{{ route('admin.categories.create') }}">Thêm danh mục</a>
             </div>
         </div>
     </li>
@@ -62,8 +62,8 @@
         </a>
         <div id="collapseBrand" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('brands.index') }}">Danh sách thương hiệu</a>
-                <a class="collapse-item" href="{{ route('brands.create') }}">Thêm thương hiệu</a>
+                <a class="collapse-item" href="{{ route('admin.brands.index') }}">Danh sách thương hiệu</a>
+                <a class="collapse-item" href="{{ route('admin.brands.create') }}">Thêm thương hiệu</a>
             </div>
         </div>
     </li>

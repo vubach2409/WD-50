@@ -42,7 +42,7 @@ class ProductController extends Controller
         }
 
         $product->save();
-        return redirect()->route('products.index')->with('success', 'Sản phẩm đã được thêm!');
+        return redirect()->route('admin.products.index')->with('success', 'Thêm thành công');
     }
 
     public function edit(Product $product)
@@ -71,12 +71,12 @@ class ProductController extends Controller
             $product->save();
         }
 
-        return redirect()->route('products.index')->with('success', 'Sản phẩm đã được cập nhật!');
+        return redirect()->route('admin.products.index')->with('success', 'Cập nhật thành công');
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Sản phẩm đã bị xóa!');
+        return redirect()->route('admin.products.index')->with('success', 'Xoá thành công');
     }
 }
