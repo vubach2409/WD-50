@@ -37,6 +37,8 @@ class ProductVariantController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|max:2048',
+            'weight' => 'nullable|numeric|min:0', 
+
         ]);
 
         if ($request->hasFile('image')) {
@@ -68,6 +70,8 @@ class ProductVariantController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|max:2048',
+            'weight' => 'nullable|numeric|min:0', 
+
         ]);
 
         if ($request->hasFile('image')) {

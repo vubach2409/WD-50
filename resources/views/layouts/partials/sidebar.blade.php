@@ -28,16 +28,28 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
+            <i class="fas fa-box"></i>
             <span>Quản lý sản phẩm</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('admin.products.index') }}">Sản phẩm</a>
-                <a class="collapse-item" href="{{ route('admin.product_variants.list') }}">
-                    Biến thể
-                </a>
-            </div>
+                <a class="collapse-item" href="{{ route('admin.product_variants.list') }}">Biến thể</a>
+            </div> 
+        </div>
+    </li>
+    
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVari" aria-expanded="true" aria-controls="collapseVari">
+            <i class="fas fa-palette"></i> 
+            <span>Quản lý thuộc tính</span>
+        </a>
+        <div id="collapseVari" class="collapse" aria-labelledby="headingVari" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.colors.index') }}">Màu sắc</a>
+                <a class="collapse-item" href="{{ route('admin.sizes.index') }}">Kích thước</a>                   
+            </div> 
         </div>
     </li>
     

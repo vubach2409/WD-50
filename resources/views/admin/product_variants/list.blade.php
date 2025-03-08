@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Danh sách sản phẩm có biến thể</h2>
+    <h2>Danh sách biến thể của sản phẩm</h2>
 
     <table class="table table-bordered">
         <thead>
