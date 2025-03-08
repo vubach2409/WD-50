@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\Admin\ProductController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,4 +32,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     // Route::get('/users', [AdminController::class, 'users'])->name('users');
     // Route::get('/charts', [AdminController::class, 'charts'])->name('charts');
     // Route::get('/tables', [AdminController::class, 'tables'])->name('tables');
+    Route::resource('products', ProductController::class);
 });
