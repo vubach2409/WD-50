@@ -2,6 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+<<<<<<< HEAD
         "dev": "npm run development",
         "development": "mix",
         "watch": "mix watch",
@@ -14,5 +15,14 @@
         "bootstrap": "^5.3.3",
         "laravel-mix": "^6.0.49",
         "sass": "^1.56.1"
+=======
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.6.4",
+        "laravel-vite-plugin": "^1.0.0",
+        "vite": "^5.0.0"
+>>>>>>> 38dc5f4 (thanhtoan)
     }
 }

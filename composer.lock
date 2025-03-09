@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "dcbbd52cf3c38d0f1b88e12d39e47db7",
+=======
+    "content-hash": "9c491b8531eec05ba41a11d9276a5749",
+>>>>>>> 38dc5f4 (thanhtoan)
     "packages": [
         {
             "name": "brick/math",
@@ -1513,6 +1517,7 @@
             "time": "2025-01-27T14:24:01+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "laravel/ui",
             "version": "v4.6.1",
             "source": {
@@ -1576,6 +1581,8 @@
             "time": "2025-01-28T15:15:29+00:00"
         },
         {
+=======
+>>>>>>> 38dc5f4 (thanhtoan)
             "name": "league/commonmark",
             "version": "2.6.1",
             "source": {
@@ -8176,12 +8183,20 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
+<<<<<<< HEAD
     "stability-flags": {},
+=======
+    "stability-flags": [],
+>>>>>>> 38dc5f4 (thanhtoan)
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1"
     },
+<<<<<<< HEAD
     "platform-dev": {},
+=======
+    "platform-dev": [],
+>>>>>>> 38dc5f4 (thanhtoan)
     "plugin-api-version": "2.6.0"
 }

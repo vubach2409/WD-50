@@ -1,10 +1,14 @@
 <?php
 
+<<<<<<< HEAD
 use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
+=======
+use Illuminate\Support\Facades\Route;
+>>>>>>> 38dc5f4 (thanhtoan)
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     return view('welcome');
 });
+<<<<<<< HEAD
 
 Auth::routes();
 
@@ -39,3 +44,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 Route::prefix('admin')->group(function () {
     Route::resource('categories', CategoryController::class);
 });
+=======
+>>>>>>> 38dc5f4 (thanhtoan)
