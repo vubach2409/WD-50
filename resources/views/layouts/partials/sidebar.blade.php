@@ -28,30 +28,58 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
+            <i class="fas fa-box"></i>
             <span>Quản lý sản phẩm</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item" href="buttons.html">Sản phẩm</a>
-                <a class="collapse-item" href="buttons.html">Biến thể</a>
-            </div>
+                <a class="collapse-item" href="{{ route('admin.products.index') }}">Sản phẩm</a>
+                <a class="collapse-item" href="{{ route('admin.product_variants.list') }}">Biến thể</a>
+            </div> 
         </div>
     </li>
+    
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVari" aria-expanded="true" aria-controls="collapseVari">
+            <i class="fas fa-palette"></i> 
+            <span>Quản lý thuộc tính</span>
+        </a>
+        <div id="collapseVari" class="collapse" aria-labelledby="headingVari" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.colors.index') }}">Màu sắc</a>
+                <a class="collapse-item" href="{{ route('admin.sizes.index') }}">Kích thước</a>                   
+            </div> 
+        </div>
+    </li>
+    
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-            <i class="fas fa-fw fa-cog"></i>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="true" aria-controls="collapseCategory">
+            <i class="fas fa-fw fa-list"></i>
             <span>Quản lý danh mục</span>
         </a>
-        <div id="collapseFive" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseCategory" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item" href="buttons.html">Danh mục</a>
+                <a class="collapse-item" href="{{ route('admin.categories.index') }}">Danh sách danh mục</a>
+                <a class="collapse-item" href="{{ route('admin.categories.create') }}">Thêm danh mục</a>
             </div>
         </div>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBrand" aria-expanded="true" aria-controls="collapseBrand">
+            <i class="fas fa-fw fa-tags"></i>
+            <span>Quản lý thương hiệu</span>
+        </a>
+        <div id="collapseBrand" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.brands.index') }}">Danh sách thương hiệu</a>
+                <a class="collapse-item" href="{{ route('admin.brands.create') }}">Thêm thương hiệu</a>
+            </div>
+        </div>
+    </li>
+    
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
@@ -60,7 +88,6 @@
         </a>
         <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
                 <a class="collapse-item" href="buttons.html">Trạng thái đơn hàng</a>
             </div>
         </div>
@@ -73,7 +100,6 @@
         </a>
         <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
                 <a class="collapse-item" href="buttons.html">Danh sách người dùng</a>
                 <a class="collapse-item" href="cards.html">Lịch sử mua hàng</a>
             </div>
@@ -88,7 +114,6 @@
         </a>
         <div id="collapseSeven" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
                 <a class="collapse-item" href="buttons.html">Trạng thái vận chuyển</a>
             </div>
         </div>
@@ -102,7 +127,6 @@
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
                 <a class="collapse-item" href="utilities-color.html">Colors</a>
                 <a class="collapse-item" href="utilities-border.html">Borders</a>
                 <a class="collapse-item" href="utilities-animation.html">Animations</a>
