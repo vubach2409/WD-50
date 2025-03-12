@@ -1,59 +1,75 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container">
-    <h2>Danh sách biến thể của sản phẩm: {{ $product->name }}</h2>
-    
+<div class="container-fluid">
+    <h2 class="text-primary">Danh sách biến thể của sản phẩm: {{ $product->name }}</h2>
+
     <a href="{{ route('admin.product_variants.create', $product->id) }}" class="btn btn-primary mb-3">Thêm biến thể</a>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Tên biến thể</th>
-                <th>Giá</th>
-                <th>Ảnh</th>
-                <th>Màu sắc</th>
-                <th>Kích thước</th>
-                <th>Tồn kho</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if ($variants->isEmpty())
-                <tr>
-                    <td colspan="8" class="text-center text-danger">Sản phẩm này chưa có biến thể nào.</td>
-                </tr>
-            @else
-                @foreach ($variants as $variant)
-                <tr>
-                    <td>{{ $variant->sku }}</td>
-                    <td>{{ $variant->variation_name }}</td>
-                    <td>{{ number_format($variant->price, 0, ',', '.') }}đ</td>
-                    <td>
-                        @if($variant->image)
-                        <img src="{{ asset('storage/' . $variant->image) }}" alt="Ảnh biến thể" width="80">
-                        @else
-                        Không có ảnh
-                        @endif
-                    </td>
-                    <td>{{ optional($variant->color)->name ?? 'Không có' }}</td>
-                    <td>{{ optional($variant->size)->name ?? 'Không có' }}</td>
-                    <td>{{ $variant->stock }}</td>
-                    <td>
-                        <a href="{{ route('admin.product_variants.edit', [$product->id, $variant->id]) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('admin.product_variants.destroy', [$product->id, $variant->id]) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Xác nhận xóa?')">Xóa</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            @endif
-        </tbody>
-    </table>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th class="text-left">Tên biến thể</th>
+                    <th>Giá</th>
+                    <th>Ảnh</th>
+                    <th>Màu sắc</th>
+                    <th>Kích thước</th>
+                    <th>Tồn kho</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if ($variants->isEmpty())
+                    <tr>
+                        <td colspan="8" class="text-danger text-center align-middle">Sản phẩm này chưa có biến thể nào.</td>
+                    </tr>
+                @else
+                    @foreach ($variants as $variant)
+                    <tr>
+                        <td class="align-middle">{{ $variant->sku }}</td>
+                        <td class="text-left align-middle">{{ $variant->variation_name }}</td>
+                        <td class="align-middle">{{ number_format($variant->price, 0, ',', '.') }}đ</td>
+                        <td class="align-middle">
+                            @if($variant->image)
+                                <img src="{{ asset('storage/' . $variant->image) }}" alt="Ảnh biến thể" width="100" height="100" class="border">
+                            @else
+                                <span class="text-muted">Không có ảnh</span>
+                            @endif
+                        </td>
+                        <td class="align-middle">
+                            @if($variant->color)
+                                {{ $variant->color->name }}
+                            @else
+                                <span class="text-muted">Không có</span>
+                            @endif
+                        </td>
+                        <td class="align-middle">{{ optional($variant->size)->name ?? 'Không có' }}</td>
+                        <td class="align-middle">{{ $variant->stock }}</td>
+                        <td class="align-middle">
+                            <a href="{{ route('admin.product_variants.edit', [$product->id, $variant->id]) }}" class="btn btn-warning">Sửa</a>
+                            <form action="{{ route('admin.product_variants.destroy', [$product->id, $variant->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Xác nhận xóa?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
+    </div>
 </div>
 @endsection

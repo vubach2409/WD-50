@@ -1,26 +1,38 @@
 @extends('layouts.admin')
+
 @section('content')
-<div class="container">
-    <h2>Thêm mới danh mục</h2>
+<div class="container-fluid">
+    <h2 class="text-primary">Thêm danh mục</h2>
+
     <form action="{{ route('admin.categories.store') }}" method="POST">
         @csrf
-        <div class="mb-3">
-            <label for="name" class="form-label">Tên danh mục</label>
-            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required autofocus>
-            @error('name')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
-        </div>
-        <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea name="description" class="form-control">{{ old('description') }}</textarea>
-            @error('description')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th style="width: 20%;">Tên danh mục</th>
+                        <td>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                                placeholder="Nhập tên danh mục" value="{{ old('name') }}" autofocus>
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Mô tả</th>
+                        <td>
+                            <textarea name="description" class="form-control @error('description') is-invalid @enderror" 
+                                rows="3" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
+                            @error('description') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <button type="submit" class="btn btn-primary">Thêm</button>
-        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Hủy</a>    
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Thêm</button>
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Hủy</a>
+        </div>
     </form>
 </div>
 @endsection

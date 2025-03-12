@@ -1,20 +1,32 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container">
-    <h2>Chỉnh sửa Màu sắc</h2>
-    
+<div class="container-fluid">
+    <h2 class="text-primary">Chỉnh sửa màu sắc</h2>
+
     <form action="{{ route('admin.colors.update', $color->id) }}" method="POST">
         @csrf
         @method('PUT')
 
-        <div class="mb-3">
-            <label class="form-label">Màu</label>
-            <input type="text" name="name" class="form-control" value="{{ $color->name }}" required>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th style="width: 20%;">Tên màu</th>
+                        <td>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                                placeholder="Nhập tên màu" value="{{ old('name', $color->name) }}" >
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <button type="submit" class="btn btn-primary">Cập nhật</button>
-        <a href="{{ route('admin.colors.index') }}" class="btn btn-secondary">Hủy</a>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a href="{{ route('admin.colors.index') }}" class="btn btn-secondary">Hủy</a>
+        </div>
     </form>
 </div>
 @endsection

@@ -29,17 +29,36 @@ class ProductVariantController extends Controller
     }
     public function store(Request $request, Product $product)
     {
-        $data = $request->validate([
+        $request->validate([
             'color_id' => 'nullable|exists:colors,id',
             'size_id' => 'nullable|exists:sizes,id',
             'variation_name' => 'required|string|max:255',
             'sku' => 'required|string|unique:product_variants,sku',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048',
-            'weight' => 'nullable|numeric|min:0', 
-
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'weight' => 'nullable|numeric|min:0',
+        ], [
+            'variation_name.required' => 'Tên biến thể không được để trống.',
+            'variation_name.max' => 'Tên biến thể không được quá 255 ký tự.',
+            'sku.required' => 'Mã SKU không được để trống.',
+            'sku.unique' => 'Mã SKU đã tồn tại.',
+            'price.required' => 'Giá không được để trống.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá phải lớn hơn hoặc bằng 0.',
+            'stock.required' => 'Số lượng tồn kho không được để trống.',
+            'stock.integer' => 'Số lượng tồn kho phải là số nguyên.',
+            'stock.min' => 'Số lượng tồn kho không thể nhỏ hơn 0.',
+            'color_id.exists' => 'Màu sắc không hợp lệ.',
+            'size_id.exists' => 'Kích thước không hợp lệ.',
+            'image.image' => 'Tệp tải lên phải là hình ảnh.',
+            'image.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg.',
+            'image.max' => 'Ảnh không được lớn hơn 2MB.',
+            'weight.numeric' => 'Trọng lượng phải là số.',
+            'weight.min' => 'Trọng lượng không thể nhỏ hơn 0.',
         ]);
+
+        $data = $request->except('image');
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('product_variants', 'public');
@@ -51,6 +70,7 @@ class ProductVariantController extends Controller
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được thêm thành công!');
     }
+
     public function edit(Product $product, ProductVariant $variant)
     {
         return view('admin.product_variants.edit', [
@@ -62,17 +82,36 @@ class ProductVariantController extends Controller
     }
     public function update(Request $request, Product $product, ProductVariant $variant)
     {
-        $data = $request->validate([
+        $request->validate([
             'color_id' => 'nullable|exists:colors,id',
             'size_id' => 'nullable|exists:sizes,id',
             'variation_name' => 'required|string|max:255',
             'sku' => 'required|string|unique:product_variants,sku,' . $variant->id,
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048',
-            'weight' => 'nullable|numeric|min:0', 
-
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'weight' => 'nullable|numeric|min:0',
+        ], [
+            'variation_name.required' => 'Tên biến thể không được để trống.',
+            'variation_name.max' => 'Tên biến thể không được quá 255 ký tự.',
+            'sku.required' => 'Mã SKU không được để trống.',
+            'sku.unique' => 'Mã SKU đã tồn tại.',
+            'price.required' => 'Giá không được để trống.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá phải lớn hơn hoặc bằng 0.',
+            'stock.required' => 'Số lượng tồn kho không được để trống.',
+            'stock.integer' => 'Số lượng tồn kho phải là số nguyên.',
+            'stock.min' => 'Số lượng tồn kho không thể nhỏ hơn 0.',
+            'color_id.exists' => 'Màu sắc không hợp lệ.',
+            'size_id.exists' => 'Kích thước không hợp lệ.',
+            'image.image' => 'Tệp tải lên phải là hình ảnh.',
+            'image.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg.',
+            'image.max' => 'Ảnh không được lớn hơn 2MB.',
+            'weight.numeric' => 'Trọng lượng phải là số.',
+            'weight.min' => 'Trọng lượng không thể nhỏ hơn 0.',
         ]);
+
+        $data = $request->except('image');
 
         if ($request->hasFile('image')) {
             if ($variant->image) {
@@ -82,7 +121,7 @@ class ProductVariantController extends Controller
         }
 
         $variant->update($data);
-        $product->updateStock(); 
+        $product->updateStock();
 
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được cập nhật thành công!');
