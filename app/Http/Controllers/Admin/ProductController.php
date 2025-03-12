@@ -124,6 +124,10 @@ class ProductController extends Controller
             'image.max' => 'Ảnh không được lớn hơn 2MB.',
         ]);
 
+        $totalVariantStock = $product->variants()->sum('stock');
+        if ($request->stock < $totalVariantStock) {
+                return redirect()->back()->withErrors(['stock' => 'Số lượng tồn kho của sản phẩm không được nhỏ hơn tổng số lượng tồn kho của các biến thể.']);
+            }
         $product->update($request->except('image'));
 
         if ($request->hasFile('image')) {
