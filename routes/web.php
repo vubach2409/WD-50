@@ -33,12 +33,18 @@ Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware(
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-
+    
+    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
+    
     Route::resource('categories', CategoryController::class);
+
     Route::resource('brands', BrandController::class);
+
     Route::resource('products', ProductController::class);
+
     Route::resource('colors', ColorController::class);
+
     Route::resource('sizes', SizeController::class);
 
     // Routes cho biến thể sản phẩm
