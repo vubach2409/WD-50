@@ -140,7 +140,19 @@ class ProductVariantController extends Controller
     }
     public function productsWithVariants()
     {
-        $products = Product::with('variants')->get();
+        $products = Product::with('variants')->paginate(8);
+        return view('admin.product_variants.list', compact('products'));
+    }
+    public function search(Request $request)
+    {
+        $query = Product::with('variants');
+
+        if ($request->filled('keyword')) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+
+        $products = $query->paginate(8);
+
         return view('admin.product_variants.list', compact('products'));
     }
 

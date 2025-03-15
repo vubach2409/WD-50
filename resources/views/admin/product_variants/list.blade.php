@@ -2,7 +2,17 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2 class="text-primary text-center">Danh sách biến thể của Sản phẩm</h2>
+    <h2 class="text-primary">Danh sách biến thể của Sản phẩm</h2>
+    
+    <form action="{{ route('admin.product_variants.search') }}" method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="keyword" class="form-control" placeholder="Nhập tên sản phẩm..." value="{{ request('keyword') }}">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+    
 
     <div class="table-responsive">
         <table class="table table-hover table-bordered text-center" id="variantsTable">
@@ -29,6 +39,9 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+        {{ $products->appends(request()->query())->links('pagination::bootstrap-4') }}
     </div>
 </div>
 @endsection

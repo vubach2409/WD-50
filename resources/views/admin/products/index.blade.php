@@ -97,7 +97,6 @@
         </table>
     </div>
     
-    {{-- Phân trang --}}
     <div class="d-flex justify-content-center mt-3">
         {{ $products->appends(request()->query())->links('pagination::bootstrap-4') }}
     </div>

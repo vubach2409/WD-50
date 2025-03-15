@@ -60,5 +60,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
      // Route danh sách tất cả sản phẩm có biến thể
      Route::get('/product-variants', [ProductVariantController::class, 'productsWithVariants'])
      ->name('product_variants.list');
+     // Route tìm kiếm sản phẩm có biến thể
+    Route::get('/product-variants/search', [ProductVariantController::class, 'search'])
+    ->name('product_variants.search');
 });
 
