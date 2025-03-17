@@ -1,14 +1,17 @@
-<?php
-
-<<<<<<< HEAD
+<?php 
 use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
-=======
-use Illuminate\Support\Facades\Route;
->>>>>>> 38dc5f4 (thanhtoan)
+use App\Http\Controllers\Client\ProductsController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\BlogController;
+use App\Http\Controllers\Client\ServicesController;
+use App\Http\Controllers\Client\AboutController;
+use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Client\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,15 +24,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-<<<<<<< HEAD
 
 Auth::routes();
 
 // Route cho trang chính (home) sau khi đăng nhập cho người dùng thông thường
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/products', [ProductsController::class, 'index'])->name('products');
+Route::get('/services', [ServicesController::class, 'index'])->name('services');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::get('/thankyou', [PaymentController::class, 'xulythanhtoantienmat'])->name('thankyou');
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
@@ -44,5 +51,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 Route::prefix('admin')->group(function () {
     Route::resource('categories', CategoryController::class);
 });
-=======
->>>>>>> 38dc5f4 (thanhtoan)
+
+Auth::routes();
+
+// Route::get('/home',HomeController::class, 'index')->name('home')->middleware('auth');
+
+?>
+
+
