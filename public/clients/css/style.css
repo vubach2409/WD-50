@@ -180,12 +180,13 @@ a {
       background: #314d43;
       border-color: #314d43; }
   .btn.btn-secondary {
-    color: #2f2f2f;
-    background: #f9bf29;
-    border-color: #f9bf29; }
+    background: #ec872e !important; 
+    color: #fff !important;
+    border: none;
+    transition: all 0.3s ease-in-out;}
     .btn.btn-secondary:hover {
-      background: #f8b810;
-      border-color: #f8b810; }
+      background: #ff6b08 !important;
+    transform: scale(1.05); }
   .btn.btn-white-outline {
     background: transparent;
     border-width: 2px;
@@ -709,3 +710,8 @@ textarea {
     height: 50px;
     border-radius: 50%;
     background: rgba(59, 93, 80, 0.2); }
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
