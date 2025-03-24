@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
-            $table->integer('total');
+            $table->decimal('total', 15, 2);
+            $table->decimal('discount', 15, 2)->default(0); 
             $table->string('consignee_name');
             $table->string('consignee_phone');
             $table->text('consignee_address');
