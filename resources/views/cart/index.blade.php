@@ -59,7 +59,7 @@
                 <button type="submit" class="btn btn-danger">Xóa toàn bộ giỏ hàng</button>
             </form>
 
-            <a href="{{ route('checkout') }}" class="btn btn-success">Thanh toán</a>
+            <a href="{{ route('order') }}" class="btn btn-success">Thanh toán</a>
         </div>
     @endif
 </div>

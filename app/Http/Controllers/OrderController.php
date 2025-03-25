@@ -15,7 +15,7 @@ class OrderController extends Controller
         $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
         $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
 
-        return view('checkout.index', compact('cartItems', 'totalPrice'));
+        return view('order.index', compact('cartItems', 'totalPrice'));
     }
 
     public function process(Request $request)

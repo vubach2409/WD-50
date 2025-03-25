@@ -57,6 +57,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/checkout', [OrderController::class, 'index'])->name('checkout');
-Route::post('/checkout/process', [OrderController::class, 'process'])->name('checkout.process');
+Route::get('/order', [OrderController::class, 'index'])->name('order');
+Route::post('/order/process', [OrderController::class, 'process'])->name('order.process');
 
