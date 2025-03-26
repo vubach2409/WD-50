@@ -9,6 +9,11 @@
             <div class="row mb-5">
                 <form class="col-md-12" method="post">
                     <div class="site-blocks-table">
+                        @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         <h2 class="my-4">Giỏ Hàng Của Bạn</h2>
 
                         @if ($cartItems->isEmpty())
@@ -39,6 +44,7 @@
                                             <td>
                                                 <form action="{{ route('cart.update', $item->id) }}" method="POST">
                                                     @csrf
+                                                    @method('PUT')
                                                     <input type="number" name="quantity" value="{{ $item->quantity }}"
                                                         min="1" class="form-control w-50 d-inline">
                                                     <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
@@ -51,7 +57,7 @@
                                                 <form action="{{ route('cart.remove', $item->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <a type="submit" class="btn btn-black btn-sm">X</a>
+                                                    <button type="submit" class="btn btn-black btn-sm">X</button>
                                                 </form>
                                         </tr>
                                     @endforeach

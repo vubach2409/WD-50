@@ -86,7 +86,7 @@ class CartController extends Controller
 
        $cart->delete();
 
-       return response()->json(['message' => 'Đã xóa sản phẩm khỏi giỏ hàng!']);
+       return redirect()->back()->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng!');
    }
 
    // Xóa toàn bộ giỏ hàng

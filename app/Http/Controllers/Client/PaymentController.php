@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\Carts;
 use App\Models\Orders;
 use App\Models\OrderDetail;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -39,8 +40,7 @@ class PaymentController extends Controller
                 }
 
                public function CodPayment(Request $request){
-                $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
-                $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+
                 
                 if(isset($_POST['cod'])){
 
@@ -54,8 +54,8 @@ class PaymentController extends Controller
                     DB::beginTransaction();
             
                     try {
-                        // $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
-                        // $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+                        $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
+                        $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
             
                         // 🛒 Tạo đơn hàng
                         $order = Orders::create([
@@ -66,7 +66,7 @@ class PaymentController extends Controller
                             'consignee_name' => $request->consignee_name,
                             'consignee_phone' => $request->consignee_phone,   
                             'status' => 'pending',
-                            'transaction_id' => $request->transaction_id,
+                            'transaction_id' =>  now()->timestamp . Auth::id(),
                         ]);
                    
                         // thêm sản phẩm vào đơn hàng
@@ -113,7 +113,7 @@ class PaymentController extends Controller
                     $vnp_TmnCode = "TKKV0ZIT";//Mã website tại VNPAY 
                     $vnp_HashSecret = "IW37H3W2QZ4UHXJYWORIKP87X6OCGDSA"; //Chuỗi bí mật
                     
-                    $vnp_TxnRef = rand(0,100); //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
+                    $vnp_TxnRef = $vnp_TxnRef = now()->timestamp . Auth::id(); //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
                     $vnp_OrderInfo = json_encode([
                         'name' => $request->consignee_name,
                         'phone' => $request->consignee_phone,
@@ -176,10 +176,12 @@ class PaymentController extends Controller
                         } else {
                             echo json_encode($returnData);
                         }
-                    //     // vui lòng tham khảo thêm tại code demo
                 }
             }
-                public function xuly(Request $request){
+                
+            
+            
+            public function xuly(Request $request){
                     DB::beginTransaction(); // Bắt đầu transaction để đảm bảo toàn vẹn dữ liệu
                 
                     try {
@@ -215,6 +217,17 @@ class PaymentController extends Controller
            'consignee_phone' => $vnp_OrderInfo['phone'],
            'consignee_address' => $vnp_OrderInfo['address'],
                             'status' => 'completed'
+                        ]);
+
+                        Transaction::create([
+                            'user_id' => $user->id,
+                            'order_id' => $order->id,
+                            'transaction_id' => $vnp_TxnRef,
+                            'amount' => $totalPrice,
+                            'payment_method' => 'vnpay',
+                            'status' => 'success',
+                            'response_code' => $vnp_ResponseCode,
+                            'response_message' => 'Thanh toán thành công'
                         ]);
                 
                         // Lưu vào bảng order_items

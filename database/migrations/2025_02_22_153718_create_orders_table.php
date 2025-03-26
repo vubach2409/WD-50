@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('total');
             $table->string('consignee_name');
             $table->string('consignee_phone');
-            $table->string('transaction_id')->unique()->nullable();
+            $table->string('transaction_id')->unique();
             $table->text('consignee_address');
             $table->enum('payment_method', ['cod', 'vnpay'])->default('cod');
             $table->timestamps();
