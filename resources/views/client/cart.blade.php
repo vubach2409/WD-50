@@ -9,79 +9,54 @@
             <div class="row mb-5">
                 <form class="col-md-12" method="post">
                     <div class="site-blocks-table">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="product-thumbnail">Image</th>
-                                    <th class="product-name">Product</th>
-                                    <th class="product-price">Price</th>
-                                    <th class="product-quantity">Quantity</th>
-                                    <th class="product-total">Total</th>
-                                    <th class="product-remove">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="product-thumbnail">
-                                        <img src="{{ asset('clients/images/product-1.png') }}" alt="Image"
-                                            class="img-fluid">
-                                    </td>
-                                    <td class="product-name">
-                                        <h2 class="h5 text-black">Product 1</h2>
-                                    </td>
-                                    <td>$49.00</td>
-                                    <td>
-                                        <div class="input-group mb-3 d-flex align-items-center quantity-container"
-                                            style="max-width: 120px;">
-                                            <div class="input-group-prepend">
-                                                <button class="btn btn-outline-black decrease"
-                                                    type="button">&minus;</button>
-                                            </div>
-                                            <input type="text" class="form-control text-center quantity-amount"
-                                                value="1" placeholder="" aria-label="Example text with button addon"
-                                                aria-describedby="button-addon1">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-black increase"
-                                                    type="button">&plus;</button>
-                                            </div>
-                                        </div>
+                        <h2 class="my-4">Giỏ Hàng Của Bạn</h2>
 
-                                    </td>
-                                    <td>$49.00</td>
-                                    <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                                </tr>
+                        @if ($cartItems->isEmpty())
+                            <div class="alert alert-warning">Giỏ hàng của bạn đang trống!</div>
+                        @else
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="product-thumbnail">Image</th>
+                                        <th class="product-name">Product</th>
+                                        <th class="product-price">Price</th>
+                                        <th class="product-quantity">Quantity</th>
+                                        <th class="product-total">Total</th>
+                                        <th class="product-remove">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($cartItems as $item)
+                                        <tr>
+                                            <td>
+                                                <img src="{{ asset('storage/' . $item->product->image) }}"
+                                                    alt="{{ $item->product->name }}" width="70">
+                                            </td>
+                                            <td class="product-name">
+                                                <h2 class="h5 text-black">{{ $item->product->name }}</h2>
+                                            </td>
+                                            <td>{{ number_format($item->product->price, 0, ',', '.') }} VNĐ</td>
+                                            <td>
+                                                <form action="{{ route('cart.update', $item->id) }}" method="POST">
+                                                    @csrf
+                                                    <input type="number" name="quantity" value="{{ $item->quantity }}"
+                                                        min="1" class="form-control w-50 d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
+                                                </form>
 
-                                <tr>
-                                    <td class="product-thumbnail">
-                                        <img src="{{ asset('clients/images/product-2.png') }}" alt="Image"
-                                            class="img-fluid">
-                                    </td>
-                                    <td class="product-name">
-                                        <h2 class="h5 text-black">Product 2</h2>
-                                    </td>
-                                    <td>$49.00</td>
-                                    <td>
-                                        <div class="input-group mb-3 d-flex align-items-center quantity-container"
-                                            style="max-width: 120px;">
-                                            <div class="input-group-prepend">
-                                                <button class="btn btn-outline-black decrease"
-                                                    type="button">&minus;</button>
-                                            </div>
-                                            <input type="text" class="form-control text-center quantity-amount"
-                                                value="1" placeholder="" aria-label="Example text with button addon"
-                                                aria-describedby="button-addon1">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-black increase"
-                                                    type="button">&plus;</button>
-                                            </div>
-                                        </div>
+                                            </td>
+                                            <td>{{ number_format($item->quantity * $item->product->price, 0, ',', '.') }}
+                                                VNĐ</td>
+                                            <td>
+                                                <form action="{{ route('cart.remove', $item->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a type="submit" class="btn btn-black btn-sm">X</a>
+                                                </form>
+                                        </tr>
+                                    @endforeach
 
-                                    </td>
-                                    <td>$49.00</td>
-                                    <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            </table>
                     </div>
                 </form>
             </div>
@@ -90,7 +65,12 @@
                 <div class="col-md-6">
                     <div class="row mb-5">
                         <div class="col-md-6 mb-3 mb-md-0">
-                            <button class="btn btn-black btn-sm btn-block">Update Cart</button>
+                            <form action="{{ route('cart.clear') }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-black btn-sm btn-block">
+                                    Clear entire cart</button>
+                            </form>
                         </div>
                         <div class="col-md-6">
                             <a href="{{ route('products') }}"><button
@@ -123,7 +103,7 @@
                                     <span class="text-black">Subtotal</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-black">$230.00</strong>
+                                    <strong class="text-black">{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</strong>
                                 </div>
                             </div>
                             <div class="row mb-5">
@@ -131,14 +111,14 @@
                                     <span class="text-black">Total</span>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    <strong class="text-black">$230.00</strong>
+                                    <strong class="text-black">{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</strong>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-black btn-lg py-3 btn-block"
-                                        onclick="window.location='{{ route('checkout') }}'">Proceed To Checkout</button>
+                                    <a href="{{ route('order') }}" class="btn btn-black btn-lg py-3 btn-block">Proceed To
+                                        Checkout</a>
                                 </div>
                             </div>
                         </div>
@@ -147,5 +127,5 @@
             </div>
         </div>
     </div>
-
+    @endif
 @endsection

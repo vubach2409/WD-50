@@ -212,7 +212,7 @@
     </div>
     <!-- End Popular Product -->
 
-    <!-- Start Testimonial Slider -->
+    {{-- <!-- Start Testimonial Slider -->
     <div class="testimonial-section">
         <div class="container">
             <div class="row">
@@ -323,9 +323,9 @@
             </div>
         </div>
     </div>
-    <!-- End Testimonial Slider -->
+    <!-- End Testimonial Slider --> --}}
 
-    <!-- Start Blog Section -->
+    {{-- <!-- Start Blog Section -->
     <div class="blog-section">
         <div class="container">
             <div class="row mb-5">
@@ -384,5 +384,5 @@
             </div>
         </div>
     </div>
-    <!-- End Blog Section -->
+    <!-- End Blog Section --> --}}
 @endsection

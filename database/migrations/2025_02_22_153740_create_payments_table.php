@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->enum('payment_method', ['credit_card', 'paypal', 'bank_transfer'])->default('credit_card');
+            $table->enum('payment_method', ['cod', 'paypal', 'momo'])->default('cod');
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
             $table->timestamps();
 
