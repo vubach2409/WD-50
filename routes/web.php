@@ -12,6 +12,7 @@ use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\CategoryController;
 // use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\InvoiceController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\ProductsController;
 use App\Http\Controllers\Client\ServicesController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Client\ServicesController;
 Auth::routes();
 
 // Route cho trang chính (home) sau khi đăng nhập cho người dùng thông thường
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
 Route::get('/services', [ServicesController::class, 'index'])->name('services');
@@ -82,6 +84,12 @@ Route::get('/thanks/vnpay', [PaymentController::class, 'xuly'])->name('thanks.vn
 Route::get('/thankyou', [PaymentController::class, 'thankyou'])->name('thankyou');
 //history
 Route::get('/lich-su-giao-dich', [UserController::class, 'transactionHistory'])->name('transactions.history')->middleware('auth');
+
+// show hoá đơn
+Route::get('/invoice/{orderId}', [InvoiceController::class, 'show'])->name('invoice.show');
+// tải hoá đơn
+Route::get('/invoice/download/{orderId}', [InvoiceController::class, 'downloadPDF'])->name('invoice.download');
+
 
 ?>
 

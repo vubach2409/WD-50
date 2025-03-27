@@ -13,6 +13,7 @@
                         <th>Số tiền</th>
                         <th>Trạng thái</th>
                         <th>Thời gian</th>
+                        <th>Hoá đơn</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,6 +29,9 @@
                                 @endif
                             </td>
                             <td>{{ $transaction->created_at->format('d/m/Y H:i:s') }}</td>
+                            <td><a class="badge bg-danger text-decoration-none"
+                                    href="{{ route('invoice.show', $transaction->order_id) }}" target="_blank">Xem hóa đơn</a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

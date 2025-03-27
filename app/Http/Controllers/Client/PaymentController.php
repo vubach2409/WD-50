@@ -14,37 +14,10 @@ use Illuminate\Support\Facades\Session;
 
 class PaymentController extends Controller
 {
-                public function execPostRequest($url, $data)
-                {
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                            'Content-Type: application/json',
-                            'Content-Length: ' . strlen($data))
-                    );
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-                    //execute post
-                    $result = curl_exec($ch);
-                    //close connection
-                    curl_close($ch);
-                    return $result;
-                }
-                
-
-
-                public function thankyou(){
-                    return view('client.thankyou');
-                }
-
-               public function CodPayment(Request $request){
-
-                
+    // Thanh toán
+            public function CodPayment(Request $request){
                 if(isset($_POST['cod'])){
-
-               
+                    //validate trước khi nhận dữ liệu
                     $request->validate([
                         'consignee_address' => ['required', 'string', 'max:255'],
                         'consignee_name' => ['required', 'string', 'max:255'],
@@ -90,13 +63,13 @@ class PaymentController extends Controller
                         DB::rollBack();
                         return redirect()->route('thankyou')->with('error', 'Đặt hàng thất bại!');
                     }
-    }
-                    
-               }
+                }           
+            }
+    //End thanh toán cod
 
-               // Thanh toán vnpay
-               public function vnpayPayment(Request $request){
-
+    // Thanh toán vnpay
+            public function vnpayPayment(Request $request){
+                // validate trước khi nhận dữ liệu
                 $request->validate([
                     'consignee_name' => 'required|string|max:255',
                     'consignee_phone' => 'required|string|max:20',
@@ -178,21 +151,22 @@ class PaymentController extends Controller
                         }
                 }
             }
+
+    // end thanh toán vnpay
+       
+    // xử lý lưu đơn hàng và giao dịch sau khi thanh toán vnpay
+        public function xuly(Request $request){
+            DB::beginTransaction(); // Bắt đầu transaction để đảm bảo toàn vẹn dữ liệu
                 
-            
-            
-            public function xuly(Request $request){
-                    DB::beginTransaction(); // Bắt đầu transaction để đảm bảo toàn vẹn dữ liệu
-                
-                    try {
-                        // Nhận dữ liệu từ VNPay
-                        $vnp_TxnRef = $request->input('vnp_TxnRef');
-                        $vnp_ResponseCode = $request->input('vnp_ResponseCode');
-                        $vnp_OrderInfo = json_decode($request->input('vnp_OrderInfo'), true);
-                
-                        // Kiểm tra thanh toán thành công
+            try {
+                // Nhận dữ liệu từ VNPay
+                $vnp_TxnRef = $request->input('vnp_TxnRef');
+                $vnp_ResponseCode = $request->input('vnp_ResponseCode');
+                $vnp_OrderInfo = json_decode($request->input('vnp_OrderInfo'), true);
+        
+                // Kiểm tra thanh toán thành công
                       
-       if ($vnp_ResponseCode != "00") {
+        if ($vnp_ResponseCode != "00") {
            return redirect()->route('thankyou')->with('error', 'Đặt hàng thất bại!');
        }
 
@@ -214,8 +188,8 @@ class PaymentController extends Controller
                             'total' => $totalPrice,
                             'payment_method' => 'vnpay',
                             'consignee_name' => $vnp_OrderInfo['name'],
-           'consignee_phone' => $vnp_OrderInfo['phone'],
-           'consignee_address' => $vnp_OrderInfo['address'],
+                            'consignee_phone' => $vnp_OrderInfo['phone'],
+                            'consignee_address' => $vnp_OrderInfo['address'],
                             'status' => 'completed'
                         ]);
 
@@ -250,8 +224,16 @@ class PaymentController extends Controller
                         DB::rollBack(); // Nếu có lỗi, rollback dữ liệu
                         return redirect()->route('thankyou')->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
                     }
+        }
+
+    // end xử lý
+
+    // thankyou
+                public function thankyou(){
+                    return view('client.thankyou');
                 }
-               }
+    // end thankyouu
+}
 
               
 
