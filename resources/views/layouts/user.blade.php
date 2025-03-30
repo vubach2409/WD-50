@@ -21,23 +21,30 @@
     <style>
         .notification-container {
             position: fixed;
-            top: 20px;
+            top: 80px; /* Adjust this value based on your header height */
             right: 20px;
             z-index: 9999;
             max-width: 350px;
+            pointer-events: none;
         }
 
         .notification {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px 20px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            transform: translateX(120%);
-            transition: transform 0.3s ease;
-            animation: slideIn 0.3s ease forwards;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
         }
 
         .notification.success {
@@ -61,16 +68,33 @@
             color: #dc3545;
         }
 
-        @keyframes slideIn {
-            to {
-                transform: translateX(0);
-            }
+        .notification-content {
+            flex: 1;
         }
 
-        @keyframes slideOut {
-            to {
-                transform: translateX(120%);
-            }
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0 5px;
+            margin-left: 10px;
+            font-size: 1.2em;
+            transition: color 0.2s ease;
+        }
+
+        .notification-close:hover {
+            color: #333;
         }
 
         .cart-item-remove {

@@ -25,19 +25,14 @@
                     <li class="position-relative">
                         <a class="nav-link" href="{{ route('cart') }}" id="cartIcon">
                             <img src="{{ asset('clients/images/cart.svg') }}">
-                            @php
-                                $cartCount = count(session('cart', []));
-                            @endphp
-                            @if($cartCount > 0)
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
-                                    {{ $cartCount }}
-                                </span>
-                            @endif
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="display: {{ count(session('cart', [])) > 0 ? 'block' : 'none' }}">
+                                {{ count(session('cart', [])) }}
+                            </span>
                         </a>
                         <div class="mini-cart" id="miniCart">
                             <div class="mini-cart-header">
                                 <h6 class="mb-0">Shopping Cart</h6>
-                                <span class="cart-count-text">{{ $cartCount }} item(s)</span>
+                                <span class="cart-count-text">{{ count(session('cart', [])) }} item(s)</span>
                             </div>
                             <div class="mini-cart-items">
                                 @php
@@ -51,7 +46,7 @@
                                             $total += $details['quantity'] * $details['price'];
                                     @endphp
                                     <div class="mini-cart-item">
-                                        <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}" class="mini-cart-image cart-item-image">
+                                        <img src="{{ asset('storage/' . $details['image']) }}" alt="{{ $details['name'] }}" class="mini-cart-image cart-item-image">
                                         <div class="mini-cart-item-details">
                                             <h6 class="mb-0">{{ $details['name'] }}</h6>
                                             <small class="text-muted">{{ $details['quantity'] }} x ${{ number_format($details['price'], 2) }}</small>
@@ -178,45 +173,58 @@
             // Update cart count with animation
             function updateCartCount(count) {
                 const cartCount = document.querySelector('.cart-count');
+                const cartCountText = document.querySelector('.cart-count-text');
+
                 if (cartCount) {
-                    cartCount.textContent = count;
-                    cartCount.classList.add('animate');
-                    setTimeout(() => {
-                        cartCount.classList.remove('animate');
-                    }, 500);
+                    if (count > 0) {
+                        cartCount.style.display = 'block';
+                        cartCount.textContent = count;
+                        cartCount.classList.add('animate');
+                        setTimeout(() => {
+                            cartCount.classList.remove('animate');
+                        }, 500);
+                    } else {
+                        cartCount.style.display = 'none';
+                    }
+                }
+
+                if (cartCountText) {
+                    cartCountText.textContent = `${count} item${count !== 1 ? 's' : ''}`;
                 }
             }
 
             // Update mini cart content
             function updateMiniCart(cartData) {
                 const miniCartItems = document.querySelector('.mini-cart-items');
-                const cartCountText = document.querySelector('.cart-count-text');
                 const totalElement = document.querySelector('.mini-cart-footer .d-flex span:last-child');
-                
-                // Update cart count text
-                cartCountText.textContent = `${cartData.count} item(s)`;
-                
+
                 // Update items
-                miniCartItems.innerHTML = cartData.items.map(item => `
-                    <div class="mini-cart-item">
-                        <img src="${item.image}" alt="${item.name}" class="mini-cart-image cart-item-image">
-                        <div class="mini-cart-item-details">
-                            <h6 class="mb-0">${item.name}</h6>
-                            <small class="text-muted">${item.quantity} x $${parseFloat(item.price).toFixed(2)}</small>
+                if (miniCartItems) {
+                    miniCartItems.innerHTML = cartData.items.map(item => `
+                        <div class="mini-cart-item">
+                            <img src="${item.image}" alt="${item.name}" class="mini-cart-image cart-item-image">
+                            <div class="mini-cart-item-details">
+                                <h6 class="mb-0">${item.name}</h6>
+                                <small class="text-muted">${item.quantity} x $${parseFloat(item.price).toFixed(2)}</small>
+                            </div>
+                            <button class="btn btn-link btn-sm text-danger cart-item-remove" onclick="removeFromMiniCart(${item.id})">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                        <button class="btn btn-link btn-sm text-danger cart-item-remove" onclick="removeFromMiniCart(${item.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `).join('');
-                
+                    `).join('');
+                }
+
                 // Update total
-                totalElement.textContent = `$${parseFloat(cartData.total).toFixed(2)}`;
+                if (totalElement) {
+                    totalElement.textContent = `$${parseFloat(cartData.total).toFixed(2)}`;
+                }
+
+                // Update cart count
+                updateCartCount(cartData.count);
             }
 
             // Listen for cart updates
             window.addEventListener('cartUpdate', function(e) {
-                updateCartCount(e.detail.count);
                 if (e.detail.message) {
                     showNotification(e.detail.message);
                 }
@@ -246,7 +254,7 @@
                 if (data.success) {
                     // Update cart count with animation
                     window.dispatchEvent(new CustomEvent('cartUpdate', {
-                        detail: { 
+                        detail: {
                             count: data.cart_count,
                             message: 'Item removed from cart',
                             cartData: data.cart_data

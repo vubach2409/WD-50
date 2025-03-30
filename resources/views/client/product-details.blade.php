@@ -9,14 +9,14 @@
                 <!-- Product Image -->
                 <div class="col-12 col-md-6 mb-5">
                     <div class="product-image">
-                        <img src="{{ asset($product->image) }}" class="img-fluid" alt="{{ $product->name }}">
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid" alt="{{ $product->name }}">
                     </div>
                     <!-- Thumbnail Gallery -->
                     @if($product->variants->count() > 0)
                     <div class="row mt-4">
                         @foreach($product->variants->take(3) as $variant)
                         <div class="col-3">
-                            <img src="{{ asset($variant->image ?? $product->image) }}" class="img-fluid thumbnail" alt="{{ $product->name }}">
+                            <img src="{{ asset('storage/' . $variant->image ?? $product->image) }}" class="img-fluid thumbnail" alt="{{ $product->name }}">
                         </div>
                         @endforeach
                     </div>
@@ -32,7 +32,7 @@
                         <span class="text-muted ms-2">${{ number_format($product->original_price, 2) }}</span>
                         @endif
                     </div>
-                    
+
                     <div class="product-description mb-4">
                         <p>{{ $product->description }}</p>
                     </div>
@@ -49,7 +49,7 @@
                             <label for="quantity" class="me-2">Quantity:</label>
                             <input type="number" id="quantity" class="form-control" style="width: 100px;" value="1" min="1" max="{{ $product->stock }}">
                         </div>
-                        
+
                         <button class="btn btn-primary" onclick="addToCart({{ $product->id }})">Add to Cart</button>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
     <script>
         function addToCart(productId) {
             const quantity = document.getElementById('quantity').value;
-            
+
             // Show loading state
             const button = event.target;
             const originalText = button.innerHTML;
@@ -149,10 +149,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     `;
                     button.parentNode.insertBefore(alert, button.nextSibling);
-                    
+
                     // Update cart count with animation
                     window.dispatchEvent(new CustomEvent('cartUpdate', {
-                        detail: { 
+                        detail: {
                             count: data.cart_count,
                             message: data.message,
                             cartData: data.cart_data
@@ -187,4 +187,4 @@
         }
     </script>
     @endpush
-@endsection 
+@endsection

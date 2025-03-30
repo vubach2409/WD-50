@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-12">
                     <h2 class="mb-4">Shopping Cart</h2>
-                    
+
                     @if(count($items) > 0)
                         <div class="table-responsive">
                             <table class="table">
@@ -26,7 +26,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}" class="img-thumbnail me-3" style="width: 80px;">
+                                                <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" class="img-thumbnail me-3" style="width: 80px;">
                                                 <div>
                                                     <h5 class="mb-0">{{ $item['name'] }}</h5>
                                                 </div>
@@ -59,7 +59,7 @@
                             </table>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class="d-flex justify-content-between mt-4 mb-5">
                             <a href="{{ route('products') }}" class="btn btn-outline-primary">Continue Shopping</a>
                             <a href="{{ route('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
                         </div>
@@ -79,11 +79,11 @@
     <script>
         function updateQuantity(productId, quantity) {
             if (quantity < 1) return;
-            
+
             const input = event.target;
             const originalValue = input.value;
             input.disabled = true;
-            
+
             fetch('{{ route("cart.update") }}', {
                 method: 'PUT',
                 headers: {
@@ -100,7 +100,7 @@
                 if (data.success) {
                     // Update cart count with animation
                     window.dispatchEvent(new CustomEvent('cartUpdate', {
-                        detail: { 
+                        detail: {
                             count: data.cart_count,
                             message: 'Cart updated successfully'
                         }
@@ -145,7 +145,7 @@
                 if (data.success) {
                     // Update cart count with animation
                     window.dispatchEvent(new CustomEvent('cartUpdate', {
-                        detail: { 
+                        detail: {
                             count: data.cart_count,
                             message: 'Item removed from cart'
                         }
