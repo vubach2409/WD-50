@@ -3,7 +3,7 @@
 @section('title', 'Order Details #' . $order->id)
 
 @section('content')
-<div class="container py-5">
+<div class="container py-5 mt-5 mb-5">
     <div class="row">
         <div class="col-lg-3">
             @include('client.account.partials.sidebar')
@@ -22,7 +22,7 @@
                         <div class="col-md-6">
                             <h5 class="mb-3">Order Information</h5>
                             <p><strong>Order Date:</strong> {{ $order->created_at->format('M d, Y H:i') }}</p>
-                            <p><strong>Status:</strong> 
+                            <p><strong>Status:</strong>
                                 <span class="badge bg-{{ $order->status === 'completed' ? 'success' : ($order->status === 'pending' ? 'warning' : 'danger') }}">
                                     {{ ucfirst($order->status) }}
                                 </span>
@@ -67,7 +67,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
                                                 <div>
                                                     <h6 class="mb-0">{{ $item->product->name }}</h6>
                                                     <small class="text-muted">SKU: {{ $item->product->sku }}</small>
@@ -87,11 +87,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
-                                    <td>Free</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-end"><strong>Tax:</strong></td>
-                                    <td>$0.00</td>
+                                    <td>${{ number_format($item->shipping_fee, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
@@ -105,4 +101,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

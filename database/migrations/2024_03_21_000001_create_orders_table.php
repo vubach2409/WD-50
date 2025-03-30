@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
@@ -21,6 +20,8 @@ return new class extends Migration
             $table->string('country');
             $table->decimal('total', 10, 2);
             $table->string('status')->default('pending');
+            $table->string('shipping_method');
+            $table->decimal('shipping_fee', 10, 2);
             $table->string('payment_method');
             $table->timestamps();
         });
@@ -30,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('orders');
     }
-}; 
+};

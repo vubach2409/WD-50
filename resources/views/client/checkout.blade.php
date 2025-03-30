@@ -79,6 +79,22 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="form-label">Shipping Method</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="shipping_method" id="standard" value="standard" checked>
+                                <label class="form-check-label" for="standard">
+                                    Standard Shipping (5-7 days) - $5.00
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="shipping_method" id="express" value="express">
+                                <label class="form-check-label" for="express">
+                                    Express Shipping (2-3 days) - $15.00
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
                             <label class="form-label">Payment Method</label>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
@@ -127,15 +143,11 @@
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Shipping</span>
-                            <span>Free</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Tax</span>
-                            <span>$0.00</span>
+                            <span id="order-summary-shipping">$5.00</span>
                         </div>
                         <div class="d-flex justify-content-between border-top pt-2">
                             <strong>Total</strong>
-                            <strong>${{ number_format($total, 2) }}</strong>
+                            <strong id="order-summary-total">${{ number_format($total + 5, 2) }}</strong>
                         </div>
                     </div>
                 </div>
@@ -150,6 +162,23 @@ document.getElementById('checkout-form').addEventListener('submit', function(e) 
     const submitButton = this.querySelector('button[type="submit"]');
     submitButton.disabled = true;
     submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+});
+
+// Update shipping cost when shipping method changes
+document.querySelectorAll('input[name="shipping_method"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const shippingCost = this.value === 'express' ? 15.00 : 5.00;
+        const subtotal = {{ $total }};
+        const total = subtotal + shippingCost;
+
+        // Update shipping cost and total in the form section
+        document.getElementById('shipping-cost').textContent = `$${shippingCost.toFixed(2)}`;
+        document.getElementById('total-amount').textContent = `$${total.toFixed(2)}`;
+
+        // Update shipping cost and total in the order summary section
+        document.getElementById('order-summary-shipping').textContent = `$${shippingCost.toFixed(2)}`;
+        document.getElementById('order-summary-total').textContent = `$${total.toFixed(2)}`;
+    });
 });
 </script>
 @endpush

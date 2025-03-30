@@ -17,26 +17,30 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty.');
         }
 
-        $total = 0;
+        $subtotal = 0;
         $items = [];
         foreach ($cart as $productId => $details) {
             $product = \App\Models\Product::find($productId);
             if ($product) {
-                $subtotal = $details['quantity'] * $details['price'];
-                $total += $subtotal;
+                $itemSubtotal = $details['quantity'] * $details['price'];
+                $subtotal += $itemSubtotal;
                 $items[] = [
                     'id' => $productId,
                     'name' => $details['name'],
                     'price' => $details['price'],
                     'quantity' => $details['quantity'],
                     'image' => $details['image'],
-                    'subtotal' => $subtotal,
+                    'subtotal' => $itemSubtotal,
                     'stock' => $product->stock
                 ];
             }
         }
 
-        return view('client.checkout', compact('items', 'total'));
+        // Default shipping cost (standard shipping)
+        $shippingCost = 5.00;
+        $total = $subtotal + $shippingCost;
+
+        return view('client.checkout', compact('items', 'subtotal', 'shippingCost', 'total'));
     }
 
     public function placeOrder(Request $request)
@@ -50,7 +54,8 @@ class CheckoutController extends Controller
             'subdistrict' => 'required|string|max:100',
             'zip_code' => 'required|string|max:20',
             'country' => 'required|string|max:100',
-            'payment_method' => 'required|in:cod,paypal'
+            'payment_method' => 'required|in:cod,paypal',
+            'shipping_method' => 'required|in:standard,express'
         ]);
 
         $cart = session('cart', []);
@@ -61,14 +66,18 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
-            // Calculate total
-            $total = 0;
+            // Calculate subtotal
+            $subtotal = 0;
             foreach ($cart as $productId => $details) {
                 $product = \App\Models\Product::find($productId);
                 if ($product) {
-                    $total += $details['quantity'] * $details['price'];
+                    $subtotal += $details['quantity'] * $details['price'];
                 }
             }
+
+            // Calculate shipping cost
+            $shippingCost = $request->shipping_method === 'express' ? 15.00 : 5.00;
+            $total = $subtotal + $shippingCost;
 
             // Create order
             $order = Order::create([
@@ -83,7 +92,9 @@ class CheckoutController extends Controller
                 'country' => $request->country,
                 'total' => $total,
                 'status' => 'pending',
-                'payment_method' => $request->payment_method
+                'payment_method' => $request->payment_method,
+                'shipping_method' => $request->shipping_method,
+                'shipping_fee' => $shippingCost
             ]);
 
             // Create order items

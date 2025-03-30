@@ -21,7 +21,9 @@ class Order extends Model
         'country',
         'total',
         'status',
-        'payment_method'
+        'payment_method',
+        'shipping_method',
+        'shipping_fee'
     ];
 
     public function user()
@@ -38,4 +40,4 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class);
     }
-} 
+}

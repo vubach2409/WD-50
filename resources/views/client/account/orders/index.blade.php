@@ -3,7 +3,7 @@
 @section('title', 'Order History')
 
 @section('content')
-<div class="container py-5">
+<div class="container py-5 mt-5 mb-5">
     <div class="row">
         <div class="col-lg-3">
             @include('client.account.partials.sidebar')
@@ -73,4 +73,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
