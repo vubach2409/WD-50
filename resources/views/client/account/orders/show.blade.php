@@ -87,7 +87,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
-                                    <td>${{ number_format($item->shipping_fee, 2) }}</td>
+                                    <td>${{ number_format($order->shipping_fee, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
