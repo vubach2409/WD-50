@@ -17,6 +17,7 @@ use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\ProductsController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\ServicesController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Client\AccountController;
@@ -39,7 +40,7 @@ Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
-Route::get('/products/{product}', [ProductsController::class, 'show'])->name('products.show');
+Route::get('/product/{product}', [ClientProductController::class, 'index'])->name('product.details');
 Route::get('/services', [ServicesController::class, 'index'])->name('services');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
@@ -54,10 +55,10 @@ Route::get('/thankyou', [PaymentController::class, 'xulythanhtoantienmat'])->nam
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
-    
+
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
-    
+
     Route::resource('categories', CategoryController::class);
 
     Route::resource('brands', BrandController::class);

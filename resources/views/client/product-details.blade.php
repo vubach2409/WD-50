@@ -65,14 +65,11 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">Specifications</button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
-                        </li>
                     </ul>
 
                     <div class="tab-content mt-4" id="productTabsContent">
                         <div class="tab-pane fade show active" id="description" role="tabpanel">
-                            <p>{{ $product->long_description }}</p>
+                            <p>{{ $product->description }}</p>
                         </div>
                         <div class="tab-pane fade" id="specifications" role="tabpanel">
                             <table class="table">
@@ -89,25 +86,6 @@
                                     @endif
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="tab-pane fade" id="reviews" role="tabpanel">
-                            @if($product->reviews?->count() > 0)
-                                @foreach($product->reviews as $review)
-                                <div class="review-item mb-4">
-                                    <div class="d-flex justify-content-between">
-                                        <h5>{{ $review->user->name }}</h5>
-                                        <div class="rating">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
-                                            @endfor
-                                        </div>
-                                    </div>
-                                    <p class="text-muted">{{ $review->comment }}</p>
-                                </div>
-                                @endforeach
-                            @else
-                                <p>No reviews yet. Be the first to review this product!</p>
-                            @endif
                         </div>
                     </div>
                 </div>
