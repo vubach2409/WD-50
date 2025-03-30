@@ -1,0 +1,76 @@
+@extends('layouts.user')
+
+@section('title', 'Order History')
+
+@section('content')
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            @include('client.account.partials.sidebar')
+        </div>
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Order History</h2>
+
+                    @if($orders->isEmpty())
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                            <h5>No orders found</h5>
+                            <p class="text-muted">You haven't placed any orders yet.</p>
+                            <a href="{{ route('home') }}" class="btn btn-primary mt-3">Start Shopping</a>
+                        </div>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Payment</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($orders as $order)
+                                        <tr>
+                                            <td>#{{ $order->id }}</td>
+                                            <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                            <td>${{ number_format($order->total, 2) }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ $order->status === 'completed' ? 'success' : ($order->status === 'pending' ? 'warning' : 'danger') }}">
+                                                    {{ ucfirst($order->status) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if($order->payment)
+                                                    <span class="badge bg-{{ $order->payment->status === 'completed' ? 'success' : ($order->payment->status === 'pending' ? 'warning' : 'danger') }}">
+                                                        {{ ucfirst($order->payment->status) }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary">Not Paid</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('account.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">
+                                                    View Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4">
+                            {{ $orders->links() }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection 

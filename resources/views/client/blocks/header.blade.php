@@ -21,7 +21,17 @@
                 </ul>
 
                 <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                    <li><a class="nav-link" href="#"><img src="{{ asset('clients/images/user.svg') }}"></a></li>
+                    <li>
+                        @auth
+                            <a class="nav-link" href="{{ route('account') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @else
+                            <a class="nav-link" href="{{ route('login') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @endauth
+                    </li>
                     <li class="position-relative">
                         <a class="nav-link" href="{{ route('cart') }}" id="cartIcon">
                             <img src="{{ asset('clients/images/cart.svg') }}">
@@ -202,7 +212,7 @@
                 if (miniCartItems) {
                     miniCartItems.innerHTML = cartData.items.map(item => `
                         <div class="mini-cart-item">
-                            <img src="${item.image}" alt="${item.name}" class="mini-cart-image cart-item-image">
+                            <img src="/storage/${item.image}" alt="${item.name}" class="mini-cart-image cart-item-image">
                             <div class="mini-cart-item-details">
                                 <h6 class="mb-0">${item.name}</h6>
                                 <small class="text-muted">${item.quantity} x $${parseFloat(item.price).toFixed(2)}</small>

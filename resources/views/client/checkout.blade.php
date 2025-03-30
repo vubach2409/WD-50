@@ -1,323 +1,156 @@
 @extends('layouts.user')
 
-@section('title', 'Trang Chủ')
+@section('title', 'Checkout')
 
 @section('content')
-    <div class="untree_co-section">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-md-12">
-                    <div class="border p-4 rounded" role="alert">
-                        Returning customer? <a href="#">Click here</a> to login
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Shipping Information</h2>
+                    <form action="{{ route('checkout.place-order') }}" method="POST" id="checkout-form">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" required>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" required>
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" value="{{ old('address') }}" required>
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="subdistrict" class="form-label">Subdistrict</label>
+                                <input type="text" class="form-control @error('subdistrict') is-invalid @enderror" id="subdistrict" name="subdistrict" value="{{ old('subdistrict') }}" required>
+                                @error('subdistrict')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control @error('city') is-invalid @enderror" id="city" name="city" value="{{ old('city') }}" required>
+                                @error('city')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="zip_code" class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control @error('zip_code') is-invalid @enderror" id="zip_code" name="zip_code" value="{{ old('zip_code') }}" required>
+                                @error('zip_code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="country" class="form-label">Country</label>
+                                <input type="text" class="form-control @error('country') is-invalid @enderror" id="country" name="country" value="{{ old('country') }}" required>
+                                @error('country')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Payment Method</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
+                                <label class="form-check-label" for="cod">
+                                    Cash on Delivery
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal">
+                                <label class="form-check-label" for="paypal">
+                                    PayPal
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Order Summary</h3>
+
+                    <div class="order-items mb-4">
+                        @foreach($items as $item)
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">{{ $item['name'] }}</h6>
+                                <small class="text-muted">Quantity: {{ $item['quantity'] }}</small>
+                                <div class="text-end">
+                                    <small class="text-muted">${{ number_format($item['subtotal'], 2) }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span>${{ number_format($total, 2) }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tax</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-top pt-2">
+                            <strong>Total</strong>
+                            <strong>${{ number_format($total, 2) }}</strong>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6 mb-5 mb-md-0">
-                    <h2 class="h3 mb-3 text-black">Billing Details</h2>
-                    <div class="p-3 p-lg-5 border bg-white">
-                        <div class="form-group">
-                            <label for="c_country" class="text-black">Country <span class="text-danger">*</span></label>
-                            <select id="c_country" class="form-control">
-                                <option value="1">Select a country</option>
-                                <option value="2">bangladesh</option>
-                                <option value="3">Algeria</option>
-                                <option value="4">Afghanistan</option>
-                                <option value="5">Ghana</option>
-                                <option value="6">Albania</option>
-                                <option value="7">Bahrain</option>
-                                <option value="8">Colombia</option>
-                                <option value="9">Dominican Republic</option>
-                            </select>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="c_fname" class="text-black">First Name <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_fname" name="c_fname">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="c_lname" class="text-black">Last Name <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_lname" name="c_lname">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <label for="c_companyname" class="text-black">Company Name </label>
-                                <input type="text" class="form-control" id="c_companyname" name="c_companyname">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <label for="c_address" class="text-black">Address <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_address" name="c_address"
-                                    placeholder="Street address">
-                            </div>
-                        </div>
-
-                        <div class="form-group mt-3">
-                            <input type="text" class="form-control" placeholder="Apartment, suite, unit etc. (optional)">
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="c_state_country" class="text-black">State / Country <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_state_country" name="c_state_country">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="c_postal_zip" class="text-black">Posta / Zip <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_postal_zip" name="c_postal_zip">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-5">
-                            <div class="col-md-6">
-                                <label for="c_email_address" class="text-black">Email Address <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_email_address" name="c_email_address">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="c_phone" class="text-black">Phone <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="c_phone" name="c_phone"
-                                    placeholder="Phone Number">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="c_create_account" class="text-black" data-bs-toggle="collapse"
-                                href="#create_an_account" role="button" aria-expanded="false"
-                                aria-controls="create_an_account"><input type="checkbox" value="1"
-                                    id="c_create_account"> Create an account?</label>
-                            <div class="collapse" id="create_an_account">
-                                <div class="py-2 mb-4">
-                                    <p class="mb-3">Create an account by entering the information below. If you are a
-                                        returning customer please login at the top of the page.</p>
-                                    <div class="form-group">
-                                        <label for="c_account_password" class="text-black">Account Password</label>
-                                        <input type="email" class="form-control" id="c_account_password"
-                                            name="c_account_password" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label for="c_ship_different_address" class="text-black" data-bs-toggle="collapse"
-                                href="#ship_different_address" role="button" aria-expanded="false"
-                                aria-controls="ship_different_address"><input type="checkbox" value="1"
-                                    id="c_ship_different_address"> Ship To A Different Address?</label>
-                            <div class="collapse" id="ship_different_address">
-                                <div class="py-2">
-
-                                    <div class="form-group">
-                                        <label for="c_diff_country" class="text-black">Country <span
-                                                class="text-danger">*</span></label>
-                                        <select id="c_diff_country" class="form-control">
-                                            <option value="1">Select a country</option>
-                                            <option value="2">bangladesh</option>
-                                            <option value="3">Algeria</option>
-                                            <option value="4">Afghanistan</option>
-                                            <option value="5">Ghana</option>
-                                            <option value="6">Albania</option>
-                                            <option value="7">Bahrain</option>
-                                            <option value="8">Colombia</option>
-                                            <option value="9">Dominican Republic</option>
-                                        </select>
-                                    </div>
-
-
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <label for="c_diff_fname" class="text-black">First Name <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_fname"
-                                                name="c_diff_fname">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="c_diff_lname" class="text-black">Last Name <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_lname"
-                                                name="c_diff_lname">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-md-12">
-                                            <label for="c_diff_companyname" class="text-black">Company Name </label>
-                                            <input type="text" class="form-control" id="c_diff_companyname"
-                                                name="c_diff_companyname">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row  mb-3">
-                                        <div class="col-md-12">
-                                            <label for="c_diff_address" class="text-black">Address <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_address"
-                                                name="c_diff_address" placeholder="Street address">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input type="text" class="form-control"
-                                            placeholder="Apartment, suite, unit etc. (optional)">
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <label for="c_diff_state_country" class="text-black">State / Country <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_state_country"
-                                                name="c_diff_state_country">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="c_diff_postal_zip" class="text-black">Posta / Zip <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_postal_zip"
-                                                name="c_diff_postal_zip">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-5">
-                                        <div class="col-md-6">
-                                            <label for="c_diff_email_address" class="text-black">Email Address <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_email_address"
-                                                name="c_diff_email_address">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="c_diff_phone" class="text-black">Phone <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="c_diff_phone"
-                                                name="c_diff_phone" placeholder="Phone Number">
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="c_order_notes" class="text-black">Order Notes</label>
-                            <textarea name="c_order_notes" id="c_order_notes" cols="30" rows="5" class="form-control"
-                                placeholder="Write your notes here..."></textarea>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col-md-6">
-
-                    <div class="row mb-5">
-                        <div class="col-md-12">
-                            <h2 class="h3 mb-3 text-black">Coupon Code</h2>
-                            <div class="p-3 p-lg-5 border bg-white">
-
-                                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have
-                                    one</label>
-                                <div class="input-group w-75 couponcode-wrap">
-                                    <input type="text" class="form-control me-2" id="c_code"
-                                        placeholder="Coupon Code" aria-label="Coupon Code"
-                                        aria-describedby="button-addon2">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-black btn-sm" type="button"
-                                            id="button-addon2">Apply</button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-5">
-                        <div class="col-md-12">
-                            <h2 class="h3 mb-3 text-black">Your Order</h2>
-                            <div class="p-3 p-lg-5 border bg-white">
-                                <table class="table site-block-order-table mb-5">
-                                    <thead>
-                                        <th>Product</th>
-                                        <th>Total</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-                                            <td>$250.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Polo Shirt <strong class="mx-2">x</strong> 1</td>
-                                            <td>$100.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
-                                            <td class="text-black">$350.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-                                            <td class="text-black font-weight-bold"><strong>$350.00</strong></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <div class="border p-3 mb-3">
-                                    <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-                                            href="#collapsebank" role="button" aria-expanded="false"
-                                            aria-controls="collapsebank">Direct Bank Transfer</a></h3>
-
-                                    <div class="collapse" id="collapsebank">
-                                        <div class="py-2">
-                                            <p class="mb-0">Make your payment directly into our bank account. Please use
-                                                your Order ID as the payment reference. Your order won’t be shipped until
-                                                the funds have cleared in our account.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="border p-3 mb-3">
-                                    <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-                                            href="#collapsecheque" role="button" aria-expanded="false"
-                                            aria-controls="collapsecheque">Cheque Payment</a></h3>
-
-                                    <div class="collapse" id="collapsecheque">
-                                        <div class="py-2">
-                                            <p class="mb-0">Make your payment directly into our bank account. Please use
-                                                your Order ID as the payment reference. Your order won’t be shipped until
-                                                the funds have cleared in our account.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="border p-3 mb-5">
-                                    <h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse"
-                                            href="#collapsepaypal" role="button" aria-expanded="false"
-                                            aria-controls="collapsepaypal">Paypal</a></h3>
-
-                                    <div class="collapse" id="collapsepaypal">
-                                        <div class="py-2">
-                                            <p class="mb-0">Make your payment directly into our bank account. Please use
-                                                your Order ID as the payment reference. Your order won’t be shipped until
-                                                the funds have cleared in our account.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <button class="btn btn-black btn-lg py-3 btn-block"
-                                        onclick="window.location='{{ route('thankyou') }}'">Place Order</button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- </form> -->
         </div>
     </div>
+</div>
+
+@push('scripts')
+<script>
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+});
+</script>
+@endpush
 @endsection

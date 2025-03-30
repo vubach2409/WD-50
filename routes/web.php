@@ -19,6 +19,8 @@ use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\ProductsController;
 use App\Http\Controllers\Client\ServicesController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Client\AccountController;
+use App\Http\Controllers\Client\OrderHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,9 +46,10 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::put('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
 Route::get('/thankyou', [PaymentController::class, 'xulythanhtoantienmat'])->name('thankyou');
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
@@ -81,5 +84,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
      // Route tìm kiếm sản phẩm có biến thể
     Route::get('/product-variants/search', [ProductVariantController::class, 'search'])
     ->name('product_variants.search');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/account', [AccountController::class, 'index'])->name('account');
+    Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+    Route::get('/account/orders', [OrderHistoryController::class, 'index'])->name('account.orders');
+    Route::get('/account/orders/{order}', [OrderHistoryController::class, 'show'])->name('account.orders.show');
 });
 
