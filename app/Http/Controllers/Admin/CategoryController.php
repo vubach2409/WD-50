@@ -27,7 +27,7 @@ class CategoryController extends Controller
         ]);
 
         Category::create($request->all());
-        return redirect()->route('categories.index')->with('success', 'Category created successfully');
+        return redirect()->route('admin.categories.index')->with('success', 'Thêm thành công');
     }
 
     public function edit(Category $category)
@@ -43,12 +43,12 @@ class CategoryController extends Controller
         ]);
 
         $category->update($request->all());
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully');
+        return redirect()->route('admin.categories.index')->with('success', 'Cập nhật thành công');
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully');
+        return redirect()->route('admin.categories.index')->with('success', 'Xoá thành công');
     }
 }

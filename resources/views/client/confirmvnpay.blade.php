@@ -26,19 +26,26 @@
                                     placeholder="Street address">
                             </div>
                         </div>
-                        <div class="form-group row mb-5">
 
-                            <div class="col-md-6">
-                                <label for="consignee_phone" class="text-black">Phone <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="consignee_phone"
-                                    placeholder="Phone Number">
-                            </div>
 
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-info mt-3" name="redirect">Xác nhận</button>
-                                <a href="{{ url()->previous() }}" class="btn btn-dark mt-3">Quay lại</a>
-                            </div>
+                        <div class="col-md-6">
+                            <label for="consignee_phone" class="text-black">Phone <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="consignee_phone" placeholder="Phone Number">
+                        </div>
+                        <label>Chọn phương thức vận chuyển:</label>
+                        <select name="shipping_id" required class="form-control col-md-6">
+                            @foreach ($shippings as $shipping)
+                                <option value="{{ $shipping->id }}">
+                                    {{ $shipping->method }} - {{ number_format($shipping->fee, 0, ',', '.') }} VNĐ
+                                </option>
+                            @endforeach
+                        </select>
+
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-info mt-3" name="redirect">Xác nhận</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-dark mt-3">Quay lại</a>
+                        </div>
                 </form>
             </div>
         </div>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Carts;
 use App\Models\Orders;
+use App\Models\Payment;
+use App\Models\Shipping;
 use App\Models\OrderDetail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -17,30 +19,51 @@ class PaymentController extends Controller
     // Thanh toán
             public function CodPayment(Request $request){
                 if(isset($_POST['cod'])){
+                    
                     //validate trước khi nhận dữ liệu
                     $request->validate([
                         'consignee_address' => ['required', 'string', 'max:255'],
                         'consignee_name' => ['required', 'string', 'max:255'],
                         'consignee_phone' => ['required', 'string', 'max:10'],
+                        'shipping_id' => ['required', 'integer', 'exists:shippings,id'],
                     ]);
-            
+                    $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
+                    if ($cartItems->isEmpty()) {
+                        return redirect()->route('cart')->with('error', 'Giỏ hàng trống!');
+                    }
+                    
+                    $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+                    $shipping = Shipping::findOrFail($request->shipping_id);
+                    $finalTotal = $totalPrice + $shipping->fee;
+        
                     DB::beginTransaction();
-            
+                    
                     try {
-                        $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
-                        $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
-            
+                       
                         // 🛒 Tạo đơn hàng
                         $order = Orders::create([
                             'user_id' => Auth::id(),
-                            'total' => $totalPrice,
+                            'total' =>$finalTotal,
+                            'shipping_id' => $shipping->id,
                             'consignee_address' => $request->consignee_address,
+                            'shipping_fee' => $shipping->fee,
                             'payment_method' => 'cod',
                             'consignee_name' => $request->consignee_name,
                             'consignee_phone' => $request->consignee_phone,   
                             'status' => 'pending',
                             'transaction_id' =>  now()->timestamp . Auth::id(),
                         ]);
+                        // thêm vào bảng payment
+                        Payment::create([
+                            'order_id' => $order->id,
+                            'user_id' => Auth::id(),
+                            'payment_method' => 'cod',
+                            'amount' => $finalTotal,
+                            'status' => 'pending', // Chờ xác nhận thanh toán
+                            'transaction_id' => $order->transaction_id
+                        ]);
+                         
+            
                    
                         // thêm sản phẩm vào đơn hàng
                         foreach ($cartItems as $item) {
@@ -74,11 +97,20 @@ class PaymentController extends Controller
                     'consignee_name' => 'required|string|max:255',
                     'consignee_phone' => 'required|string|max:20',
                     'consignee_address' => 'required|string|max:255',
+                    'shipping_id' => ['required', 'integer', 'exists:shippings,id'],
                 ]);
 
-                $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
-                $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
-
+                    $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
+                        if ($cartItems->isEmpty()) {
+                            return redirect()->route('cart')->with('error', 'Giỏ hàng trống!');
+                        }
+                        
+                        $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+                        $shipping = Shipping::find($request->shipping_id);
+                        if (!$shipping) {
+                            return redirect()->back()->with('error', 'Phương thức vận chuyển không hợp lệ.');
+                        }
+                        $finalTotal = $totalPrice + $shipping->fee;
                 if(isset($_POST['redirect'])){
                     date_default_timezone_set('Asia/Ho_Chi_Minh');
                     $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -91,9 +123,10 @@ class PaymentController extends Controller
                         'name' => $request->consignee_name,
                         'phone' => $request->consignee_phone,
                         'address' => $request->consignee_address,
+                        'shipping' => $request->shipping_id,
                     ]);
                     $vnp_OrderType = "billpayment";
-                    $vnp_Amount = $totalPrice * 100; // giá
+                    $vnp_Amount = $finalTotal * 100; // giá
                     $vnp_Locale = "vn";
                     $vnp_BankCode = "NCB";
                     $vnp_IpAddr = request()->ip();
@@ -166,31 +199,39 @@ class PaymentController extends Controller
         
                 // Kiểm tra thanh toán thành công
                       
-        if ($vnp_ResponseCode != "00") {
-           return redirect()->route('thankyou')->with('error', 'Đặt hàng thất bại!');
-       }
+                if ($vnp_ResponseCode != "00") {
+                    return redirect()->route('thankyou')->with('error', 'Đặt hàng thất bại!');
+                }
 
-       $user = Auth::user();
-       if (!$user) {
-           return redirect()->route('thankyou')->with('error', 'Bạn chưa đăng nhập!');
-       }
+                $user = Auth::user();
+                if (!$user) {
+                    return redirect()->route('thankyou')->with('error', 'Bạn chưa đăng nhập!');
+                }
 
-       $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
-       if ($cartItems->isEmpty()) {
-           return redirect()->route('thankyou')->with('error', 'Giỏ hàng trống!');
-       }
-
-       $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
-                        // Lưu vào bảng orders
+                $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
+                if ($cartItems->isEmpty()) {
+                    return redirect()->route('cart')->with('error', 'Giỏ hàng trống!');
+                }
+                
+                $shipping = Shipping::where('id', $vnp_OrderInfo['shipping'])->first();
+                if (!$shipping) {
+                    return redirect()->route('thankyou')->with('error', 'Thông tin vận chuyển không hợp lệ!');
+                }
+        
+                // Tính tổng tiền
+                $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+                $finalTotal = $totalPrice + $shipping->fee;
                         $order = Orders::create([
                             'transaction_id' => $vnp_TxnRef,
                             'user_id' => $user->id,
-                            'total' => $totalPrice,
+                            'total' => $finalTotal,
+                            'shipping_fee' => $shipping->fee,
                             'payment_method' => 'vnpay',
                             'consignee_name' => $vnp_OrderInfo['name'],
                             'consignee_phone' => $vnp_OrderInfo['phone'],
                             'consignee_address' => $vnp_OrderInfo['address'],
-                            'status' => 'completed'
+                            'status' => 'pending',
+                           'shipping_id' => $shipping->id,
                         ]);
 
                         Transaction::create([
@@ -202,6 +243,15 @@ class PaymentController extends Controller
                             'status' => 'success',
                             'response_code' => $vnp_ResponseCode,
                             'response_message' => 'Thanh toán thành công'
+                        ]);
+
+                        Payment::create([
+                            'order_id' => $order->id,
+                            'user_id' => Auth::id(),
+                            'payment_method' => 'vnpay',
+                            'amount' => $finalTotal,
+                            'status' => 'success', // Chờ xác nhận thanh toán
+                            'transaction_id' => $vnp_TxnRef,
                         ]);
                 
                         // Lưu vào bảng order_items

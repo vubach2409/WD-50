@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Carts;
+use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -30,48 +31,75 @@ class CartController extends Controller
 
    // Thêm sản phẩm vào giỏ hàng
    public function addToCart(Request $request)
-   {
-       $request->validate([
-           'product_id' => 'required|exists:products,id',
-           'quantity' => 'required|integer|min:1'
-       ]);
+{
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1'
+    ]);
 
-       $cartData = [
-           'product_id' => $request->product_id,
-           'quantity' => $request->quantity
-       ];
+    $product = Product::findOrFail($request->product_id);
 
-       if (Auth::check()) {
-           $cartData['user_id'] = Auth::id();
-       } else {
-           $cartData['session_id'] = Session::getId();
-       }
+    // Kiểm tra số lượng tồn kho
+    if ($request->quantity > $product->stock) {
+        return back()->with('error', 'Số lượng yêu cầu vượt quá tồn kho!');
+    }
 
-       $cart = Carts::updateOrCreate(
-           ['product_id' => $request->product_id, 'user_id' => $cartData['user_id'] ?? null, 'session_id' => $cartData['session_id'] ?? null],
-           ['quantity' => DB::raw("quantity + {$request->quantity}")]
-       );
+    $cartData = [
+        'product_id' => $product->id,
+        'quantity' => $request->quantity
+    ];
 
-       return response()->json(['message' => 'Sản phẩm đã được thêm vào giỏ hàng!', 'cart' => $cart]);
-   }
+    if (Auth::check()) {
+        $cartData['user_id'] = Auth::id();
+    } else {
+        $cartData['session_id'] = Session::getId();
+    }
+
+    // Kiểm tra nếu sản phẩm đã có trong giỏ hàng
+    $cart = Carts::where('product_id', $product->id)
+        ->where(function ($query) {
+            if (Auth::check()) {
+                $query->where('user_id', Auth::id());
+            } else {
+                $query->where('session_id', Session::getId());
+            }
+        })->first();
+
+    if ($cart) {
+        $newQuantity = $cart->quantity + $request->quantity;
+        if ($newQuantity > $product->stock) {
+            return back()->with('error', 'Số lượng trong giỏ hàng vượt quá tồn kho!');
+        }
+        $cart->update(['quantity' => $newQuantity]);
+    } else {
+        Carts::create($cartData);
+    }
+
+    return back()->with('success', 'Sản phẩm đã được thêm vào giỏ hàng!');
+}
+
 
    // Cập nhật số lượng sản phẩm trong giỏ hàng
-   public function updateCart(Request $request, $id)
+   public function update(Request $request, $id)
    {
-       $request->validate(['quantity' => 'required|integer|min:1']);
-
-       $cart = Carts::where('id', $id)->where(function ($query) {
-           if (Auth::check()) {
-               $query->where('user_id', Auth::id());
-           } else {
-               $query->where('session_id', Session::getId());
-           }
-       })->firstOrFail();
-
-       $cart->update(['quantity' => $request->quantity]);
-
-       return response()->json(['message' => 'Cập nhật giỏ hàng thành công!', 'cart' => $cart]);
+       $cartItem = Carts::find($id);
+       if (!$cartItem) {
+           return redirect()->back()->with('error', 'Sản phẩm không tồn tại trong giỏ hàng.');
+       }
+   
+       // Kiểm tra số lượng nhập vào có vượt quá tồn kho không
+       if ($request->quantity > $cartItem->product->stock) {
+           return redirect()->back()->with('error', 'Số lượng vượt quá giới hạn kho hàng.');
+       }
+   
+       // Cập nhật số lượng
+       $cartItem->quantity = $request->quantity;
+       $cartItem->save();
+   
+       return redirect()->back()->with('success', 'Cập nhật giỏ hàng thành công.');
    }
+   
+   
 
    // Xóa sản phẩm khỏi giỏ hàng
    public function removeFromCart($id)

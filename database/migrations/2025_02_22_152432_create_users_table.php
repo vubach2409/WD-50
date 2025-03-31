@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('name');
-            $table->tinyInteger('role')->default(0); // 0: user, 1: admin
+            $table->string('role')->default('user');
             $table->string('avatar')->nullable();
             $table->string('phone', 15)->nullable();
             $table->timestamps();

@@ -20,11 +20,36 @@
                     <li><a class="nav-link" href="{{ route('contact') }}">Contact us</a></li>
                 </ul>
 
-                <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                    <li><a class="nav-link" href="{{ route('transactions.history') }}"><img
+                {{-- <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+                    <li><a class="nav-link" href="{{ route('userclient') }}"><img
                                 src="{{ asset('clients/images/user.svg') }}"></a></li>
                     <li><a class="nav-link" href="{{ route('cart.show') }}"><img
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
+                </ul> --}}
+                <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+                    <li>
+                        @auth
+                            <a class="nav-link" href="{{ route('account') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @else
+                            <a class="nav-link" href="{{ route('login') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @endauth
+                    </li>
+                    <li><a class="nav-link" href="{{ route('cart.show') }}"><img
+                                src="{{ asset('clients/images/cart.svg') }}"></a></li>
+                    <li>
+                        <a class="nav-link" href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            Logout
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ProductsController extends Controller
 {
     public function index()
     {
-        return view('client.products');
+        try {
+            $products = Product::all();
+            return view('client.products', compact('products'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error loading products. Please try again later.');
+        }
     }
 }

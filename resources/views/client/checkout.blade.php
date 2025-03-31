@@ -13,36 +13,34 @@
                             <th>Product</th>
                             <th>Total</th>
                         </thead>
-
                         <tbody>
                             @foreach ($cartItems as $item)
                                 <tr>
-                                    <td>{{ $item->product->name }} <strong class="mx-2">x</strong>
-                                        {{ $item->quantity }}
+                                    <td>{{ $item->product->name }} <strong class="mx-2">x</strong> {{ $item->quantity }}
                                     </td>
-                                    <td>{{ number_format($item->product->price, 0, ',', '.') }} VNĐ</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong>
-                                    </td>
-                                    <td class="text-black">
-                                        {{ number_format($item->quantity * $item->product->price, 0, ',', '.') }}
-                                        VNĐ</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-black font-weight-bold"><strong>Order Total</strong>
-                                    </td>
-                                    <td class="text-black font-weight-bold">
-                                        <strong
-                                            class="total">{{ number_format($item->quantity * $item->product->price, 0, ',', '.') }}
-                                            VNĐ</strong>
-                                    </td>
+                                    <td>{{ number_format($item->quantity * $item->product->price, 0, ',', '.') }} VNĐ</td>
                                 </tr>
                             @endforeach
 
+                            <tr>
+                                <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+                                <td class="text-black">
+                                    {{ number_format($item->quantity * $item->product->price, 0, ',', '.') }} VNĐ</td>
+                            </tr>
+                            {{-- <tr>
+                                <td class="text-black font-weight-bold"><strong>Shipping</strong></td>
+                                <td class="text-black">{{ number_format($shippingFee, 0, ',', '.') }} VNĐ</td>
+                            </tr> --}}
+                            <tr>
+                                <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+                                <td class="text-black font-weight-bold">
+                                    <strong
+                                        class="total">{{ number_format($item->quantity * $item->product->price, 0, ',', '.') }}
+                                        VNĐ</strong>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
-
                     <div class="form-group">
                         <a class="btn btn-info" name="confirm-cod" href="{{ route('confirm.cod') }}">Thanh toán
                             COD</a>

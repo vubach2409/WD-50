@@ -3,8 +3,20 @@
 @section('title', 'Trang Chủ')
 
 @section('content')
+
     <!-- Start Product Section -->
     <div class="product-section">
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="container">
             <div class="row">
 
@@ -18,47 +30,29 @@
                 <!-- End Column 1 -->
 
                 <!-- Start Column 2 -->
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
-                        <img src="{{ asset('clients/images/product-1.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Nordic Chair</h3>
-                        <strong class="product-price">$50.00</strong>
 
-                        <span class="icon-cross">
-                            <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                        </span>
-                    </a>
-                </div>
+                @foreach ($products as $product)
+                    <!-- Start Column -->
+                    <div class="col-12 col-md-4 col-lg-3 mb-5">
+                        <a class="product-item" href="{{ route('product.details', $product->id) }}">
+                            <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
+                                alt="{{ $product->name }}">
+                            <h3 class="product-title">{{ $product->name }}</h3>
+                            <strong class="product-price">${{ number_format($product->price, 2) }}</strong>
+
+                        </a>
+                        <!-- Form thêm vào giỏ hàng -->
+                        <form action="{{ route('cart.add') }}" method="POST" class="mt-2">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" value="1" max="{{ $product->stock }}">
+                            <!-- Mặc định 1 sản phẩm -->
+                            <button type="submit" class="btn btn-success w-100">Add to Cart</button>
+                        </form>
+                    </div>
+                    <!-- End Column -->
+                @endforeach
                 <!-- End Column 2 -->
-
-                <!-- Start Column 3 -->
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
-                        <img src="{{ asset('clients/images/product-2.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Kruzo Aero Chair</h3>
-                        <strong class="product-price">$78.00</strong>
-
-                        <span class="icon-cross">
-                            <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                        </span>
-                    </a>
-                </div>
-                <!-- End Column 3 -->
-
-                <!-- Start Column 4 -->
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
-                        <img src="{{ asset('clients/images/product-3.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Ergonomic Chair</h3>
-                        <strong class="product-price">$43.00</strong>
-
-                        <span class="icon-cross">
-                            <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                        </span>
-                    </a>
-                </div>
-                <!-- End Column 4 -->
-
             </div>
         </div>
     </div>

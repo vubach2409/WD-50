@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Shipping;
 use Illuminate\Http\Request;
 
 class ConfirmController extends Controller
 {
     public function Confirm_cod(){
-        return view('client.confirm');
+        $shippings = Shipping::all();
+        return view('client.confirm',compact('shippings'));
     }
     public function Confirm_vnpay(){
-        return view('client.confirmvnpay');
+        $shippings = Shipping::all();
+        return view('client.confirmvnpay',compact('shippings'));
     }
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('transaction_id')->unique();
             $table->text('consignee_address');
             $table->enum('payment_method', ['cod', 'vnpay'])->default('cod');
+            $table->decimal('shipping_fee', 10, 2)->default(0);
+            $table->foreignId('shipping_id')->constrained('shippings')->onDelete('cascade');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

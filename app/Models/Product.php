@@ -34,4 +34,14 @@ class Product extends Model
     {
         return $this->hasMany(OrderDetail::class, 'product_id', 'id');
     }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+    public function updateStock()
+    {
+        $this->stock = $this->variants()->sum('stock');
+        $this->save();
+    }
 }

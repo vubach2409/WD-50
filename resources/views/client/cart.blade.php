@@ -9,6 +9,11 @@
             <div class="row mb-5">
                 <form class="col-md-12" method="post">
                     <div class="site-blocks-table">
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                         @if (session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
@@ -44,9 +49,10 @@
                                             <td>
                                                 <form action="{{ route('cart.update', $item->id) }}" method="POST">
                                                     @csrf
-                                                    @method('PUT')
+                                                    @method('PUT') <!-- Bắt buộc nếu route là PUT -->
                                                     <input type="number" name="quantity" value="{{ $item->quantity }}"
-                                                        min="1" class="form-control w-50 d-inline">
+                                                        min="1" max="{{ $item->product->stock }}">
+
                                                     <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
                                                 </form>
 
