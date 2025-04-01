@@ -26,15 +26,10 @@
                             <h3 class="product-title">{{ $product->name }}</h3>
                             <strong class="product-price">${{ number_format($product->price, 2) }}</strong>
 
+                            <span class="icon-cross">
+                                <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
+                            </span>
                         </a>
-                        <!-- Form thêm vào giỏ hàng -->
-                        <form action="{{ route('cart.add') }}" method="POST" class="mt-2">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <input type="hidden" name="quantity" value="1" max="{{ $product->stock }}">
-                            <!-- Mặc định 1 sản phẩm -->
-                            <button type="submit" class="btn btn-success w-100">Add to Cart</button>
-                        </form>
                     </div>
                     <!-- End Column -->
                 @endforeach

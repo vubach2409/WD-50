@@ -51,9 +51,11 @@
 
                     <div class="product-meta mb-4">
                         <p><strong>SKU:</strong> <span>{{ $product->sku }}</span></p>
-                        <p><strong>Category:</strong> <span>{{ $product->category->name }}</span></p>
-                        <p><strong>Brand:</strong> <span>{{ $product->brand->name }}</span></p>
-                        <p><strong>Stock:</strong> <span>{{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}</span></p>
+                        <p><strong>Danh mục:</strong> <span>{{ $product->category->name }}</span></p>
+                        <p><strong>Thương hiệu:</strong> <span>{{ $product->brand->name }}</span></p>
+                        <p><strong>Số lượng hàng:</strong>
+                            <span>{{ $product->stock > 0 ? 'Còn hàng' : 'Hết hàng' }}</span>
+                        </p>
                     </div>
 
                     <div class="product-actions">
@@ -64,10 +66,14 @@
                             <div class="quantity-selector mb-4">
                                 <label for="quantity" class="me-2">Quantity:</label>
                                 <input type="number" name="quantity" id="quantity" class="form-control"
-                                    style="width: 100px;" value="1" min="1" max="{{ $product->stock }}">
+                                    style="width: 100px;" value="{{ $product->stock > 0 ? 1 : 0 }}" min="1"
+                                    max="{{ $product->stock }}" {{ $product->stock > 0 ? '' : 'disabled' }}>
                             </div>
-
-                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                            @if ($product->stock > 0)
+                                <button class="btn btn-primary" type="submit">Thêm vào giỏ hàng</button>
+                            @else
+                                <button class="btn btn-danger" disabled>Hết hàng</button>
+                            @endif
                         </form>
                     </div>
 

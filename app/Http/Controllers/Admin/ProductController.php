@@ -165,4 +165,6 @@ class ProductController extends Controller
         $product->forceDelete();
         return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã bị xóa vĩnh viễn!');
     }
+
+    
 }

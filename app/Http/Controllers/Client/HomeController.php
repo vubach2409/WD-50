@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $products = Product::all();
+            $products = Product::orderBy('price','desc')->take(3)->get();
             return view('client.index', compact('products'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading products. Please try again later.');

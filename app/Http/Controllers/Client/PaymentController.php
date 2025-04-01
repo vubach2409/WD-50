@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\Carts;
 use App\Models\Orders;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Shipping;
 use App\Models\OrderDetail;
 use App\Models\Transaction;
@@ -83,6 +84,18 @@ class PaymentController extends Controller
                         
             
                         // 🗑️ Xóa giỏ hàng sau khi đặt hàng thành công
+                        foreach ($cartItems as $item) {
+                            // Lấy sản phẩm từ CSDL
+                            $product = Product::find($item->product_id);
+                            
+                            if ($product) {
+                                // Trừ số lượng tồn kho
+                                $product->stock -= $item->quantity;
+                                $product->save();
+                            }
+                        }
+
+                        // Xóa giỏ hàng sau khi đã trừ tồn kho
                         Carts::where('user_id', Auth::id())->delete();
             
                         DB::commit();
@@ -277,10 +290,33 @@ class PaymentController extends Controller
                             ]);
                         }
                 
-                        // Xóa giỏ hàng sau khi đặt hàng thành công
+                        foreach ($cartItems as $item) {
+                            // Lấy sản phẩm từ CSDL với khóa cập nhật
+                            $product = Product::where('id', $item->product_id)->lockForUpdate()->first();
+                            
+                            if ($product) {
+                                // Kiểm tra số lượng tồn kho có đủ không
+                                if ($product->stock < $item->quantity) {
+                                    DB::rollBack();
+                                    return redirect()->route('cart')->with('error', 'Sản phẩm "' . $product->name . '" không đủ hàng trong kho!');
+                                }
+                    
+                                // Trừ số lượng tồn kho
+                                $product->stock -= $item->quantity;
+                                $product->save();
+                    
+                                // Nếu sản phẩm hết hàng, thực hiện xóa mềm
+                                if ($product->stock == 0) {
+                                    $product->delete();
+                                }
+                            }
+                        }
+                    
+                        // Xóa giỏ hàng sau khi đã trừ tồn kho
                         Carts::where('user_id', Auth::id())->delete();
-                
-                        DB::commit(); // Xác nhận giao dịch
+                    
+                        DB::commit();
+                    
                 
                         return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công, chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');
                     } catch (\Exception $e) {
