@@ -26,6 +26,9 @@ class PaymentController extends Controller
                         'consignee_name' => ['required', 'string', 'max:255'],
                         'consignee_phone' => ['required', 'string', 'max:10'],
                         'shipping_id' => ['required', 'integer', 'exists:shippings,id'],
+                        'email' => ['required', 'string', 'max:255'],
+                        'city' => ['required', 'string', 'max:255'],
+                        'subdistrict' => ['required', 'string', 'max:255'],
                     ]);
                     $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
                     if ($cartItems->isEmpty()) {
@@ -48,6 +51,9 @@ class PaymentController extends Controller
                             'consignee_address' => $request->consignee_address,
                             'shipping_fee' => $shipping->fee,
                             'payment_method' => 'cod',
+                            'subdistrict' => $request->subdistrict,
+                            'email' => $request->email,
+                            'city' => $request->city,
                             'consignee_name' => $request->consignee_name,
                             'consignee_phone' => $request->consignee_phone,   
                             'status' => 'pending',
@@ -94,10 +100,13 @@ class PaymentController extends Controller
             public function vnpayPayment(Request $request){
                 // validate trước khi nhận dữ liệu
                 $request->validate([
-                    'consignee_name' => 'required|string|max:255',
-                    'consignee_phone' => 'required|string|max:20',
-                    'consignee_address' => 'required|string|max:255',
+                    'consignee_address' => ['required', 'string', 'max:255'],
+                    'consignee_name' => ['required', 'string', 'max:255'],
+                    'consignee_phone' => ['required', 'string', 'max:10'],
                     'shipping_id' => ['required', 'integer', 'exists:shippings,id'],
+                    'email' => ['required', 'string', 'max:255'],
+                    'city' => ['required', 'string', 'max:255'],
+                    'subdistrict' => ['required', 'string', 'max:255'],
                 ]);
 
                     $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
@@ -124,6 +133,9 @@ class PaymentController extends Controller
                         'phone' => $request->consignee_phone,
                         'address' => $request->consignee_address,
                         'shipping' => $request->shipping_id,
+                        'email' => $request->email,
+                        'city' => $request->city,
+                        'subdistrict' => $request->subdistrict,
                     ]);
                     $vnp_OrderType = "billpayment";
                     $vnp_Amount = $finalTotal * 100; // giá
@@ -228,6 +240,9 @@ class PaymentController extends Controller
                             'shipping_fee' => $shipping->fee,
                             'payment_method' => 'vnpay',
                             'consignee_name' => $vnp_OrderInfo['name'],
+                            'subdistrict' => $vnp_OrderInfo['subdistrict'],
+                            'email' => $vnp_OrderInfo['email'],
+                            'city' => $vnp_OrderInfo['city'],
                             'consignee_phone' => $vnp_OrderInfo['phone'],
                             'consignee_address' => $vnp_OrderInfo['address'],
                             'status' => 'pending',

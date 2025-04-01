@@ -129,7 +129,8 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a href="{{ route('order') }}" class="btn btn-black btn-lg py-3 btn-block">Proceed To
+                                    <a href="{{ route('checkout') }}" class="btn btn-black btn-lg py-3 btn-block">Proceed
+                                        To
                                         Checkout</a>
                                 </div>
                             </div>

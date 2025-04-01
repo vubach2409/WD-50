@@ -20,6 +20,9 @@ class Orders extends Model
 'transaction_id',
 'shipping_fee',
 'shipping_id',
+'city',
+'email',
+'subdistrict',
     ];
     public function items()
     {

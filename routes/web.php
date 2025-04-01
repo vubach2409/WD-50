@@ -27,6 +27,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
+use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\ProductDetailController;
 
 /*
@@ -148,13 +149,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Thanh toán cod
-Route::get('/order', [OrderController::class, 'index'])->name('order');
-Route::get('/confirm/cod', [ConfirmController::class, 'Confirm_cod'])->name('confirm.cod');
-Route::post('/checkout', [PaymentController::class, 'CodPayment'])->name('checkout.process');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/confirm/cod', [PaymentController::class, 'CodPayment'])->name('checkout.process');
 
 // thanh toán vnpay
-Route::get('/confirm/vnpay', [ConfirmController::class, 'Confirm_vnpay'])->name('confirm.vnpay');
-Route::post('/checkout/vnpay', [PaymentController::class, 'vnpayPayment'])->name('checkout.vnpay');
+
+Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment'])->name('checkout.process');
+
 Route::get('/thanks/vnpay', [PaymentController::class, 'xuly'])->name('thanks.vnpay');
 // thankyou
 Route::get('/thankyou', [PaymentController::class, 'thankyou'])->name('thankyou');
@@ -169,8 +170,8 @@ Route::get('/invoice/download/{orderId}', [InvoiceController::class, 'downloadPD
 Route::middleware(['auth'])->group(function () {
     Route::get('/account', [UserController::class, 'index'])->name('account');
     Route::put('/account', [UserController::class, 'update'])->name('account.update');
-    Route::get('/account/orders', [UserController::class, 'showOrder'])->name('account.orders');
-    Route::get('/account/orders/{order}', [UserController::class, 'show'])->name('account.orders.show');
+    Route::get('/account/orders', [OrderController::class, 'showOrder'])->name('account.orders');
+    Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('account.orders.show');
 });
 ?>
 

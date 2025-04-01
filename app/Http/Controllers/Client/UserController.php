@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Orders;
-use App\Models\Transaction;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,43 +13,19 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+
     public function transactionHistory()
     {
-        $transactions = Transaction::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
-        return view('client.user', compact('transactions'));
+        $transactions = Payment::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        return view('client.account.vnpayhistory.index', compact('transactions'));
     }
 
-    public function showOrder()
-    {
-        // $user = Auth::user();
-        // $orders = Orders::where('user_id', $user->id)->latest()->get();
-        // $transactions = Transaction::where('user_id', $user->id)->latest()->get();
-        // return view('client.account.index',compact('user','orders','transactions'));
-        $orders = Orders::where('user_id', auth()->id())
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
-
-    return view('client.account.orders.index', compact('orders'));
-    }
-
-    public function show(Orders $order)
-    {
-        // Check if the order belongs to the authenticated user
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $order->load(['items.product', 'payment','ship']);
-        return view('client.account.orders.show', compact('order'));
-    }
-    
 
     public function index()
     {
         $user = Auth::user();
-        $orders = Orders::where('user_id', $user->id)->latest()->get();
-        $transactions = Transaction::where('user_id', $user->id)->latest()->get();
-        return view('client.account.index',compact('user','orders','transactions'));
+        // $orders = Orders::where('user_id', $user->id)->latest()->get();
+        return view('client.account.index',compact('user'));
     }
     
 

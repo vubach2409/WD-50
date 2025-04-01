@@ -12,7 +12,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2 class="card-title mb-0">Order Details #{{ $order->id }}</h2>
+                            <h2 class="card-title mb-0">Đơn hàng #{{ $order->id }}</h2>
                             <a href="{{ route('account.orders') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>Back to Orders
                             </a>
@@ -20,31 +20,34 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <h5 class="mb-3">Order Information</h5>
-                                <p><strong>Order Date:</strong> {{ $order->created_at->format('d/m/Y') }}</p>
-                                <p><strong>Status:</strong>
+                                <h5 class="mb-3">Thông tin đơn hàng</h5>
+                                <p><strong>Ngày đặt:</strong> {{ $order->created_at->format('d/m/Y') }}</p>
+                                <p><strong>Trạng thái đơn hàng:</strong>
                                     <td>{{ $order->status }}</td>
                                 </p>
                                 @if ($order->payment)
-                                    <p><strong>Payment Status:</strong>
+                                    <p><strong>Trạng thái thanh toán:</strong>
                                         <span
                                             class="badge bg-{{ $order->payment->status === 'completed' ? 'success' : ($order->payment->status === 'pending' ? 'warning' : 'danger') }}">
                                             {{ ucfirst($order->payment->status) }}
                                         </span>
                                     </p>
-                                    <p><strong>Payment Method:</strong> {{ ucfirst($order->payment->payment_method) }}</p>
+                                    <p><strong>Phương thức thanh toán:</strong>
+                                        {{ ucfirst($order->payment->payment_method) }}</p>
                                     @if ($order->payment->transaction_id)
-                                        <p><strong>Transaction ID:</strong> {{ $order->payment->transaction_id }}</p>
+                                        <p><strong>Mã giao dịch:</strong> {{ $order->payment->transaction_id }}</p>
                                     @endif
                                 @endif
                             </div>
                             <div class="col-md-6">
-                                <h5 class="mb-3">Shipping Information</h5>
-                                <p><strong>Name:</strong> {{ $order->consignee_name }}</p>
-                                <p><strong>Email:</strong> {{ $order->user->email }}</p>
-                                <p><strong>Phone:</strong> {{ $order->consignee_phone }}</p>
-                                <p><strong>Address:</strong> {{ $order->consignee_address }}</p>
-                                <p><strong>Shipping_method:</strong> {{ $order->ship->method }}</p>
+                                <h5 class="mb-3">Thông tin vận chuyển</h5>
+                                <p><strong>Tên khách hàng:</strong> {{ $order->consignee_name }}</p>
+                                <p><strong>Email:</strong> {{ $order->email }}</p>
+                                <p><strong>Số điện thoại:</strong> {{ $order->consignee_phone }}</p>
+                                <p><strong>Địa chỉ:</strong>
+                                    {{ $order->consignee_address }},{{ $order->subdistrict }},{{ $order->city }}
+                                </p>
+                                <p><strong>Phương thức vận chuyển:</strong> {{ $order->ship->method }}</p>
                             </div>
                         </div>
 

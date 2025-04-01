@@ -20,6 +20,9 @@ return new class extends Migration
             $table->enum('payment_method', ['cod', 'vnpay'])->default('cod');
             $table->decimal('shipping_fee', 10, 2)->default(0);
             $table->foreignId('shipping_id')->constrained('shippings')->onDelete('cascade');
+            $table->string('city');
+            $table->string('email');
+            $table->string('subdistrict');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
