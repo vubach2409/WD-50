@@ -2,17 +2,13 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2 class="text-primary">Danh sách biến thể của sản phẩm: {{ $product->name }}</h2>
-
-    <a href="{{ route('admin.product_variants.create', $product->id) }}" class="btn btn-primary mb-3">Thêm biến thể</a>
-    <a href="{{ route('admin.product_variants.trash', $product->id) }}" class="btn btn-secondary mb-3 ml-2">Thùng rác</a> 
+    <h2>Biến thể đã xóa: {{ $product->name }}</h2>
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
         </div>
     @endif
-
     <div class="table-responsive">
         <table class="table table-hover table-bordered text-center">
             <thead>
@@ -30,7 +26,7 @@
             <tbody>
                 @if ($variants->isEmpty())
                     <tr>
-                        <td colspan="8" class="text-danger text-center align-middle">Sản phẩm này chưa có biến thể nào.</td>
+                        <td colspan="8" class="text-danger text-center align-middle">Không có biến thể nào đã xóa.</td>
                     </tr>
                 @else
                     @foreach ($variants as $variant)
@@ -55,11 +51,16 @@
                         <td class="align-middle">{{ optional($variant->size)->name ?? 'Không có' }}</td>
                         <td class="align-middle">{{ $variant->stock }}</td>
                         <td class="align-middle">
-                            <a href="{{ route('admin.product_variants.edit', [$product->id, $variant->id]) }}" class="btn btn-warning">Sửa</a>
-                            <form action="{{ route('admin.product_variants.destroy', [$product->id, $variant->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Xác nhận xóa?');">
+                            <form action="{{ route('admin.product_variants.restore', [$product->id, $variant->id]) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('POST') 
+                                <button type="submit" class="btn btn-success" onclick="return confirm('Khôi phục sản phẩm này?')">Khôi phục</button>
+                            </form>
+
+                            <form action="{{ route('admin.product_variants.forceDelete', [$product->id, $variant->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Xóa</button>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Xóa vĩnh viễn sản phẩm này?')">Xóa vĩnh viễn</button>
                             </form>
                         </td>
                     </tr>

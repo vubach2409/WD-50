@@ -5,6 +5,7 @@
     <h2 class="text-primary">Danh sách Sản phẩm</h2>
     
     <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-3">Thêm sản phẩm</a>
+    <a href="{{ route('admin.products.trash') }}" class="btn btn-secondary mb-3">Thùng rác</a>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

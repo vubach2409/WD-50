@@ -104,7 +104,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 
     Route::resource('brands', BrandController::class);
 
-    Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class)->except(['show']);
 
     Route::resource('colors', ColorController::class);
 
@@ -114,7 +114,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::get('/users/{id}', [CustomerController::class, 'show'])->name('users.show');
     Route::delete('/users/{id}', [CustomerController::class, 'destroy'])->name('users.destroy');
 
-    // Routes cho biến thể sản phẩm 
+    Route::get('products/trash', [ProductController::class, 'trash'])->name('products.trash');
+    Route::post('products/restore/{id}', [ProductController::class, 'restore'])->name('products.restore');
+    Route::delete('products/force-delete/{id}', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
+
+    // Routes cho biến thể sản phẩm
     Route::prefix('products/{product}/variants')->group(function () {
         Route::get('/', [ProductVariantController::class, 'index'])->name('product_variants.index');
         Route::get('/create', [ProductVariantController::class, 'create'])->name('product_variants.create');
@@ -122,6 +126,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
         Route::get('/{variant}/edit', [ProductVariantController::class, 'edit'])->name('product_variants.edit');
         Route::put('/{variant}', [ProductVariantController::class, 'update'])->name('product_variants.update');
         Route::delete('/{variant}', [ProductVariantController::class, 'destroy'])->name('product_variants.destroy');
+        
+        Route::get('/trash', [ProductVariantController::class, 'trash'])->name('product_variants.trash');
+        Route::post('/{variant}/restore', [ProductVariantController::class, 'restore'])->name('product_variants.restore');
+        Route::delete('/{variant}/force-delete', [ProductVariantController::class, 'forceDelete'])->name('product_variants.forceDelete');
+
     });
 
      // Route danh sách tất cả sản phẩm có biến thể
