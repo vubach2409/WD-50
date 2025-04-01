@@ -159,11 +159,16 @@ Route::middleware(['auth'])->group(function () {
 
 // Thanh toán cod
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-Route::post('/confirm/cod', [PaymentController::class, 'CodPayment'])->name('checkout.process');
+Route::post('/confirm/paymnet', [PaymentController::class, 'PaymentOnline'])->name('checkout.process');
 
-// thanh toán vnpay
+// // thanh toán vnpay
 
-Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment'])->name('checkout.process');
+// Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment'])->name('checkout.process');
+
+// Route::middleware('handle.payment')->group(function () {
+//     Route::post('/confirm/payment', [PaymentController::class, 'CodPayment']);
+//     Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment']);
+// })->name('checkout.process');
 
 Route::get('/thanks/vnpay', [PaymentController::class, 'xuly'])->name('thanks.vnpay');
 // thankyou

@@ -144,24 +144,19 @@
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="form-label">Payment Method</label>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="cod" value="cod">
-                                    <label class="form-check-label" for="cod">
-                                        Thanh toán khi nhận hàng
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="redirect" id="redirect"
-                                        value="">
-                                    <label class="form-check-label" for="redirect">
-                                        Thanh toán vnpay
-                                    </label>
-                                </div>
+                            <!-- Button for VNpay -->
+                            <div class="d-flex">
+                                <!-- Button for VNpay -->
+                                <button type="submit" name="redirect" class="btn btn-primary btn-sm w-48 mx-2">
+                                    VNpay
+                                </button>
+
+                                <!-- Button for COD -->
+                                <button type="submit" name="cod" class="btn btn-success btn-sm w-48">
+                                    COD
+                                </button>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
                         </form>
                     </div>
                 </div>
