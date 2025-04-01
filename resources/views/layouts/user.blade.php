@@ -16,18 +16,14 @@
     <link href="{{ asset('clients/css/tiny-slider.css') }}" rel="stylesheet">
     <link href="{{ asset('clients/css/style.css') }}" rel="stylesheet">
 
-    <title>Nội thất Poly</title>
+    <title>@yield('title', 'Nội thất Poly')</title>
 </head>
 
 <body>
     @include('client.blocks.header')
 
-    @include('client.blocks.banner')
-
-    <div class="container">
-        <div class="content">
-            @yield('content')
-        </div>
+    <div class="content">
+        @yield('content')
     </div>
 
     @include('client.blocks.footer')

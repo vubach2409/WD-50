@@ -35,7 +35,7 @@ class ProductController extends Controller
             }
         }
 
-        $products = $query->paginate(8);
+        $products = $query->orderBy('created_at', 'desc')->paginate(8);
 
         $categories = Category::all();
         $brands = Brand::all();
@@ -43,7 +43,11 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
 
-
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('admin.products.show', compact('product'));
+    }   
     public function create()
     {
         $categories = Category::all();
@@ -142,5 +146,23 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Xoá sản phẩm thành công!');
+    }
+    public function trash()
+    {
+        $products = Product::onlyTrashed()->paginate(8);
+        return view('admin.products.trash', compact('products'));
+    }
+    public function restore($id)
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->restore();
+
+        return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã được khôi phục.');
+    }
+    public function forceDelete($id)
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->forceDelete();
+        return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã bị xóa vĩnh viễn!');
     }
 }

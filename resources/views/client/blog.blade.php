@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Trang Chủ')
+@section('title', 'Tin tức')
 
 @section('content')
 

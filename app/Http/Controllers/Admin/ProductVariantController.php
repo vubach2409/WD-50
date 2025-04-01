@@ -126,18 +126,51 @@ class ProductVariantController extends Controller
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được cập nhật thành công!');
     }
+    
+    public function trash(Product $product)
+    {
+        $variants = $product->variants()->onlyTrashed()->get();
+
+        return view('admin.product_variants.trash', [
+            'product' => $product,
+            'variants' => $variants
+        ]);
+    }
+
     public function destroy(Product $product, ProductVariant $variant)
     {
-        if ($variant->image) {
-            Storage::disk('public')->delete($variant->image);
-        }
-
         $variant->delete();
         $product->updateStock(); 
 
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể đã được xóa!');
     }
+    public function restore(Product $product, $variantId)
+    {
+        $variant = ProductVariant::withTrashed()->findOrFail($variantId);
+
+        $variant->restore();
+
+        $product->updateStock();
+
+        return redirect()->route('admin.product_variants.index', $product)
+            ->with('success', 'Biến thể đã được khôi phục!');
+    }
+    public function forceDelete(Product $product, ProductVariant $variant)
+    {
+        // Xóa vĩnh viễn biến thể
+        if ($variant->image) {
+            Storage::disk('public')->delete($variant->image);
+        }
+    
+        $variant->forceDelete();
+    
+        $product->updateStock();
+    
+        return redirect()->route('admin.product_variants.index', $product)
+            ->with('success', 'Biến thể đã bị xóa vĩnh viễn!');
+    }
+    
     public function productsWithVariants()
     {
         $products = Product::with('variants')->paginate(8);

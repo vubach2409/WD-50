@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('image')->nullable();
             $table->integer('stock')->default(0);
             $table->timestamps();
-            
+            $table->softDeletes();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade');
