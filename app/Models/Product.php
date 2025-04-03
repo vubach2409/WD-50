@@ -47,4 +47,5 @@ class Product extends Model
         $this->stock = $this->variants()->sum('stock');
         $this->save();
     }
+    
 }

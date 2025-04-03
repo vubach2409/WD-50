@@ -41,4 +41,5 @@ public function ship()
 {
     return $this->belongsTo(Shipping::class, 'shipping_id');
 }
+
 }
