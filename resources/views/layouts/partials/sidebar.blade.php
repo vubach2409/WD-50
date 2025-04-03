@@ -106,7 +106,7 @@
         <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('admin.users.index') }}">Danh sách người dùng</a>
-                <a class="collapse-item" href="cards.html">Lịch sử mua hàng</a>
+                <a class="collapse-item" href="{{ route('admin.payment.history') }}">Lịch sử mua hàng</a>
             </div>
         </div>
     </li>
@@ -116,11 +116,11 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSeven"
             aria-expanded="true" aria-controls="collapseSeven">
             <i class="fas fa-fw fa-cog"></i>
-            <span>Quản lý vận chuyển</span>
+            <span>Quản lý Thanh Toán</span>
         </a>
         <div id="collapseSeven" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html">Trạng thái vận chuyển</a>
+                <a class="collapse-item" href="{{ route('admin.payment.show') }}">Trạng thái thanh toán</a>
             </div>
         </div>
     </li>

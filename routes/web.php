@@ -17,6 +17,8 @@ use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\HistoryPaymentController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\Client\InvoiceController;
 use App\Http\Controllers\Client\PaymentController;
@@ -107,6 +109,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::resource('products', ProductController::class)->except(['show']);
 
     Route::resource('colors', ColorController::class);
+//show hoá đơn
+    Route::get('/invoice/{orderId}', [HistoryPaymentController::class, 'show'])->name('invoice.show');
+// tải hoá đơn
+    Route::get('/invoice/download/{orderId}', [HistoryPaymentController::class, 'downloadPDF'])->name('invoice.download');
+//lịch sử mua hàng và giao dịch
+    Route::get('/payment/history', [HistoryPaymentController::class, 'index'])->name('payment.history');
+    Route::get('/history/detail/{id}', [HistoryPaymentController::class, 'history_detail'])->name('history.detail');
+// Show và cập nhật trạng thái thanh toán
+    Route::get('/payment/show', [AdminPaymentController::class, 'showOrderPayments'])->name('payment.show');
+    Route::put('/admin/order/{orderId}/update-payment-status', [AdminPaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
+// Route để lọc đơn hàng theo mã giao dịch
+Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
+
 
     Route::resource('sizes', SizeController::class);
 
@@ -178,8 +193,6 @@ Route::get('/lich-su-giao-dich', [UserController::class, 'transactionHistory'])-
 
 // show hoá đơn
 Route::get('/invoice/{orderId}', [InvoiceController::class, 'show'])->name('invoice.show');
-// tải hoá đơn
-Route::get('/invoice/download/{orderId}', [InvoiceController::class, 'downloadPDF'])->name('invoice.download');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/account', [UserController::class, 'index'])->name('account');

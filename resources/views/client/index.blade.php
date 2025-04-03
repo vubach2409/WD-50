@@ -34,22 +34,35 @@
                 @foreach ($products as $product)
                     <!-- Start Column -->
                     <div class="col-12 col-md-4 col-lg-3 mb-5">
-                        <a class="product-item" href="{{ route('product.details', $product->id) }}">
-                            <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
-                                alt="{{ $product->name }}">
-                            <h3 class="product-title">{{ $product->name }}</h3>
-                            <strong class="product-price">${{ number_format($product->price, 2) }}</strong>
+                        @if ($product->stock > 0)
+                            <a class="product-item" href="{{ route('product.details', $product->id) }}">
+                            @else
+                                <div class="product-item out-of-stock">
+                        @endif
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
+                            alt="{{ $product->name }}">
+                        <h3 class="product-title">{{ $product->name }}</h3>
+                        <strong class="product-price">${{ number_format($product->price, 2) }}</strong>
 
+                        @if ($product->stock > 0)
                             <span class="icon-cross">
                                 <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
                             </span>
-                        </a>
+                        @else
+                            <span class="out-of-stock-label">Hết hàng</span>
+                        @endif
+
+                        @if ($product->stock > 0)
+                            </a>
+                        @else
                     </div>
-                    <!-- End Column -->
-                @endforeach
-                <!-- End Column 2 -->
+                @endif
             </div>
+            <!-- End Column -->
+            @endforeach
+            <!-- End Column 2 -->
         </div>
+    </div>
     </div>
     <!-- End Product Section -->
 

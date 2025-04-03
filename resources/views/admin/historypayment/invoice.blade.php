@@ -85,6 +85,16 @@
         h2 {
             color: green;
         }
+
+        /* Ẩn các nút khi in */
+        .btn-secondary,
+        .btn-success {
+            @if (isset($isPDF) && $isPDF)
+                display: none !important;
+            @else
+                display: inline-block;
+            @endif
+        }
     </style>
 </head>
 
