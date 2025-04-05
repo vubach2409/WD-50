@@ -30,7 +30,7 @@
                     </tr>
                     <tr>
                         <td><strong>Tổng Khách Hàng</strong></td>
-                        <td class="text-center"><span class="badge badge-warning text-dark">{{ $totalCustomers }}</span></td>
+                        <td class="text-center"><span class="badge badge-warning">{{ $totalCustomers }}</span></td>
                     </tr>
                     <tr>
                         <td><strong>Doanh Thu Tháng</strong></td>
