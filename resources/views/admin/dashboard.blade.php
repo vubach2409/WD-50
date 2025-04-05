@@ -2,46 +2,48 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2 class="text-primary">Thống Kê Website Bán Hàng Nội Thất</h2>
-
     <!-- Bảng thống kê -->
-    <div class="card shadow">
+    <div class="card shadow rounded-3">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Thống Kê Chi Tiết</h4>
+            <h4 class="mb-0">
+                <i class="fas fa-chart-line"></i>
+                Thống Kê Website Bán Hàng Nội Thất
+            </h4>
         </div>
+        
         <div class="card-body">
-            <table class="table table-striped table-bordered">
-                <thead class="thead-dark">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
                     <tr>
-                        <th>Thống Kê</th>
-                        <th>Số Lượng</th>
+                        <th class="text-center">Thống Kê</th>
+                        <th class="text-center">Số Lượng</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>Tổng Sản Phẩm</strong></td>
-                        <td><span class="btn btn-success">{{ $totalProducts }}</span></td>
+                        <td class="text-center"><span class="badge badge-success">{{ $totalProducts }}</span></td>
                     </tr>
                     <tr>
                         <td><strong>Tổng Đơn Hàng</strong></td>
-                        <td><span class="btn btn-info">{{ $totalOrders }}</span></td>
+                        <td class="text-center"><span class="badge badge-info">{{ $totalOrders }}</span></td>
                     </tr>
                     <tr>
                         <td><strong>Tổng Khách Hàng</strong></td>
-                        <td><span class="btn btn-warning text-dark">{{ $totalCustomers }}</span></td>
+                        <td class="text-center"><span class="badge badge-warning text-dark">{{ $totalCustomers }}</span></td>
                     </tr>
                     <tr>
                         <td><strong>Doanh Thu Tháng</strong></td>
-                        <td><span class="btn btn-danger">{{ number_format($totalRevenue, 0, ',', '.') }} VND</span></td>
+                        <td class="text-center"><span class="badge badge-danger">{{ number_format($totalRevenue, 0, ',', '.') }} VND</span></td>
                     </tr>
                     <tr>
                         <td><strong>Sản Phẩm Mới Thêm</strong></td>
-                        <td><span class="btn btn-primary">{{ $newProducts }}</span></td>
+                        <td class="text-center"><span class="badge badge-primary">{{ $newProducts }}</span></td>
                     </tr>
                     {{-- 
                     <tr>
                         <td><strong>Sản Phẩm Bán Chạy Nhất</strong></td>
-                        <td>{{ $topSellingProduct->name ?? 'Chưa có dữ liệu' }}</td>
+                        <td class="text-center">{{ $topSellingProduct->name ?? 'Chưa có dữ liệu' }}</td>
                     </tr>
                     --}}
                 </tbody>
