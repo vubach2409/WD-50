@@ -13,7 +13,7 @@ class AdminController extends Controller
     {
         $totalProducts = Product::count();
         $totalOrders = Orders::count();
-        $totalCustomers = User::count();
+        $totalCustomers = User::where('role', '!=', 'admin')->count();
         $totalRevenue = Orders::sum('total');
         // $topSellingProduct = Product::withCount('orders')->orderBy('quantity', 'desc')->first();
         $newProducts = Product::where('created_at', '>=', now()->subMonth())->count();
