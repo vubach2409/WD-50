@@ -27,7 +27,7 @@ class BrandController extends Controller
         ]);
 
         Brand::create($request->all());
-        return redirect()->route('admin.brands.index')->with('success', 'Thêm thành công');
+        return redirect()->route('admin.brands.index')->with('success', 'Thêm thương hiệu thành công!');
     }
 
     public function edit($id)
@@ -45,12 +45,12 @@ class BrandController extends Controller
 
         $brand = Brand::findOrFail($id);
         $brand->update($request->all());
-        return redirect()->route('admin.brands.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('admin.brands.index')->with('success', 'Cập nhật thương hiệu thành công!');
     }
     public function destroy($id)
     {
         $brand = Brand::findOrFail($id);
         $brand->delete();
-        return redirect()->route('admin.brands.index')->with('success', 'Xoá thành công');
+        return redirect()->route('admin.brands.index')->with('success', 'Xoá thương hiệu thành công!');
     }
 }

@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h1 class="mb-4">Thống Kê Website Bán Hàng Nội Thất</h1>
+<div class="container-fluid">
+    <h2 class="text-primary">Thống Kê Website Bán Hàng Nội Thất</h2>
 
     <!-- Bảng thống kê -->
     <div class="card shadow">
@@ -47,4 +48,5 @@
             </table>
         </div>
     </div>
+</div>
 @endsection

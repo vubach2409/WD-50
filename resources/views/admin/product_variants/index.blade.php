@@ -13,6 +13,11 @@
         </div>
     @endif
 
+    @if ($variants->isEmpty())
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-1"></i> Chưa có biến thể nào.
+        </div>
+    @else
     <div class="table-responsive">
         <table class="table table-hover table-bordered text-center">
             <thead>
@@ -28,12 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if ($variants->isEmpty())
-                    <tr>
-                        <td colspan="8" class="text-danger text-center align-middle">Sản phẩm này chưa có biến thể nào.</td>
-                    </tr>
-                @else
-                    @foreach ($variants as $variant)
+                @foreach ($variants as $variant)
                     <tr>
                         <td class="align-middle">{{ $variant->sku }}</td>
                         <td class="text-left align-middle">{{ $variant->variation_name }}</td>
@@ -63,11 +63,11 @@
                             </form>
                         </td>
                     </tr>
-                    @endforeach
-                @endif
+                @endforeach
             </tbody>
         </table>
     </div>
+    @endif
     
     <div class="text-center mt-4">
         <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>

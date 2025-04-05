@@ -1,11 +1,13 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container">
-        <h2 class="mb-4">Lịch Sử Giao Dịch</h2>
+    <div class="container-fluid">
+        <h2 class="text-primary">Lịch Sử Giao Dịch</h2>
 
         @if ($orders->isEmpty())
-            <p class="text-muted">Bạn chưa có giao dịch nào.</p>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-1"></i> Chưa có giao dịch nào.
+            </div>
         @else
             <div class="table-responsive">
                 <table class="table table-bordered">

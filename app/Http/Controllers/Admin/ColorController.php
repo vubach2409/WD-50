@@ -25,7 +25,7 @@ class ColorController extends Controller
         ]);
 
         Color::create($request->all());
-        return redirect()->route('admin.colors.index')->with('success', 'Thêm thành công');
+        return redirect()->route('admin.colors.index')->with('success', 'Thêm màu thành công!');
     }
 
     public function edit(Color $color)
@@ -40,12 +40,12 @@ class ColorController extends Controller
         ]);
 
         $color->update($request->all());
-        return redirect()->route('admin.colors.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('admin.colors.index')->with('success', 'Cập nhật màu thành công!');
     }
 
     public function destroy(Color $color)
     {
         $color->delete();
-        return redirect()->route('admin.colors.index')->with('success', 'Xóa thành công');
+        return redirect()->route('admin.colors.index')->with('success', 'Xóa màu thành công!');
     }
 }
