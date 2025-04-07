@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\HistoryPaymentController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\Client\InvoiceController;
@@ -123,6 +124,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
 
 
+Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
+Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
+Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+
+
     Route::resource('sizes', SizeController::class);
 
     Route::get('/users', [CustomerController::class, 'index'])->name('users.index');
@@ -199,6 +205,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/account', [UserController::class, 'update'])->name('account.update');
     Route::get('/account/orders', [OrderController::class, 'showOrder'])->name('account.orders');
     Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('account.orders.show');
+    Route::put('/account/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('account.orders.cancel');
 });
 ?>
 

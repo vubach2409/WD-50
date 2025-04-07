@@ -1,4 +1,3 @@
-
 </ul>
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <!-- Sidebar - Brand -->
@@ -37,7 +36,7 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('admin.products.index') }}">
-                   Sản phẩm
+                    Sản phẩm
                 </a>
                 <a class="collapse-item" href="{{ route('admin.product_variants.list') }}">
                     Biến thể
@@ -56,10 +55,10 @@
         <div id="collapseVari" class="collapse" aria-labelledby="headingVari" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('admin.colors.index') }}">
-                   Màu sắc
+                    Màu sắc
                 </a>
                 <a class="collapse-item" href="{{ route('admin.sizes.index') }}">
-                  Kích thước
+                    Kích thước
                 </a>
             </div>
         </div>
@@ -75,10 +74,10 @@
         <div id="collapseCategory" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('admin.categories.index') }}">
-                   Danh sách danh mục
+                    Danh sách danh mục
                 </a>
                 <a class="collapse-item" href="{{ route('admin.categories.create') }}">
-                   Thêm danh mục
+                    Thêm danh mục
                 </a>
             </div>
         </div>
@@ -137,7 +136,23 @@
             </div>
         </div>
     </li>
-    
+
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEight"
+            aria-expanded="true" aria-controls="collapseEight">
+            <i class="fas fa-fw fa-credit-card"></i>
+            <span>Quản lý đơn hàng</span>
+        </a>
+        <div id="collapseEight" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.orders.show') }}">
+                    Trạng thái đơn hàng
+                </a>
+            </div>
+        </div>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

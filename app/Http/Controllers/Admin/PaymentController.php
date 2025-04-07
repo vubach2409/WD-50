@@ -19,6 +19,11 @@ public function showOrderPayments()
 public function updatePaymentStatus(Request $request, $orderId)
 {
     $order = Orders::with('payment')->where('id', $orderId)->firstOrFail();
+
+    if ($order->payment->status == 'failed') {
+        return redirect()->route('admin.payment.show', ['order' => $order->id])
+            ->with('error', 'Không thể cập nhật trạng thái khi thanh toán thất bại!');
+    }
     
     // Cập nhật trạng thái thanh toán
     $order->payment->status = $request->input('status');

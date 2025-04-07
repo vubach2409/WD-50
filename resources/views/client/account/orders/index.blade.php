@@ -10,6 +10,12 @@
             </div>
             <div class="col-lg-9">
                 <div class="card shadow-sm">
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
                     <div class="card-body">
                         <h2>Danh sách đơn hàng</h2>
 
@@ -77,9 +83,21 @@
                                                             <td>{{ $order->payment_method }}</td>
                                                             <td>{{ $order->created_at->format('d/m/Y') }}</td>
                                                             <td><a href="{{ route('account.orders.show', $order) }}"
-                                                                    class="badge bg-danger text-decoration-none">
+                                                                    class="badge bg-warning text-decoration-none">
                                                                     View Details
-                                                                </a></td>
+                                                                </a>
+                                                                @if ($order->status == 'pending')
+                                                                    <form
+                                                                        action="{{ route('account.orders.cancel', $order->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('PUT')
+                                                                        <button type="submit"
+                                                                            class="badge bg-danger btn-sm">Hủy đơn</button>
+                                                                    </form>
+                                                                @endif
+
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
