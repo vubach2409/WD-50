@@ -145,10 +145,10 @@
         <p class="total-section">Tổng: {{ number_format($order->total, 0, ',', '.') }}đ</p>
 
         <a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>
-        <a href="{{ route('admin.invoice.download', ['orderId' => $order->id]) }}"
+        {{-- <a href="{{ route('admin.invoice.download', ['orderId' => $order->id]) }}"
             class="btn btn-success text-decoration-none">In
             hoá
-            đơn</a>
+            đơn</a> --}}
     </div>
 </body>
 

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function showOrder()
+    public function index()
     {
         // $user = Auth::user();
         // $orders = Orders::where('user_id', $user->id)->latest()->get();
@@ -33,6 +33,19 @@ class OrderController extends Controller
 
         $order->load(['items.product', 'payment','ship']);
         return view('client.account.orders.show', compact('order'));
+    }
+    
+    public function showOrder()
+    {
+        $userId = Auth::id(); // hoặc auth()->id()
+    
+        $ordersByStatus = [
+            'pending' => Orders::where('user_id', $userId)->where('status', 'pending')->get(),
+            'completed' => Orders::where('user_id', $userId)->where('status', 'completed')->get(),
+            'cancelled' => Orders::where('user_id', $userId)->where('status', 'cancelled')->get(),
+        ];
+    
+        return view('client.account.orders.index', compact('ordersByStatus'));
     }
     
 }

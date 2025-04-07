@@ -42,7 +42,7 @@
                         <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
                             alt="{{ $product->name }}">
                         <h3 class="product-title">{{ $product->name }}</h3>
-                        <strong class="product-price">${{ number_format($product->price, 2) }}</strong>
+                        <strong class="product-price">{{ number_format($product->price, 0, ',', '.') }} VNĐ</strong>
 
                         @if ($product->stock > 0)
                             <span class="icon-cross">

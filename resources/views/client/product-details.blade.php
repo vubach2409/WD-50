@@ -39,9 +39,10 @@
                 <div class="col-12 col-md-6 mb-5">
                     <h1 class="product-title">{{ $product->name }}</h1>
                     <div class="product-price mb-4">
-                        <strong>${{ number_format($product->price, 2) }}</strong>
+                        <strong>{{ number_format($product->price, 0, ',', '.') }}VNĐ</strong>
                         @if ($product->original_price)
-                            <span class="text-muted ms-2">${{ number_format($product->original_price, 2) }}</span>
+                            <span
+                                class="text-muted ms-2">{{ number_format($product->original_price, 0, ',', '.') }}VNĐ</span>
                         @endif
                     </div>
 
@@ -64,7 +65,7 @@
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                             <div class="quantity-selector mb-4">
-                                <label for="quantity" class="me-2">Quantity:</label>
+                                <label for="quantity" class="me-2">Số lượng:</label>
                                 <input type="number" name="quantity" id="quantity" class="form-control"
                                     style="width: 100px;" value="{{ $product->stock > 0 ? 1 : 0 }}" min="1"
                                     max="{{ $product->stock }}" {{ $product->stock > 0 ? '' : 'disabled' }}>
