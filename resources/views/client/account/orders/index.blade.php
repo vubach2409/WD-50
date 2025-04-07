@@ -20,7 +20,7 @@
                                     'class' => 'warning',
                                     'icon' => 'bi-clock-history',
                                 ],
-                                // 'shipping' => ['label' => 'Đang giao', 'class' => 'info', 'icon' => 'bi-truck'],
+                                'shipping' => ['label' => 'Đang giao', 'class' => 'info', 'icon' => 'bi-truck'],
                                 'completed' => [
                                     'label' => 'Đã giao',
                                     'class' => 'success',

@@ -43,6 +43,7 @@ class OrderController extends Controller
             'pending' => Orders::where('user_id', $userId)->where('status', 'pending')->get(),
             'completed' => Orders::where('user_id', $userId)->where('status', 'completed')->get(),
             'cancelled' => Orders::where('user_id', $userId)->where('status', 'cancelled')->get(),
+            'shipping' => Orders::where('user_id', $userId)->where('status', 'shipping')->get(),
         ];
     
         return view('client.account.orders.index', compact('ordersByStatus'));
