@@ -121,7 +121,6 @@ class ProductVariantController extends Controller
         }
 
         $variant->update($data);
-        $product->updateStock();
 
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được cập nhật thành công!');
@@ -140,8 +139,6 @@ class ProductVariantController extends Controller
     public function destroy(Product $product, ProductVariant $variant)
     {
         $variant->delete();
-        $product->updateStock(); 
-
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể đã được xóa!');
     }
@@ -165,8 +162,6 @@ class ProductVariantController extends Controller
     
         $variant->forceDelete();
     
-        $product->updateStock();
-    
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể đã bị xóa vĩnh viễn!');
     }
@@ -188,5 +183,6 @@ class ProductVariantController extends Controller
 
         return view('admin.product_variants.list', compact('products'));
     }
+    
 
 }

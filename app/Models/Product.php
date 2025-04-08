@@ -16,7 +16,7 @@ class Product extends Model
         'description', 
         'price', 
         'image', 
-        'stock', 
+        'price_sale',
         'product_detail', 
         'category_id', 
         'brand_id',
@@ -42,10 +42,6 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
-    public function updateStock()
-    {
-        $this->stock = $this->variants()->sum('stock');
-        $this->save();
-    }
+
     
 }

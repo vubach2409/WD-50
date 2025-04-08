@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Carts;
-use App\Models\OrderDetail;
 use App\Models\Orders;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Product;
+use App\Models\OrderDetail;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -31,7 +34,7 @@ class OrderController extends Controller
             abort(403);
         }
 
-        $order->load(['items.product', 'payment','ship']);
+        $order->load(['items.product','items.variant', 'payment','ship', 'items.variant.color', 'items.variant.size']);
         return view('client.account.orders.show', compact('order'));
     }
     
@@ -73,12 +76,17 @@ class OrderController extends Controller
 
             // Quản lý số lượng tồn kho
             foreach ($order->items as $orderItem) {
-                $product = $orderItem->product;
-                // Trả lại số lượng sản phẩm vào kho
-                $product->stock += $orderItem->quantity;  // Giả sử quantity là số lượng sản phẩm trong đơn hàng
-                $product->save();
+                if ($orderItem->variant_id) {
+                    // Nếu đơn hàng là từ biến thể sản phẩm
+                    $variant = ProductVariant::withTrashed()->find($orderItem->variant_id);
+                    if ($variant) {
+                        $variant->stock += $orderItem->quantity;
+                        $variant->restore(); // Nếu trước đó bị soft delete
+                        $variant->save();
+                    }
+                }
             }
-
+            
             // Trả về phản hồi
              return redirect()->route('account.orders')->with('success','Đơn hàng đã được huỷ thành công');
         }else {

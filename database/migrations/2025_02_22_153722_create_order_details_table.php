@@ -14,6 +14,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->integer('price');
             $table->integer('quantity');
+            $table->unsignedBigInteger('variant_id');
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

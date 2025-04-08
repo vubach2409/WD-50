@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('variation_name');
             $table->string('sku')->unique();
             $table->decimal('price', 15, 2);
-            $table->decimal('weight', 10, 2)->nullable();
             $table->text('image')->nullable();
             $table->integer('stock')->default(0);
             $table->timestamps();

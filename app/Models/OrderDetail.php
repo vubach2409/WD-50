@@ -12,11 +12,16 @@ class OrderDetail extends Model
         'order_id',
         'product_id',
         'price',
-        'quantity'
+        'quantity',
+        'variant_id'
     ];
     public function order()
     {
         return $this->belongsTo(Orders::class, 'order_id', 'id');
+    }
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
     public function product()
     {

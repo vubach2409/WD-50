@@ -85,16 +85,6 @@
         h2 {
             color: green;
         }
-
-        /* Ẩn các nút khi in */
-        .btn-secondary,
-        .btn-success {
-            @if (isset($isPDF) && $isPDF)
-                display: none !important;
-            @else
-                display: inline-block;
-            @endif
-        }
     </style>
 </head>
 
@@ -140,20 +130,40 @@
                 </tr>
             </thead>
             <tbody>
+                @php $subtotal = 0; @endphp
                 @foreach ($order->items as $item)
+                    @php
+                        $variant = $item->variant;
+                        $lineTotal = $item->price * $item->quantity;
+                        $subtotal += $lineTotal;
+                    @endphp
                     <tr>
-                        <td>{{ $item->product->name }}</td>
+                        <td class="text-start">
+                            <strong>{{ $item->product->name }}</strong><br>
+                            @if ($variant)
+                                <small>
+                                    Biến thể: {{ $variant->variation_name ?? '' }}
+                                    @if ($variant->corlor)
+                                        - Màu: {{ $variant->corlor->name }}
+                                    @endif
+                                    @if ($variant->size)
+                                        - Size: {{ $variant->size->name }}
+                                    @endif
+                                    <br>
+                                    SKU: {{ $variant->sku }}
+                                </small>
+                            @endif
+                        </td>
                         <td>{{ $item->quantity }}</td>
-                        <td>{{ number_format($item->price * $item->quantity, 0, ',', '.') }}đ</td>
+                        <td>{{ number_format($lineTotal, 0, ',', '.') }}đ</td>
                     </tr>
                 @endforeach
             </tbody>
+
         </table>
-        <p class="total-section">Tổng phụ:
-            {{ number_format($subtotal, 0, ',', '.') }}đ</p>
+        <p class="total-section">Tổng phụ: {{ number_format($subtotal, 0, ',', '.') }}đ</p>
         <p class="total-section">Vận chuyển & Xử lý: {{ number_format($order->shipping_fee, 0, ',', '.') }}đ</p>
         <p class="total-section">Tổng: {{ number_format($order->total, 0, ',', '.') }}đ</p>
-
         <a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>
         <a href="{{ route('admin.invoice.download', ['orderId' => $order->id]) }}"
             class="btn btn-success text-decoration-none">In

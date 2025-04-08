@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Orders;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
@@ -58,11 +60,25 @@ class OrderController extends Controller
 
         if ($order->status == 'cancelled') {
             foreach ($order->items as $orderItem) {
-                $product = $orderItem->product;
-                // Trả lại số lượng sản phẩm vào kho
-                $product->stock += $orderItem->quantity; // Giả sử 'quantity' là số lượng sản phẩm trong đơn hàng
-                $product->save();
+                if ($orderItem->variant_id) {
+                    // Nếu đơn hàng là từ biến thể sản phẩm
+                    $variant = ProductVariant::withTrashed()->find($orderItem->variant_id);
+                    if ($variant) {
+                        $variant->stock += $orderItem->quantity;
+                        $variant->restore(); // Nếu trước đó bị soft delete
+                        $variant->save();
+                    }
+                } else {
+                    // Nếu đơn hàng là từ sản phẩm gốc
+                    $product = Product::withTrashed()->find($orderItem->product_id);
+                    if ($product) {
+                        $product->stock += $orderItem->quantity;
+                        $product->restore(); // Nếu bị soft delete
+                        $product->save();
+                    }
+                }
             }
+            
         }
 
         return redirect()->route('admin.orders.show')

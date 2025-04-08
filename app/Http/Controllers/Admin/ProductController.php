@@ -61,7 +61,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'price_sale' => 'required|numeric|min:0|lte:price',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -71,9 +71,10 @@ class ProductController extends Controller
             'price.required' => 'Giá sản phẩm không được để trống.',
             'price.numeric' => 'Giá sản phẩm phải là số.',
             'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'stock.required' => 'Số lượng tồn kho không được để trống.',
-            'stock.integer' => 'Số lượng tồn kho phải là số nguyên.',
-            'stock.min' => 'Số lượng tồn kho không thể nhỏ hơn 0.',
+            'price_sale.required' => 'Giá sản phẩm không được để trống.',
+            'price_sale.numeric' => 'Giá sản phẩm phải là số.',
+            'price_sale.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
@@ -106,7 +107,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'price_sale' => 'required|numeric|min:0|lte:price',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -116,9 +117,10 @@ class ProductController extends Controller
             'price.required' => 'Giá sản phẩm không được để trống.',
             'price.numeric' => 'Giá sản phẩm phải là số.',
             'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'stock.required' => 'Số lượng tồn kho không được để trống.',
-            'stock.integer' => 'Số lượng tồn kho phải là số nguyên.',
-            'stock.min' => 'Số lượng tồn kho không thể nhỏ hơn 0.',
+            'price_sale.required' => 'Giá sản phẩm không được để trống.',
+            'price_sale.numeric' => 'Giá sản phẩm phải là số.',
+            'price_sale.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
@@ -128,10 +130,6 @@ class ProductController extends Controller
             'image.max' => 'Ảnh không được lớn hơn 2MB.',
         ]);
 
-        $totalVariantStock = $product->variants()->sum('stock');
-        if ($request->stock < $totalVariantStock) {
-                return redirect()->back()->withErrors(['stock' => 'Số lượng tồn kho của sản phẩm không được nhỏ hơn tổng số lượng tồn kho của các biến thể.']);
-            }
         $product->update($request->except('image'));
 
         if ($request->hasFile('image')) {

@@ -11,7 +11,8 @@ class InvoiceController extends Controller
 {
     public function show($orderId)
     {
-        $order = Orders::with('items.product')->where('id', $orderId)->firstOrFail();
+        $order = Orders::with('items.product', 'items.variant.color', 'items.variant.size')->where('id', $orderId)->firstOrFail();
+
         $subtotal = $order->items->sum(function ($item) {
             return $item->price * $item->quantity;
         });

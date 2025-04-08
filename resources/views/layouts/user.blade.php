@@ -19,6 +19,8 @@
 </head>
 
 <body>
+
+
     @include('client.blocks.header')
 
     @include('client.blocks.banner')
@@ -36,7 +38,7 @@
     <script src="{{ asset('clients/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('clients/js/tiny-slider.js') }}"></script>
     <script src="{{ asset('clients/js/custom.js') }}"></script>
-
+    @stack('scripts')
 
 </body>
 
