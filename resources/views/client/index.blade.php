@@ -3,7 +3,6 @@
 @section('title', 'Trang Chủ')
 
 @section('content')
-
     <!-- Start Product Section -->
     <div class="product-section">
         @if (session('error'))
@@ -17,6 +16,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
+
         <div class="container">
             <div class="row">
 
@@ -29,35 +29,47 @@
                 </div>
                 <!-- End Column 1 -->
 
-                <!-- Start Column 2 -->
-
+                <!-- Start Column 2: Display products in 3 columns -->
                 @foreach ($products as $product)
-                    <!-- Start Column -->
-                    <div class="col-12 col-md-4 col-lg-3 mb-5">
-                        <a class="product-item" href="{{ route('product.details', $product->id) }}">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-5 position-relative">
+                        <a class="product-item d-block text-decoration-none"
+                            href="{{ route('product.details', $product->id) }}">
+                            <div class="position-relative">
+                                <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
+                                    alt="{{ $product->name }}">
+                                {{-- NHÃN --}}
+                                @if ($product->is_new)
+                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
+                                @elseif($product->price_sale < $product->price)
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
+                                @endif
+                            </div>
 
+                            <h3 class="product-title mt-2 mb-1">{{ $product->name }}</h3>
+                            <strong class="product-price d-block text-danger">
+                                {{ number_format($product->price_sale, 0, ',', '.') }}đ
+                                @if ($product->price_sale < $product->price)
+                                    <span class="text-muted text-decoration-line-through ms-2">
+                                        {{ number_format($product->price, 0, ',', '.') }}đ
+                                    </span>
+                                @endif
+                            </strong>
 
-                            <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
-                                alt="{{ $product->name }}">
-                            <h3 class="product-title">{{ $product->name }}</h3>
-                            <strong class="product-price">{{ number_format($product->price_sale, 0, ',', '.') }}đ -
-                                {{ number_format($product->price, 0, ',', '.') }}đ</strong>
-
-
-                            <span class="icon-cross">
-                                <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                            </span>
+                            {{-- NÚT CHỌN SẢN PHẨM --}}
+                            <a href="{{ route('product.details', $product->id) }}"
+                                class="btn btn-select-product w-100 mt-2">
+                                <i class="bi bi-eye me-1"></i> Chọn sản phẩm
+                            </a>
 
 
                         </a>
                     </div>
+                @endforeach
+
             </div>
-            <!-- End Column -->
-            @endforeach
-            <!-- End Column 2 -->
         </div>
     </div>
-    </div>
+
     <!-- End Product Section -->
 
     <!-- Start Why Choose Us Section -->
@@ -76,7 +88,8 @@
                                     <img src="{{ asset('clients/images/truck.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>Fast &amp; Free Shipping</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+                                    vulputate.
                                 </p>
                             </div>
                         </div>
@@ -87,7 +100,8 @@
                                     <img src="{{ asset('clients/images/bag.svg') }}" class="imf-fluid">
                                 </div>
                                 <h3>Easy to Shop</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+                                    vulputate.
                                 </p>
                             </div>
                         </div>
@@ -98,7 +112,8 @@
                                     <img src="{{ asset('clients/images/support.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>24/7 Support</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+                                    vulputate.
                                 </p>
                             </div>
                         </div>
@@ -109,7 +124,8 @@
                                     <img src="{{ asset('clients/images/return.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>Hassle Free Returns</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+                                    vulputate.
                                 </p>
                             </div>
                         </div>
@@ -142,8 +158,10 @@
                 </div>
                 <div class="col-lg-5 ps-lg-5">
                     <h2 class="section-title mb-4">We Help You Make Modern Interior Design</h2>
-                    <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam
-                        ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant
+                    <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada.
+                        Nullam
+                        ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque
+                        habitant
                         morbi tristique senectus et netus et malesuada</p>
 
                     <ul class="list-unstyled custom-list my-4">
@@ -206,179 +224,4 @@
             </div>
         </div>
     </div>
-    <!-- End Popular Product -->
-
-    {{-- <!-- Start Testimonial Slider -->
-    <div class="testimonial-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7 mx-auto text-center">
-                    <h2 class="section-title">Testimonials</h2>
-                </div>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-12">
-                    <div class="testimonial-slider-wrap text-center">
-
-                        <div id="testimonial-nav">
-                            <span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
-                            <span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
-                        </div>
-
-                        <div class="testimonial-slider">
-
-                            <div class="item">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-8 mx-auto">
-
-                                        <div class="testimonial-block text-center">
-                                            <blockquote class="mb-5">
-                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
-                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
-                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
-                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
-                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-                                            </blockquote>
-
-                                            <div class="author-info">
-                                                <div class="author-pic">
-                                                    <img src="{{ asset('clients/images/person-1.jpg') }}"
-                                                        alt="Maria Jones" class="img-fluid">
-                                                </div>
-                                                <h3 class="font-weight-bold">Maria Jones</h3>
-                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END item -->
-
-                            <div class="item">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-8 mx-auto">
-
-                                        <div class="testimonial-block text-center">
-                                            <blockquote class="mb-5">
-                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
-                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
-                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
-                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
-                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-                                            </blockquote>
-
-                                            <div class="author-info">
-                                                <div class="author-pic">
-                                                    <img src="{{ asset('clients/images/person-2.jpg') }}"
-                                                        alt="Maria Jones" class="img-fluid">
-                                                </div>
-                                                <h3 class="font-weight-bold">Maria Jones</h3>
-                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END item -->
-
-                            <div class="item">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-8 mx-auto">
-
-                                        <div class="testimonial-block text-center">
-                                            <blockquote class="mb-5">
-                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
-                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
-                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
-                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
-                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-                                            </blockquote>
-
-                                            <div class="author-info">
-                                                <div class="author-pic">
-                                                    <img src="{{ asset('clients/images/person-3.jpg') }}"
-                                                        alt="Maria Jones" class="img-fluid">
-                                                </div>
-                                                <h3 class="font-weight-bold">Maria Jones</h3>
-                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END item -->
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End Testimonial Slider --> --}}
-
-    {{-- <!-- Start Blog Section -->
-    <div class="blog-section">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-md-6">
-                    <h2 class="section-title">Recent Blog</h2>
-                </div>
-                <div class="col-md-6 text-start text-md-end">
-                    <a href="#" class="more">View All Posts</a>
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-                    <div class="post-entry">
-                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post-1.jpg') }}"
-                                alt="Image" class="img-fluid"></a>
-                        <div class="post-content-entry">
-                            <h3><a href="#">First Time Home Owner Ideas</a></h3>
-                            <div class="meta">
-                                <span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 19,
-                                        2021</a></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-                    <div class="post-entry">
-                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post-1.jpg') }}"
-                                alt="Image" class="img-fluid"></a>
-                        <div class="post-content-entry">
-                            <h3><a href="#">How To Keep Your Furniture Clean</a></h3>
-                            <div class="meta">
-                                <span>by <a href="#">Robert Fox</a></span> <span>on <a href="#">Dec 15,
-                                        2021</a></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-                    <div class="post-entry">
-                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post-1.jpg') }}"
-                                alt="Image" class="img-fluid"></a>
-                        <div class="post-content-entry">
-                            <h3><a href="#">Small Space Furniture Apartment Ideas</a></h3>
-                            <div class="meta">
-                                <span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 12,
-                                        2021</a></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- End Blog Section --> --}}
 @endsection

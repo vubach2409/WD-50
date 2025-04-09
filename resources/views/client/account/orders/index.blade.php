@@ -4,6 +4,22 @@
 
 @section('content')
     <div class="container py-5 mt-5 mb-5">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" role="alert"
+                style="z-index: 9999;">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" role="alert"
+                style="z-index: 9999;">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="row">
             <div class="col-lg-3">
                 @include('client.account.partials.sidebar')
@@ -56,7 +72,8 @@
                         <div class="tab-content mt-3">
                             @foreach ($ordersByStatus as $key => $orders)
                                 <div class="tab-pane fade @if ($loop->first) show active @endif"
-                                    id="pane-{{ $key }}" role="tabpanel" aria-labelledby="tab-{{ $key }}">
+                                    id="pane-{{ $key }}" role="tabpanel"
+                                    aria-labelledby="tab-{{ $key }}">
                                     @if (count($orders))
                                         <div class="table-responsive">
                                             <table class="table table-bordered align-middle">
@@ -96,6 +113,23 @@
                                                                             class="badge bg-danger btn-sm">Hủy đơn</button>
                                                                     </form>
                                                                 @endif
+
+                                                                @php
+                                                                    $hasRated = \App\Models\Feedbacks::where(
+                                                                        'order_id',
+                                                                        $order->id,
+                                                                    )
+                                                                        ->where('user_id', auth()->id())
+                                                                        ->exists();
+                                                                @endphp
+
+                                                                @if ($order->status === 'completed' && !$hasRated)
+                                                                    <a href="{{ route('orders.feedback', $order->id) }}"
+                                                                        class="btn btn-sm btn-success">Đánh giá</a>
+                                                                @elseif ($hasRated)
+                                                                    <span class="badge bg-secondary">Đã đánh giá</span>
+                                                                @endif
+
 
                                                             </td>
                                                         </tr>

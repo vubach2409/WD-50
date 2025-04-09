@@ -9,17 +9,22 @@
             <div class="row mb-5">
                 <form class="col-md-12" method="post">
                     <div class="site-blocks-table">
-                        @if (session('error'))
-                            <div class="alert alert-danger">
-                                {{ session('error') }}
-                            </div>
-                        @endif
                         @if (session('success'))
-                            <div class="alert alert-success">
+                            <div class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+                                role="alert" style="z-index: 9999;">
                                 {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
 
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+                                role="alert" style="z-index: 9999;">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
 
                         <h2>Giỏ hàng của bạn</h2>
                         @if ($cartItems->isEmpty())
@@ -35,6 +40,7 @@
                                         <th>Giá</th>
                                         <th>Số lượng</th>
                                         <th>Thành tiền</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -69,6 +75,19 @@
                                                 {{ number_format($item->variant->price * $item->quantity, 0, ',', '.') }}
                                                 VNĐ
                                             </td>
+                                            <td>
+                                                <form action="{{ route('cart.remove', $item->id) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                                        X
+                                                    </button>
+                                                </form>
+
+
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -84,12 +103,12 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-outline-black btn-sm btn-block">
-                                            Clear entire cart</button>
+                                            Xoá toàn bộ</button>
                                     </form>
                                 </div>
                                 <div class="col-md-6">
                                     <a href="{{ route('products') }}"><button
-                                            class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button></a>
+                                            class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</button></a>
                                 </div>
                             </div>
                             <div class="row">
@@ -111,12 +130,12 @@
                                 <div class="col-md-7">
                                     <div class="row">
                                         <div class="col-md-12 text-right border-bottom mb-5">
-                                            <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                            <h3 class="text-black h4 text-uppercase">Tóm tắt đơn hàng</h3>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <span class="text-black">Subtotal</span>
+                                            <span class="text-black">Tạm tính</span>
                                         </div>
                                         <div class="col-md-6 text-right">
                                             <strong class="text-black">{{ number_format($totalPrice, 0, ',', '.') }}
@@ -125,7 +144,7 @@
                                     </div>
                                     <div class="row mb-5">
                                         <div class="col-md-6">
-                                            <span class="text-black">Total</span>
+                                            <span class="text-black">Tổng</span>
                                         </div>
                                         <div class="col-md-6 text-right">
                                             <strong class="text-black">{{ number_format($totalPrice, 0, ',', '.') }}
@@ -136,9 +155,9 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <a href="{{ route('checkout') }}"
-                                                class="btn btn-black btn-lg py-3 btn-block">Proceed
-                                                To
-                                                Checkout</a>
+                                                class="btn btn-black btn-lg py-3 btn-block">Thanh toán
+
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

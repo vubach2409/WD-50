@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\Carts;
 use App\Models\Orders;
 use App\Models\Product;
+use App\Models\Feedbacks;
 use App\Models\OrderDetail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -94,5 +95,49 @@ class OrderController extends Controller
             return redirect()->route('admin.orders.index')->with('error', 'Không thể hủy đơn hàng này vì trạng thái không phải là "Chờ xác nhận".');
         }
     }
+    // OrderController.php
+    public function feedbackForm(Orders $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Bạn không có quyền truy cập đơn hàng này.');
+        }
     
+        if ($order->status !== 'completed') {
+            return redirect()->route('orders.index')->with('error', 'Chỉ có thể đánh giá đơn hàng đã giao.');
+        }
+    
+        // Kiểm tra đã đánh giá chưa
+        $hasRated = Feedbacks::where('order_id', $order->id)
+                            ->where('user_id', auth()->id())
+                            ->exists();
+    
+        if ($hasRated) {
+            return redirect()->route('orders.index')->with('error', 'Bạn đã đánh giá đơn hàng này rồi.');
+        }
+    
+        $products = $order->items()->with('product')->get();
+    
+        return view('client.feedback', compact('order', 'products'));
+    }
+    
+
+public function submitFeedback(Request $request, Orders $order)
+{
+    if ($order->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    foreach ($request->feedbacks as $productId => $feedback) {
+        Feedbacks::updateOrCreate([
+            'user_id' => auth()->id(),
+            'order_id' => $order->id,
+            'product_id' => $productId,
+        ], [
+            'star' => $feedback['star'],
+            'content' => $feedback['content'],
+        ]);
+    }
+
+    return redirect()->route('account.orders')->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
+}
 }

@@ -141,13 +141,28 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEight"
             aria-expanded="true" aria-controls="collapseEight">
-            <i class="fas fa-fw fa-credit-card"></i>
+            <i class="bi bi-archive"></i>
             <span>Quản lý đơn hàng</span>
         </a>
         <div id="collapseEight" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('admin.orders.show') }}">
                     Trạng thái đơn hàng
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNice"
+            aria-expanded="true" aria-controls="collapseNice">
+            <i class="bi bi-chat-left-text-fill"></i>
+            <span>Quản lý Bình luận</span>
+        </a>
+        <div id="collapseNice" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.feedbacks.index') }}">
+                    Danh sách
                 </a>
             </div>
         </div>

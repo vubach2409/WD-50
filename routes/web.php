@@ -17,6 +17,7 @@ use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\HistoryPaymentController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Client\FeedbackController;
 use App\Http\Controllers\Client\ProductDetailController;
 
 /*
@@ -96,6 +98,14 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 // Route::get('/userclient', [UserController::class, 'index'])->name('userclient');
 Route::put('/userclient/update', [UserController::class, 'updateProfile'])->name('userclient.update');
 Route::get('/product/{product}', [ProductDetailController::class, 'index'])->name('product.details');
+//comment trong sản phẩm
+Route::post('/product/{product}/comment', [ProductDetailController::class, 'comment'])->middleware('auth')->name('product.comment');
+
+// đánh giá sản phẩm trong đơn hàng
+Route::get('/orders/{order}/feedback', [OrderController::class, 'feedbackForm'])->name('orders.feedback');
+Route::post('/orders/{order}/feedback', [OrderController::class, 'submitFeedback'])->name('orders.feedback.submit');
+
+
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
@@ -122,6 +132,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::put('/admin/order/{orderId}/update-payment-status', [AdminPaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
 // Route để lọc đơn hàng theo mã giao dịch
 Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
+// Feedbacks
+Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
 
 
 Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');

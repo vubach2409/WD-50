@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\Feedbacks;
 
 class OrderController extends Controller
 {
@@ -92,4 +93,5 @@ class OrderController extends Controller
 
         return view('admin.order.show', compact('order'));
     }
+
 }

@@ -43,5 +43,9 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
-    
+    public function feedbacks()
+{
+    return $this->hasMany(Feedbacks::class)->latest();
+}
+
 }

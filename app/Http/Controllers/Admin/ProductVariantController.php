@@ -65,7 +65,6 @@ class ProductVariantController extends Controller
         }
 
         $product->variants()->create($data);
-        $product->updateStock();
 
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được thêm thành công!');
@@ -148,7 +147,6 @@ class ProductVariantController extends Controller
 
         $variant->restore();
 
-        $product->updateStock();
 
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể đã được khôi phục!');
