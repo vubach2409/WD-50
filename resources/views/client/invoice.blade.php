@@ -159,9 +159,33 @@
                     </tr>
                 @endforeach
             </tbody>
-
         </table>
+        @if ($order->voucher)
+            <h5>Thông tin Voucher:</h5>
+            <p><strong>Mã Voucher:</strong> {{ $order->voucher->code }}</p>
+            <p><strong>Giảm giá:</strong>
+                @if ($order->voucher->type == 'fixed')
+                    {{ number_format($order->voucher->value, 0, ',', '.') }}đ
+                @elseif ($order->voucher->type == 'percent')
+                    {{ $order->voucher->value }}%
+                @endif
+            </p>
+        @else
+            <p>Không có voucher áp dụng.</p>
+        @endif
+
+
+
         <p class="total-section">Tổng phụ: {{ number_format($subtotal, 0, ',', '.') }}đ</p>
+        @if ($order->voucher)
+            <!-- Adjust total if there's a voucher -->
+            <p class="total-section">Giảm giá: @if ($order->voucher->type == 'fixed')
+                    {{ number_format($order->voucher->value, 0, ',', '.') }}đ
+                @elseif ($order->voucher->type == 'percent')
+                    {{ $order->voucher->value }}%
+                @endif
+            </p>
+        @endif
         <p class="total-section">Vận chuyển & Xử lý: {{ number_format($order->shipping_fee, 0, ',', '.') }}đ</p>
         <p class="total-section">Tổng: {{ number_format($order->total, 0, ',', '.') }}đ</p>
         <a href="javascript:history.back()" class="btn btn-secondary">Quay lại</a>

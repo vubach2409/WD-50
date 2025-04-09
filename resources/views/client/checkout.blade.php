@@ -42,6 +42,7 @@
                                 @enderror
                             </div>
 
+                            <!-- Form Shipping Information -->
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Quận</label>
@@ -60,6 +61,7 @@
                                     @enderror
                                 </div>
                             </div>
+
 
                             <div class="mb-3">
                                 <label class="form-label">Địa chỉ cụ thể</label>
@@ -84,14 +86,20 @@
                                 @endforeach
                             </div>
 
-                            <div class="d-flex">
-                                <button type="submit" name="redirect" class="btn btn-primary btn-sm w-48 mx-2">
-                                    VNPay
+                            <div class="d-flex justify-content-center gap-3">
+                                <!-- Nút VNPay -->
+                                <button type="submit" name="redirect"
+                                    class="btn btn-primary btn-sm shadow-sm d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-credit-card me-2"></i> VNPay
                                 </button>
-                                <button type="submit" name="cod" class="btn btn-success btn-sm w-48">
-                                    COD
+
+                                <!-- Nút COD -->
+                                <button type="submit" name="cod"
+                                    class="btn btn-success btn-sm shadow-sm d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-cash me-2"></i> COD
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -134,20 +142,47 @@
                             @endforeach
                         </div>
 
+                        @php
+                            $voucher = session('voucher');
+                            $discount = $voucher['discount'] ?? 0;
+                        @endphp
+
                         <div class="border-top pt-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Tạm tính</span>
                                 <span>{{ number_format($subTotal, 0, ',', '.') }} VNĐ</span>
                             </div>
+
+                            @if ($voucher)
+                                <div class="d-flex justify-content-between mb-2 text-success">
+                                    <span>Giảm giá ({{ $voucher['code'] }})</span>
+                                    <span>-{{ number_format($discount, 0, ',', '.') }} VNĐ</span>
+                                </div>
+                            @endif
+
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Phí vận chuyển</span>
                                 <span id="order-summary-shipping">0 VNĐ</span>
                             </div>
+
                             <div class="d-flex justify-content-between border-top pt-2">
                                 <strong>Tổng cộng</strong>
-                                <strong id="order-summary-total">{{ number_format($subTotal, 0, ',', '.') }} VNĐ</strong>
+                                <strong id="order-summary-total">
+                                    {{ number_format($subTotal - $discount, 0, ',', '.') }} VNĐ
+                                </strong>
                             </div>
+
+                            @if ($voucher)
+                                <form action="{{ route('cart.remove-voucher') }}" method="POST" class="mt-2">
+                                    @csrf
+                                    <button type="submit"
+                                        class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-x-circle me-1"></i> Huỷ mã
+                                    </button>
+                                </form>
+                            @endif
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -160,11 +195,12 @@
                 const shippingFeeDisplay = document.getElementById("order-summary-shipping");
                 const totalDisplay = document.getElementById("order-summary-total");
                 let subTotal = {{ $subTotal }};
+                let discount = {{ $discount }};
 
                 shippingRadios.forEach(radio => {
                     radio.addEventListener("change", function() {
                         let shippingFee = parseInt(this.getAttribute("data-fee")) || 0;
-                        let total = subTotal + shippingFee;
+                        let total = subTotal - discount + shippingFee;
                         shippingFeeDisplay.textContent = new Intl.NumberFormat('vi-VN').format(
                             shippingFee) + " VNĐ";
                         totalDisplay.textContent = new Intl.NumberFormat('vi-VN').format(total) +

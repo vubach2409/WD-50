@@ -23,6 +23,8 @@ class Orders extends Model
 'city',
 'email',
 'subdistrict',
+'voucher_code',
+'discount_amount',
     ];
     public function items()
     {
@@ -41,5 +43,9 @@ public function user()
 public function ship()
 {
     return $this->belongsTo(Shipping::class, 'shipping_id');
+}
+public function voucher()
+{
+    return $this->belongsTo(Voucher::class, 'voucher_code', 'code');
 }
 }

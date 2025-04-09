@@ -27,7 +27,7 @@
                             <tr>
                                 <td>#{{ $order->id }}</td>
                                 <td>{{ $order->created_at->format('d/m/Y') }}</td>
-                                <td>ph{{ number_format($order->total, 0, ',', '.') }}đ</td>
+                                <td>{{ number_format($order->total, 0, ',', '.') }}đ</td>
                                 <td><span class="badge bg-success">{{ $order->payment->transaction_id }}</span></td>
                                 <td>{{ $order->payment->payment_method }}</td>
                                 <td>

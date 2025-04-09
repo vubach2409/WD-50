@@ -167,6 +167,20 @@
             </div>
         </div>
     </li>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTen"
+            aria-expanded="true" aria-controls="collapseTen">
+            <i class="bi bi-chat-left-text-fill"></i>
+            <span>Quản lý Voucher</span>
+        </a>
+        <div id="collapseTen" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('admin.vouchers.index') }}">
+                    Danh sách
+                </a>
+            </div>
+        </div>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

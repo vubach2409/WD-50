@@ -11,14 +11,21 @@ class InvoiceController extends Controller
 {
     public function show($orderId)
     {
-        $order = Orders::with('items.product', 'items.variant.color', 'items.variant.size')->where('id', $orderId)->firstOrFail();
-
+        // Lấy đơn hàng và voucher liên quan
+        $order = Orders::with('items.product', 'items.variant.color', 'items.variant.size', 'voucher') // Lưu ý thêm 'voucher'
+                      ->where('id', $orderId)
+                      ->firstOrFail();
+    
         $subtotal = $order->items->sum(function ($item) {
             return $item->price * $item->quantity;
         });
-
-        return view('client.invoice', compact('order','subtotal'));
+    
+        // Debug dữ liệu voucher nếu cần
+        // dd($order->voucher);
+    
+        return view('client.invoice', compact('order', 'subtotal'));
     }
+    
     //barryvdh/laravel-dompdf:
     public function downloadPDF($orderId)
     {

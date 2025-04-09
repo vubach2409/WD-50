@@ -6,13 +6,14 @@ use App\Models\Carts;
 use App\Models\Orders;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Voucher;
 use App\Models\Shipping;
 use App\Models\OrderDetail;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\ProductVariant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -46,8 +47,21 @@ class PaymentController extends Controller
                     $totalPrice = $cartItems->sum(function ($item) {
                         return $item->quantity * $item->variant->price;
                     });
-                
-                    $finalTotal = $totalPrice + $shipping->fee;
+                    $voucher = session('voucher');
+
+                    $discountAmount = 0;
+
+                    if ($voucher && isset($voucher['type'])) {
+                        if ($voucher['type'] === 'percent' && isset($voucher['percent'])) {
+                            $discountAmount = $totalPrice * ($voucher['percent'] / 100);
+                        } elseif ($voucher['type'] === 'fixed' && isset($voucher['discount'])) {
+                            $discountAmount = $voucher['discount'];
+                        }
+                    }
+
+                    
+                    $finalTotal = $totalPrice - $discountAmount + $shipping->fee;
+                    
                 
                     DB::beginTransaction();
                 
@@ -66,8 +80,10 @@ class PaymentController extends Controller
                             'consignee_name' => $request->consignee_name,
                             'consignee_phone' => $request->consignee_phone,
                             'transaction_id' => now()->timestamp . $userId,
+                            'voucher_code' => $voucher['code'] ?? null,
+                            'discount_amount' => $discountAmount,
                         ]);
-                
+                     
                         Payment::create([
                             'order_id' => $order->id,
                             'user_id' => $userId,
@@ -98,6 +114,34 @@ class PaymentController extends Controller
                 
                         // Xoá giỏ hàng
                         Carts::where('user_id', $userId)->delete();
+                        
+                        session()->forget('voucher');
+                        // Trừ số lần sử dụng mã giảm giá
+                        if ($voucher && isset($voucher['code'])) {
+                            $voucherModel = Voucher::where('code', $voucher['code'])->first();
+                            if ($voucherModel && $voucherModel->usage_limit > 0) {
+                                $voucherModel->decrement('usage_limit');
+                            }
+
+                            // Tăng số lượt dùng mã giảm giá nếu có
+                            $voucherModel = Voucher::where('code', $voucher['code'])->first();
+                            if ($voucherModel) {
+                                $voucherModel->used += 1;
+                                $voucherModel->save();
+                            }
+                            if ($voucher && isset($voucher['code'])) {
+                                $voucherModel = Voucher::where('code', $voucher['code'])->first();
+                                if ($voucherModel && $voucherModel->usage_limit > 0) {
+                                    $voucherModel->decrement('usage_limit');
+                                }
+                        
+                                // Tăng số lượt dùng mã giảm giá nếu có
+                                if ($voucherModel) {
+                                    $voucherModel->used += 1;
+                                    $voucherModel->save();
+                                }
+                            }}
+
                 
                         DB::commit();
                 
@@ -133,7 +177,19 @@ class PaymentController extends Controller
                             if (!$shipping) {
                                 return redirect()->back()->with('error', 'Phương thức vận chuyển không hợp lệ.');
                             }
-                            $finalTotal = $totalPrice + $shipping->fee;
+                            $voucher = session('voucher');
+                    $discountAmount = 0;
+
+                    if ($voucher && isset($voucher['type'])) {
+                        if ($voucher['type'] === 'percent' && isset($voucher['percent'])) {
+                            $discountAmount = $totalPrice * ($voucher['percent'] / 100);
+                        } elseif ($voucher['type'] === 'fixed' && isset($voucher['discount'])) {
+                            $discountAmount = $voucher['discount'];
+                        }
+                    }
+
+                    $finalTotal = $totalPrice + $shipping->fee - $discountAmount;
+
                     if(isset($_POST['redirect'])){
                         date_default_timezone_set('Asia/Ho_Chi_Minh');
                         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -150,6 +206,8 @@ class PaymentController extends Controller
                             'email' => $request->email,
                             'city' => $request->city,
                             'subdistrict' => $request->subdistrict,
+                            'voucher_code' => $voucher['code'] ?? null,
+                            'discount_amount' => $discountAmount,
                         ]);
                         $vnp_OrderType = "billpayment";
                         $vnp_Amount = $finalTotal * 100; // giá
@@ -249,7 +307,19 @@ class PaymentController extends Controller
             
                     // 5. Tính tổng tiền
                     $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
-                    $finalTotal = $totalPrice + $shipping->fee;
+                    $voucher = session('voucher');
+                    $discountAmount = 0;
+
+                    if ($voucher && isset($voucher['type'])) {
+                        if ($voucher['type'] === 'percent' && isset($voucher['percent'])) {
+                            $discountAmount = $totalPrice * ($voucher['percent'] / 100);
+                        } elseif ($voucher['type'] === 'fixed' && isset($voucher['discount'])) {
+                            $discountAmount = $voucher['discount'];
+                        }
+                    }
+
+                    $finalTotal = $totalPrice + $shipping->fee - $discountAmount;
+
             
                     // 6. Tạo đơn hàng
                     $order = Orders::create([
@@ -266,6 +336,9 @@ class PaymentController extends Controller
                         'consignee_address' => $vnp_OrderInfo['address'],
                         'status' => 'pending',
                         'shipping_id' => $shipping->id,
+                        'voucher_code' => $vnp_OrderInfo['voucher_code'] ?? null,
+                        'discount_amount' => $vnp_OrderInfo['discount_amount'] ?? 0,
+
                     ]);
             
                     // 7. Ghi giao dịch và thanh toán
@@ -318,7 +391,25 @@ class PaymentController extends Controller
             
                     // 9. Xoá giỏ hàng
                     Carts::where('user_id', $user->id)->delete();
-            
+                    session()->forget('voucher');
+
+                     //Trừ số lần sử dụng mã giảm giá
+                     if ($voucher && isset($voucher['code'])) {
+                        $voucherModel = Voucher::where('code', $voucher['code'])->first();
+                        if ($voucherModel && $voucherModel->usage_limit > 0) {
+                            $voucherModel->decrement('usage_limit');
+                        }
+                    }  
+                    // Tăng số lượt dùng mã giảm giá nếu có
+if (!empty($vnp_OrderInfo['voucher_code'])) {
+    $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
+    
+    if ($voucher) {
+        $voucher->used += 1;
+        $voucher->save();
+    }
+}
+
                     DB::commit();
             
                     return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công, chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất!');

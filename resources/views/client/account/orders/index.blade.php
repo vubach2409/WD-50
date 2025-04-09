@@ -125,7 +125,8 @@
 
                                                                 @if ($order->status === 'completed' && !$hasRated)
                                                                     <a href="{{ route('orders.feedback', $order->id) }}"
-                                                                        class="btn btn-sm btn-success">Đánh giá</a>
+                                                                        class="badge bg-danger text-decoration-none">Đánh
+                                                                        giá</a>
                                                                 @elseif ($hasRated)
                                                                     <span class="badge bg-secondary">Đã đánh giá</span>
                                                                 @endif

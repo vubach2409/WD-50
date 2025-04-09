@@ -108,6 +108,14 @@
                                         <td colspan="3" class="text-end"><strong>Tạm tính:</strong></td>
                                         <td>{{ number_format($subtotal, 0, ',', '.') }} VNĐ</td>
                                     </tr>
+                                    @if ($order->voucher_code && $order->discount_amount > 0)
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Mã giảm giá
+                                                    ({{ $order->voucher_code }}):</strong></td>
+                                            <td>-{{ number_format($order->discount_amount, 0, ',', '.') }} VNĐ</td>
+                                        </tr>
+                                    @endif
+
                                     <tr>
                                         <td colspan="3" class="text-end"><strong>Phí vận chuyển:</strong></td>
                                         <td>{{ number_format($order->shipping_fee, 0, ',', '.') }} VNĐ</td>
@@ -117,6 +125,7 @@
                                         <td>{{ number_format($order->total, 0, ',', '.') }} VNĐ</td>
                                     </tr>
                                 </tfoot>
+
                             </table>
                         </div>
 

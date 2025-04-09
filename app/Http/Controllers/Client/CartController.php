@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Carts;
 use App\Models\Product;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
@@ -29,12 +30,11 @@ class CartController extends Controller
             ->where('session_id', Session::getId())
             ->get();
     }
-
    $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
    $totalPrice = $cartItems->sum(function ($item) {
-       return $item->quantity * $item->product->price;
+  
+       return $item->quantity * $item->variant->price;
    });
-
    return view('client.cart', compact('cartItems', 'totalPrice'));
 }
 
@@ -158,4 +158,96 @@ public function addToCart(Request $request)
 
        return redirect()->back()->with('success', 'Đã xóa toàn bộ giỏ hàng!');
    }
+   public function applyVoucher(Request $request)
+   {
+       $request->validate([
+           'code' => 'required|string',
+       ]);
+   
+       $voucher = Voucher::where('code', $request->code)
+           ->where('is_active', true)
+           ->where(function ($query) {
+               $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+           })
+           ->where(function ($query) {
+               $query->whereNull('expires_at')->orWhere('expires_at', '>=', now());
+           })
+           ->first();
+   
+       if (!$voucher) {
+           return back()->with('error', 'Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+       }
+   
+       // Lấy giỏ hàng
+       if (Auth::check()) {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('user_id', Auth::id())
+            ->get();
+    } else {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('session_id', Session::getId())
+            ->get();
+    }
+
+    if ($cartItems->isEmpty()) {
+        return back()->with('error', 'Giỏ hàng trống, không thể áp dụng mã giảm giá.');
+    }
+   
+       // Tổng tiền giỏ hàng
+       $total = $cartItems->sum(function ($item) {
+           return $item->variant->price * $item->quantity;
+       });
+   
+       // Kiểm tra đơn hàng tối thiểu
+       if (!is_null($voucher->min_order_amount) && $total < $voucher->min_order_amount) {
+           return back()->with('error', 'Đơn hàng cần tối thiểu ' . number_format($voucher->min_order_amount) . ' VNĐ để sử dụng mã này.');
+       }
+   
+       // Tính giảm giá
+       $discount = 0;
+       if ($voucher->type === 'fixed') {
+           $discount = $voucher->value;
+       } elseif ($voucher->type === 'percent') {
+           $discount = ($voucher->value / 100) * $total;
+       }
+   
+       // Giảm không được vượt quá tổng
+       $discount = min($discount, $total);
+   
+       // Lưu vào session
+       session([
+        'voucher' => [
+            'code' => $voucher->code,
+            'discount' => $discount,
+            'type' => $voucher->type, // <== THÊM DÒNG NÀY
+            'percent' => $voucher->type === 'percent' ? $voucher->value : null,
+        ]
+    ]);
+    
+   
+       return back()->with('success', 'Áp dụng mã giảm giá thành công!');
+   }
+   
+   
+public function removeVoucher()
+{
+    session()->forget('voucher');
+    return back()->with('success', 'Đã huỷ mã giảm giá.');
+}
+public function listAvailableVouchers()
+{
+    $now = now();
+
+    $vouchers = Voucher::where('is_active', true)
+        ->where(function ($q) use ($now) {
+            $q->whereNull('starts_at')->orWhere('starts_at', '<=', $now);
+        })
+        ->where(function ($q) use ($now) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>=', $now);
+        })
+        ->get();
+
+    return view('client.voucher-list', compact('vouchers'));
+}
+
 }

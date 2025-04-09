@@ -30,6 +30,7 @@ use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\ProductVariantController;
+use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Auth\ConfirmPasswordController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\FeedbackController;
@@ -104,6 +105,11 @@ Route::post('/product/{product}/comment', [ProductDetailController::class, 'comm
 // đánh giá sản phẩm trong đơn hàng
 Route::get('/orders/{order}/feedback', [OrderController::class, 'feedbackForm'])->name('orders.feedback');
 Route::post('/orders/{order}/feedback', [OrderController::class, 'submitFeedback'])->name('orders.feedback.submit');
+//áp mã giảm giá
+Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.apply-voucher');
+Route::post('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.remove-voucher');
+Route::get('/vouchers', [CartController::class, 'listAvailableVouchers'])->name('cart.voucher-list');
+
 
 
 
@@ -135,6 +141,8 @@ Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders
 // Feedbacks
 Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
     Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
+//voucher
+Route::resource('vouchers', VoucherController::class);
 
 
 Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
