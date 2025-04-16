@@ -8,21 +8,21 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('order_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            
+            $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
-            $table->integer('quantity')->default(1);
+            $table->integer('quantity');
+            $table->decimal('price', 10, 2);
             $table->timestamps();
-        
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('order_details');
     }
 };
