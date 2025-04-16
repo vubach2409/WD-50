@@ -18,7 +18,6 @@ class ProductVariant extends Model
         'variation_name', 
         'sku', 
         'price', 
-        'weight', 
         'image', 
         'stock'
     ];

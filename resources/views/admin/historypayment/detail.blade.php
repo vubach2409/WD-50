@@ -40,6 +40,12 @@
         <h3>Thông tin thanh toán:</h3>
         @if ($order->payment)
             <p><strong>Phương thức:</strong> {{ $order->payment->payment_method }}</p>
+            @if ($order->voucher_code && $order->discount_amount > 0)
+                <p colspan="3" class="text-end"><strong>Mã giảm giá
+                        ({{ $order->voucher_code }})</strong>: -{{ number_format($order->discount_amount, 0, ',', '.') }}
+                    VNĐ</p>
+            @endif
+
             <p><strong>Phí vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }}đ</p>
             <p><strong>Tổng tiền:</strong> {{ number_format($order->total, 0, ',', '.') }}đ</p>
             <p><strong>Trạng thái:</strong> <span

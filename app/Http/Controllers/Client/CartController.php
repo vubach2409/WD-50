@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\Carts;
 use App\Models\Product;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -19,85 +21,111 @@ class CartController extends Controller
    }
    public function showCart()
 {
+    if (Auth::check()) {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('user_id', Auth::id())
+            ->get();
+    } else {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('session_id', Session::getId())
+            ->get();
+    }
    $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
    $totalPrice = $cartItems->sum(function ($item) {
-       return $item->quantity * $item->product->price;
+  
+       return $item->quantity * $item->variant->price;
    });
-
    return view('client.cart', compact('cartItems', 'totalPrice'));
 }
 
 
 
-   // Thêm sản phẩm vào giỏ hàng
-   public function addToCart(Request $request)
+public function addToCart(Request $request)
 {
     $request->validate([
         'product_id' => 'required|exists:products,id',
+        'variant_id' => 'nullable|exists:product_variants,id',
         'quantity' => 'required|integer|min:1'
     ]);
 
     $product = Product::findOrFail($request->product_id);
+    $variantId = $request->variant_id;
+    $quantityToAdd = (int) $request->quantity;
 
-    // Kiểm tra số lượng tồn kho
-    if ($request->quantity > $product->stock) {
-        return back()->with('error', 'Số lượng yêu cầu vượt quá tồn kho!');
-    }
+    if ($variantId) {
+        $variant = ProductVariant::where('id', $variantId)
+            ->where('product_id', $product->id)
+            ->first();
 
-    $cartData = [
-        'product_id' => $product->id,
-        'quantity' => $request->quantity
-    ];
-
-    if (Auth::check()) {
-        $cartData['user_id'] = Auth::id();
-    } else {
-        $cartData['session_id'] = Session::getId();
-    }
-
-    // Kiểm tra nếu sản phẩm đã có trong giỏ hàng
-    $cart = Carts::where('product_id', $product->id)
-        ->where(function ($query) {
-            if (Auth::check()) {
-                $query->where('user_id', Auth::id());
-            } else {
-                $query->where('session_id', Session::getId());
-            }
-        })->first();
-
-    if ($cart) {
-        $newQuantity = $cart->quantity + $request->quantity;
-        if ($newQuantity > $product->stock) {
-            return back()->with('error', 'Số lượng trong giỏ hàng vượt quá tồn kho!');
+        if (!$variant) {
+            return redirect()->back()->with('error', 'Biến thể sản phẩm không hợp lệ!');
         }
-        $cart->update(['quantity' => $newQuantity]);
+
+        // Lấy số lượng hiện tại trong giỏ hàng của biến thể đó (nếu có)
+        $existingCart = Carts::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->where('variant_id', $variantId)
+            ->first();
+
+        $currentInCart = $existingCart ? $existingCart->quantity : 0;
+        $totalRequested = $currentInCart + $quantityToAdd;
+
+        if ($totalRequested > $variant->stock) {
+            return redirect()->back()->with('error', 'Tổng số lượng trong giỏ vượt quá tồn kho!');
+        }
+
+        // Nếu đã tồn tại thì cập nhật
+        if ($existingCart) {
+            $existingCart->quantity += $quantityToAdd;
+            $existingCart->save();
+        } else {
+            Carts::create([
+                'user_id'    => auth()->id(),
+                'product_id' => $product->id,
+                'variant_id' => $variant->id,
+                'quantity'   => $quantityToAdd,
+            ]);
+        }
+
     } else {
-        Carts::create($cartData);
+        // Sản phẩm không có biến thể => không cần kiểm tra tồn kho
+        Carts::create([
+            'user_id'    => auth()->id(),
+            'product_id' => $product->id,
+            'quantity'   => $quantityToAdd,
+        ]);
     }
 
-    return back()->with('success', 'Sản phẩm đã được thêm vào giỏ hàng!');
+    return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng!');
 }
+
+
+
 
 
    // Cập nhật số lượng sản phẩm trong giỏ hàng
    public function update(Request $request, $id)
    {
-       $cartItem = Carts::find($id);
-       if (!$cartItem) {
-           return redirect()->back()->with('error', 'Sản phẩm không tồn tại trong giỏ hàng.');
+       $cartItem = Carts::findOrFail($id);
+   
+       $quantity = (int) $request->input('quantity');
+   
+       if ($quantity < 1) {
+           return redirect()->back()->with('error', 'Số lượng phải lớn hơn 0.');
        }
    
-       // Kiểm tra số lượng nhập vào có vượt quá tồn kho không
-       if ($request->quantity > $cartItem->product->stock) {
-           return redirect()->back()->with('error', 'Số lượng vượt quá giới hạn kho hàng.');
+       // Kiểm tra tồn kho biến thể
+       if ($quantity > $cartItem->variant->stock) {
+           return redirect()->back()->with('error', 'Số lượng vượt quá tồn kho hiện có.');
        }
    
-       // Cập nhật số lượng
-       $cartItem->quantity = $request->quantity;
+       $cartItem->quantity = $quantity;
        $cartItem->save();
    
-       return redirect()->back()->with('success', 'Cập nhật giỏ hàng thành công.');
+       return redirect()->back()->with('success', 'Cập nhật số lượng thành công.');
    }
+   
+   
    
    
 
@@ -130,4 +158,96 @@ class CartController extends Controller
 
        return redirect()->back()->with('success', 'Đã xóa toàn bộ giỏ hàng!');
    }
+   public function applyVoucher(Request $request)
+   {
+       $request->validate([
+           'code' => 'required|string',
+       ]);
+   
+       $voucher = Voucher::where('code', $request->code)
+           ->where('is_active', true)
+           ->where(function ($query) {
+               $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+           })
+           ->where(function ($query) {
+               $query->whereNull('expires_at')->orWhere('expires_at', '>=', now());
+           })
+           ->first();
+   
+       if (!$voucher) {
+           return back()->with('error', 'Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+       }
+   
+       // Lấy giỏ hàng
+       if (Auth::check()) {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('user_id', Auth::id())
+            ->get();
+    } else {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('session_id', Session::getId())
+            ->get();
+    }
+
+    if ($cartItems->isEmpty()) {
+        return back()->with('error', 'Giỏ hàng trống, không thể áp dụng mã giảm giá.');
+    }
+   
+       // Tổng tiền giỏ hàng
+       $total = $cartItems->sum(function ($item) {
+           return $item->variant->price * $item->quantity;
+       });
+   
+       // Kiểm tra đơn hàng tối thiểu
+       if (!is_null($voucher->min_order_amount) && $total < $voucher->min_order_amount) {
+           return back()->with('error', 'Đơn hàng cần tối thiểu ' . number_format($voucher->min_order_amount) . ' VNĐ để sử dụng mã này.');
+       }
+   
+       // Tính giảm giá
+       $discount = 0;
+       if ($voucher->type === 'fixed') {
+           $discount = $voucher->value;
+       } elseif ($voucher->type === 'percent') {
+           $discount = ($voucher->value / 100) * $total;
+       }
+   
+       // Giảm không được vượt quá tổng
+       $discount = min($discount, $total);
+   
+       // Lưu vào session
+       session([
+        'voucher' => [
+            'code' => $voucher->code,
+            'discount' => $discount,
+            'type' => $voucher->type, // <== THÊM DÒNG NÀY
+            'percent' => $voucher->type === 'percent' ? $voucher->value : null,
+        ]
+    ]);
+    
+   
+       return back()->with('success', 'Áp dụng mã giảm giá thành công!');
+   }
+   
+   
+public function removeVoucher()
+{
+    session()->forget('voucher');
+    return back()->with('success', 'Đã huỷ mã giảm giá.');
+}
+public function listAvailableVouchers()
+{
+    $now = now();
+
+    $vouchers = Voucher::where('is_active', true)
+        ->where(function ($q) use ($now) {
+            $q->whereNull('starts_at')->orWhere('starts_at', '<=', $now);
+        })
+        ->where(function ($q) use ($now) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>=', $now);
+        })
+        ->get();
+
+    return view('client.voucher-list', compact('vouchers'));
+}
+
 }

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'completed', 'cancelled', 'shipping'])->default('pending');
             $table->integer('total');
             $table->string('consignee_name');
             $table->string('consignee_phone');

@@ -10,11 +10,16 @@ use Illuminate\Support\Facades\Session;
 class Carts extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'product_id', 'quantity', 'session_id'];
+    protected $fillable = ['user_id', 'product_id', 'quantity', 'session_id','variant_id'];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id');
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class);
     }
 
     public function product()
