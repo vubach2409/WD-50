@@ -1,13 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
-use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\Admin\ProductController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,27 +32,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     // Route::get('/users', [AdminController::class, 'users'])->name('users');
     // Route::get('/charts', [AdminController::class, 'charts'])->name('charts');
     // Route::get('/tables', [AdminController::class, 'tables'])->name('tables');
+    Route::resource('products', ProductController::class);
 });
-
-Route::prefix('admin')->group(function () {
-    Route::resource('categories', CategoryController::class);
-});
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::middleware(['auth'])->group(function () {
-    Route::post('/cart/sync', [CartController::class, 'syncCart']);
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
-    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
-    Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
-});
-
-
-Route::get('/order', [OrderController::class, 'index'])->name('order');
-Route::post('/order/process', [OrderController::class, 'process'])->name('order.process');
-

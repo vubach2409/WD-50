@@ -4796,7 +4796,7 @@ input[type="button"].btn-block {
   z-index: 3;
   color: #fff;
   background-color: #4e73df;
-  border-color: #4e73df;
+  /* border-color: #4e73df; */
 }
 
 .page-item.disabled .page-link {
@@ -4804,7 +4804,7 @@ input[type="button"].btn-block {
   pointer-events: none;
   cursor: auto;
   background-color: #fff;
-  border-color: #dddfeb;
+  /* border-color: #dddfeb; */
 }
 
 .pagination-lg .page-link {

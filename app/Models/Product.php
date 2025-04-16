@@ -8,26 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'name', 
-        'description', 
-        'price', 
-        'image', 
-        'stock', 
-        'product_detail', 
-        'category_id', 
-        'brand_id'
-    ];
-    protected $casts = [
-        'product_detail' => 'array',
-    ];
+    protected $table = 'products';
+    protected $fillable = ['name','description','price','image','stock','product_detail','category_id','brand_id']; //add other field to mass-assignment
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    // Define the relationship with the Brand model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
