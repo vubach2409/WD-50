@@ -1,97 +1,96 @@
-@extends('admin.dashboard')
+@extends('layouts.admin')
 
 @section('content')
-    <div class="container">
-        <h1>Edit Product</h1>
+<div class="container-fluid">
+    <h2 class="text-primary">Chỉnh sửa sản phẩm</h2>
 
-        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+    <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
 
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $product->name) }}"
-                    required>
-                @error('name')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Tên sản phẩm</th>
+                        <td>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                                value="{{ old('name', $product->name) }}">
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Giá</th>
+                        <td>
+                            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror"
+                                value="{{ old('price', $product->price) }}">
+                            @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Danh mục</th>
+                        <td>
+                            <select name="category_id" class="form-control @error('category_id') is-invalid @enderror">
+                                <option value="">-- Chọn danh mục --</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Thương hiệu</th>
+                        <td>
+                            <select name="brand_id" class="form-control @error('brand_id') is-invalid @enderror">
+                                <option value="">-- Chọn thương hiệu --</option>
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand->id }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
+                                        {{ $brand->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('brand_id') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Số lượng kho</th>
+                        <td>
+                            <input type="number" name="stock" class="form-control @error('stock') is-invalid @enderror"
+                                value="{{ old('stock', $product->stock) }}">
+                            @error('stock') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Ảnh sản phẩm</th>
+                        <td>
+                            <input type="file" name="image" class="form-control-file @error('image') is-invalid @enderror">
+                            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
 
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea name="description" id="description" class="form-control">{{ old('description', $product->description) }}</textarea>
-                @error('description')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-             <!-- Product detail field -->
-            <div class="form-group">
-                <label for="product_detail">Product Detail</label>
-                <textarea name="product_detail" id="product_detail" class="form-control">{{ old('product_detail', $product->product_detail) }}</textarea>
-                @error('product_detail')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="price">Price</label>
-                <input type="number" name="price" id="price" class="form-control"
-                    value="{{ old('price', $product->price) }}" required min="0.01" step="0.01">
-                @error('price')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="stock">Stock</label>
-                <input type="number" name="stock" id="stock" class="form-control"
-                    value="{{ old('stock', $product->stock) }}" required min="1">
-                @error('stock')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="category_id">Category</label>
-                <select name="category_id" id="category_id" class="form-control" required>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}"
-                            {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}</option>
-                    @endforeach
-                </select>
-                @error('category_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="brand_id">Brand</label>
-                <select name="brand_id" id="brand_id" class="form-control" required>
-                    @foreach ($brands as $brand)
-                        <option value="{{ $brand->id }}"
-                            {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
-                            {{ $brand->name }}</option>
-                    @endforeach
-                </select>
-                @error('brand_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="image">Image</label>
-                <input type="file" name="image" id="image" class="form-control-file">
-                @if ($product->image)
-                    <img src="{{ Storage::url('images/products/' . $product->image) }}" alt="{{ $product->name }}"
-                        width="100">
-                @endif
-                @error('image')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button type="submit" class="btn btn-primary">Update Product</button>
-        </form>
-    </div>
+                            @if($product->image)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/' . $product->image) }}" width="130">
+                                </div>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Mô tả sản phẩm</th>
+                        <td>
+                            <textarea name="description" class="form-control @error('description') is-invalid @enderror"
+                                rows="4">{{ old('description', $product->description) }}</textarea>
+                            @error('description') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </form>
+</div>
 @endsection

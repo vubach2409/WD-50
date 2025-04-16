@@ -2,13 +2,18 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2 class="text-primary">Biến thể đã xóa: {{ $product->name }}</h2>
+    <h2>Biến thể đã xóa: {{ $product->name }}</h2>
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
         </div>
     @endif
+    @if ($variants->isEmpty())
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-1"></i> Chưa có biến thể nào bị xóa.
+        </div>
+    @else
     <div class="table-responsive">
         <table class="table table-hover table-bordered text-center">
             <thead>
@@ -24,11 +29,6 @@
                 </tr>
             </thead>
             <tbody>
-                @if ($variants->isEmpty())
-                    <tr>
-                        <td colspan="8" class="text-danger text-center align-middle">Không có biến thể nào đã xóa.</td>
-                    </tr>
-                @else
                     @foreach ($variants as $variant)
                     <tr>
                         <td class="align-middle">{{ $variant->sku }}</td>

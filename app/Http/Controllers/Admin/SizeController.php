@@ -23,7 +23,7 @@ class SizeController extends Controller
     {
         $request->validate(['name' => 'required|string|unique:sizes']);
         Size::create($request->all());
-        return redirect()->route('admin.sizes.index')->with('success', 'Thêm thành công');
+        return redirect()->route('admin.sizes.index')->with('success', 'Thêm kích thước thành công!');
     }
 
     public function edit(Size $size)
@@ -35,12 +35,12 @@ class SizeController extends Controller
     {
         $request->validate(['name' => 'required|string|unique:sizes,name,' . $size->id]);
         $size->update($request->all());
-        return redirect()->route('admin.sizes.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('admin.sizes.index')->with('success', 'Cập nhật kích thước thành công!');
     }
 
     public function destroy(Size $size)
     {
         $size->delete();
-        return redirect()->route('admin.sizes.index')->with('success', 'Xoá thành công');
+        return redirect()->route('admin.sizes.index')->with('success', 'Xoá kích thước thành công!');
     }
 }

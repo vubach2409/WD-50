@@ -3,87 +3,66 @@
 @section('title', 'Trang Chủ')
 
 @section('content')
-    <div class="hero">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col-lg-5">
-                    <div class="intro-excerpt">
-                        <h1 class="fw-bold">Thiết Kế Nội Thất <span>Hiện Đại</span></h1>
-                        <p class="mb-4">
-                            Mang đến không gian sống đẳng cấp với thiết kế nội thất hiện đại. Chúng tôi cam kết chất lượng và sự tinh tế trong từng sản phẩm.
-                        </p>
-                        <p>
-                            <a href="{{ route('products') }}" class="btn btn-secondary me-2">Mua Ngay</a>
-                            <a href="{{ route('about') }}" class="btn btn-outline-light">Khám Phá</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-7">
-                    <div class="hero-img-wrap text-center">
-                        <img src="{{ asset('clients/images/couch.png') }}" class="img-fluid" alt="Couch Image">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Start Product Section -->
     <div class="product-section">
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="container">
             <div class="row">
 
                 <!-- Start Column 1 -->
                 <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-                    <h2 class="mb-4 section-title">Chất liệu cao cấp.</h2>
-                    <p class="mb-4">Sản phẩm được làm từ nguyên liệu tốt, đảm bảo độ bền và thẩm mỹ.</p>
-                    <p><a href="{{ route('products') }}" class="btn">Khám Phá</a></p>
+                    <h2 class="mb-4 section-title">Crafted with excellent material.</h2>
+                    <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
+                        vulputate velit imperdiet dolor tempor tristique. </p>
+                    <p><a href="shop.html" class="btn">Explore</a></p>
                 </div>
                 <!-- End Column 1 -->
 
                 <!-- Start Column 2 -->
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
-                        <img src="{{ asset('clients/images/product-1.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Nordic Chair</h3>
-                        <strong class="product-price">$50.00</strong>
 
-                        <span class="icon-cross">
-                            <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                        </span>
-                    </a>
-                </div>
-                <!-- End Column 2 -->
+                @foreach ($products as $product)
+                    <!-- Start Column -->
+                    <div class="col-12 col-md-4 col-lg-3 mb-5">
+                        @if ($product->stock > 0)
+                            <a class="product-item" href="{{ route('product.details', $product->id) }}">
+                            @else
+                                <div class="product-item out-of-stock">
+                        @endif
+                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
+                            alt="{{ $product->name }}">
+                        <h3 class="product-title">{{ $product->name }}</h3>
+                        <strong class="product-price">${{ number_format($product->price, 2) }}</strong>
 
-                <!-- Start Column 3 -->
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
-                        <img src="{{ asset('clients/images/product-2.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Kruzo Aero Chair</h3>
-                        <strong class="product-price">$78.00</strong>
+                        @if ($product->stock > 0)
+                            <span class="icon-cross">
+                                <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
+                            </span>
+                        @else
+                            <span class="out-of-stock-label">Hết hàng</span>
+                        @endif
 
-                        <span class="icon-cross">
-                            <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                        </span>
-                    </a>
-                </div>
-                <!-- End Column 3 -->
-
-                <!-- Start Column 4 -->
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" href="cart.html">
-                        <img src="{{ asset('clients/images/product-3.png') }}" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">Ergonomic Chair</h3>
-                        <strong class="product-price">$43.00</strong>
-
-                        <span class="icon-cross">
-                            <img src="{{ asset('clients/images/cross.svg') }}" class="img-fluid">
-                        </span>
-                    </a>
-                </div>
-                <!-- End Column 4 -->
-
+                        @if ($product->stock > 0)
+                            </a>
+                        @else
+                    </div>
+                @endif
             </div>
+            <!-- End Column -->
+            @endforeach
+            <!-- End Column 2 -->
         </div>
+    </div>
     </div>
     <!-- End Product Section -->
 
@@ -92,8 +71,9 @@
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col-lg-6">
-                    <h2 class="section-title">Vì Sao Chọn Chúng Tôi?</h2>
-                    <p>Chúng tôi cam kết mang đến sản phẩm chất lượng cao, dịch vụ chuyên nghiệp và trải nghiệm mua sắm tuyệt vời nhất.</p>
+                    <h2 class="section-title">Why Choose Us</h2>
+                    <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit
+                        imperdiet dolor tempor tristique.</p>
 
                     <div class="row my-5">
                         <div class="col-6 col-md-6">
@@ -101,8 +81,8 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/truck.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Giao hàng nhanh & miễn phí</h3>
-                                <p>Chúng tôi cam kết giao hàng nhanh chóng và hoàn toàn miễn phí trên toàn quốc.</p>
+                                <h3>Fast &amp; Free Shipping</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
                                 </p>
                             </div>
                         </div>
@@ -112,8 +92,8 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/bag.svg') }}" class="imf-fluid">
                                 </div>
-                                <h3>Mua sắm dễ dàng</h3>
-                                <p>Trải nghiệm mua sắm tiện lợi với giao diện thân thiện và đơn giản.</p>
+                                <h3>Easy to Shop</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
                                 </p>
                             </div>
                         </div>
@@ -123,18 +103,20 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/support.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Hỗ trợ 24/7</h3>
-                                <p>Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ bạn mọi lúc, mọi nơi.</p>
+                                <h3>24/7 Support</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
                             </div>
                         </div>
 
                         <div class="col-6 col-md-6">
                             <div class="feature">
                                 <div class="icon">
-                                    <img src="{{ asset('clients/images/return.svg') }}" alt="Đổi trả dễ dàng" class="img-fluid">
+                                    <img src="{{ asset('clients/images/return.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Đổi Trả Dễ Dàng</h3>
-                                <p>Chính sách đổi trả minh bạch, dễ dàng và nhanh chóng.</p>
+                                <h3>Hassle Free Returns</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
                             </div>
                         </div>
 
@@ -165,22 +147,73 @@
                     </div>
                 </div>
                 <div class="col-lg-5 ps-lg-5">
-                    <h2 class="section-title mb-4">Giúp Bạn Thiết Kế Nội Thất Hiện Đại</h2>
-                    <p>Chúng tôi giúp bạn tạo không gian sống tiện nghi và hiện đại.</p>
+                    <h2 class="section-title mb-4">We Help You Make Modern Interior Design</h2>
+                    <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam
+                        ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant
+                        morbi tristique senectus et netus et malesuada</p>
 
                     <ul class="list-unstyled custom-list my-4">
-                        <li>Chất liệu cao cấp, bền đẹp.</li>
-                        <li>Thiết kế hiện đại, tinh tế.</li>
-                        <li>Giá cả hợp lý, cạnh tranh.</li>
-                        <li>Hỗ trợ khách hàng tận tình.</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
                     </ul>
-                    <p><a href="{{ route('products') }}" class="btn">Khám Phá</a></p>
+                    <p><a herf="#" class="btn">Explore</a></p>
                 </div>
             </div>
         </div>
     </div>
     <!-- End We Help Section -->
-=
+
+    <!-- Start Popular Product -->
+    <div class="popular-product">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="product-item-sm d-flex">
+                        <div class="thumbnail">
+                            <img src="{{ asset('clients/images/product-1.png') }}" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="pt-3">
+                            <h3>Nordic Chair</h3>
+                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
+                            <p><a href="#">Read More</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="product-item-sm d-flex">
+                        <div class="thumbnail">
+                            <img src="{{ asset('clients/images/product-2.png') }}" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="pt-3">
+                            <h3>Kruzo Aero Chair</h3>
+                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
+                            <p><a href="#">Read More</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                    <div class="product-item-sm d-flex">
+                        <div class="thumbnail">
+                            <img src="{{ asset('clients/images/product-3.png') }}" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="pt-3">
+                            <h3>Ergonomic Chair</h3>
+                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
+                            <p><a href="#">Read More</a></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Popular Product -->
+
     {{-- <!-- Start Testimonial Slider -->
     <div class="testimonial-section">
         <div class="container">
@@ -292,8 +325,9 @@
             </div>
         </div>
     </div>
-    <!-- End Testimonial Slider -->
-    <!-- Start Blog Section -->
+    <!-- End Testimonial Slider --> --}}
+
+    {{-- <!-- Start Blog Section -->
     <div class="blog-section">
         <div class="container">
             <div class="row mb-5">
@@ -351,6 +385,6 @@
 
             </div>
         </div>
-    </div> --}}
-    <!-- End Blog Section -->
+    </div>
+    <!-- End Blog Section --> --}}
 @endsection

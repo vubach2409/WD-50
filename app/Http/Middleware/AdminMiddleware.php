@@ -14,6 +14,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        abort(403, 'Unauthorized action.');
+        return redirect('/')->with('error', 'Bạn không có quyền truy cập trang Admin.');
     }
 }

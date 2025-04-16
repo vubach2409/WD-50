@@ -10,14 +10,22 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable(); // Nếu khách không đăng nhập
-            $table->string('name');
-            $table->string('phone');
-            $table->text('address');
-            $table->decimal('total_price', 10, 2);
-            $table->string('payment_method')->default('COD');
-            $table->enum('status', ['pending', 'confirmed', 'shipped', 'completed', 'cancelled'])->default('pending');
+            $table->unsignedBigInteger('user_id');
+            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->integer('total');
+            $table->string('consignee_name');
+            $table->string('consignee_phone');
+            $table->string('transaction_id')->unique();
+            $table->text('consignee_address');
+            $table->enum('payment_method', ['cod', 'vnpay'])->default('cod');
+            $table->decimal('shipping_fee', 10, 2)->default(0);
+            $table->foreignId('shipping_id')->constrained('shippings')->onDelete('cascade');
+            $table->string('city');
+            $table->string('email');
+            $table->string('subdistrict');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

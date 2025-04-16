@@ -1,123 +1,265 @@
 @extends('layouts.user')
 
-@section('title', 'Giới thiệu')
+@section('title', 'Trang Chủ')
 
 @section('content')
-    <!-- Bắt đầu phần Giới Thiệu Công Ty -->
-    <div class="about-us-section untree_co-section">
-        <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-lg-6">
-                    <h2 class="section-title">Giới Thiệu Về Chúng Tôi</h2>
-                    <p>Được thành lập vào năm 2010, chúng tôi tự hào là đơn vị hàng đầu trong lĩnh vực nội thất gỗ cao cấp. Với sứ mệnh mang đến không gian sống tinh tế và bền vững, chúng tôi luôn chú trọng vào chất lượng và dịch vụ.</p>
-                    <p>Tầm nhìn của chúng tôi là trở thành thương hiệu nội thất hàng đầu, được khách hàng tin tưởng và lựa chọn.</p>
-                    <p>Chúng tôi cam kết:</p>
-                    <ul>
-                        <li>Chất lượng sản phẩm đạt tiêu chuẩn cao.</li>
-                        <li>Dịch vụ chăm sóc khách hàng chuyên nghiệp.</li>
-                        <li>Thiết kế sáng tạo, phù hợp với mọi không gian.</li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-5">
-                    <div class="img-wrap">
-                        <img src="https://lh6.googleusercontent.com/HJMP8moxgROLlYhCHE_MdCDDzjkvwA0ig_0C1tu1K7n3R6jpf50cXjnkEjrAWI60F9c6pPZb-PJBjOEo_cTXt_P-Id89RBRpbBMojd9Hloqsc94FEftFTCwBDzGVIk3yha8KwAic" alt="Về chúng tôi" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Kết thúc phần Giới Thiệu Công Ty -->
-
-    <!-- Bắt đầu phần Vì Sao Chọn Chúng Tôi -->
+    <!-- Start Why Choose Us Section -->
     <div class="why-choose-section">
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col-lg-6">
-                    <h2 class="section-title">Vì Sao Chọn Chúng Tôi?</h2>
-                    <p>Chúng tôi cam kết mang đến sản phẩm chất lượng cao, dịch vụ chuyên nghiệp và trải nghiệm mua sắm tuyệt vời nhất.</p>
+                    <h2 class="section-title">Why Choose Us</h2>
+                    <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit
+                        imperdiet dolor tempor tristique.</p>
 
                     <div class="row my-5">
                         <div class="col-6 col-md-6">
                             <div class="feature">
                                 <div class="icon">
-                                    <img src="{{ asset('clients/images/truck.svg') }}" alt="Giao hàng nhanh" class="img-fluid">
+                                    <img src="{{ asset('clients/images/truck.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Giao Hàng Nhanh & Miễn Phí</h3>
-                                <p>Giao hàng tận nơi nhanh chóng, miễn phí cho đơn hàng đủ điều kiện.</p>
+                                <h3>Fast &amp; Free Shipping</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
                             </div>
                         </div>
 
                         <div class="col-6 col-md-6">
                             <div class="feature">
                                 <div class="icon">
-                                    <img src="{{ asset('clients/images/bag.svg') }}" class="img-fluid">
+                                    <img src="{{ asset('clients/images/bag.svg') }}" class="imf-fluid">
                                 </div>
-                                <h3>Mua Sắm Dễ Dàng</h3>
-                                <p>Hệ thống đặt hàng đơn giản, tiện lợi với nhiều phương thức thanh toán.</p>
+                                <h3>Easy to Shop</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
                             </div>
                         </div>
 
                         <div class="col-6 col-md-6">
                             <div class="feature">
                                 <div class="icon">
-                                    <img src="{{ asset('clients/images/warranty.svg') }}" width="46px" height="46px" alt="Bảo hành dài hạn" class="img-fluid">
+                                    <img src="{{ asset('clients/images/support.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Bảo hành dài hạn</h3>
-                                <p>Chính sách bảo hành lên đến 5 năm giúp bạn yên tâm sử dụng.</p>
+                                <h3>24/7 Support</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
                             </div>
                         </div>
 
                         <div class="col-6 col-md-6">
                             <div class="feature">
                                 <div class="icon">
-                                    <img src="{{ asset('clients/images/return.svg') }}" alt="Đổi trả dễ dàng" class="img-fluid">
+                                    <img src="{{ asset('clients/images/return.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Đổi Trả Dễ Dàng</h3>
-                                <p>Chính sách đổi trả minh bạch, dễ dàng và nhanh chóng.</p>
+                                <h3>Hassle Free Returns</h3>
+                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.
+                                </p>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
                 <div class="col-lg-5">
                     <div class="img-wrap">
-                        <img src="{{ asset('clients/images/why-choose-us-img.jpg') }}" alt="Hình ảnh" class="img-fluid">
+                        <img src="{{ asset('clients/images/why-choose-us-img.jpg') }}" alt="Image" class="img-fluid">
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-    <!-- Kết thúc phần Vì Sao Chọn Chúng Tôi -->
+    <!-- End Why Choose Us Section -->
 
-    <!-- Start We Help Section -->
-    <div class="we-help-section">
+    <!-- Start Team Section -->
+    <div class="untree_co-section">
         <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-lg-7 mb-5 mb-lg-0">
-                    <div class="imgs-grid">
-                        <div class="grid grid-1"><img src="{{ asset('clients/images/img-grid-1.jpg') }}" alt="Untree.co">
-                        </div>
-                        <div class="grid grid-2"><img src="{{ asset('clients/images/img-grid-1.jpg') }}"></div>
-                        <div class="grid grid-3"><img src="{{ asset('clients/images/img-grid-1.jpg') }}"></div>
-                    </div>
-                </div>
-                <div class="col-lg-5 ps-lg-5">
-                    <h2 class="section-title mb-4">Giúp Bạn Thiết Kế Nội Thất Hiện Đại</h2>
-                    <p>Chúng tôi giúp bạn tạo không gian sống tiện nghi và hiện đại.</p>
 
-                    <ul class="list-unstyled custom-list my-4">
-                        <li>Chất liệu cao cấp, bền đẹp.</li>
-                        <li>Thiết kế hiện đại, tinh tế.</li>
-                        <li>Giá cả hợp lý, cạnh tranh.</li>
-                        <li>Hỗ trợ khách hàng tận tình.</li>
-                    </ul>
-                    <p><a href="{{ route('products') }}" class="btn">Khám Phá</a></p>
+            <div class="row mb-5">
+                <div class="col-lg-5 mx-auto text-center">
+                    <h2 class="section-title">Our Team</h2>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <!-- Start Column 1 -->
+                <div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+                    <img src="{{ asset('clients/images/person_1.jpg') }}" class="img-fluid mb-5">
+                    <h3 clas><a href="#"><span class="">Lawson</span> Arnold</a></h3>
+                    <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+                    <p>Separated they live in.
+                        Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
+                    </p>
+                    <p class="mb-0"><a href="#" class="more dark">Learn More <span
+                                class="icon-arrow_forward"></span></a></p>
+                </div>
+                <!-- End Column 1 -->
+
+                <!-- Start Column 2 -->
+                <div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+                    <img src="{{ asset('clients/images/person_2.jpg') }}" class="img-fluid mb-5">
+
+                    <h3 clas><a href="#"><span class="">Jeremy</span> Walker</a></h3>
+                    <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+                    <p>Separated they live in.
+                        Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
+                    </p>
+                    <p class="mb-0"><a href="#" class="more dark">Learn More <span
+                                class="icon-arrow_forward"></span></a></p>
+
+                </div>
+                <!-- End Column 2 -->
+
+                <!-- Start Column 3 -->
+                <div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+                    <img src="{{ asset('clients/images/person_3.jpg') }}" class="img-fluid mb-5">
+                    <h3 clas><a href="#"><span class="">Patrik</span> White</a></h3>
+                    <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+                    <p>Separated they live in.
+                        Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
+                    </p>
+                    <p class="mb-0"><a href="#" class="more dark">Learn More <span
+                                class="icon-arrow_forward"></span></a></p>
+                </div>
+                <!-- End Column 3 -->
+
+                <!-- Start Column 4 -->
+                <div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+                    <img src="{{ asset('clients/images/person_4.jpg') }}" class="img-fluid mb-5">
+
+                    <h3 clas><a href="#"><span class="">Kathryn</span> Ryan</a></h3>
+                    <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+                    <p>Separated they live in.
+                        Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.
+                    </p>
+                    <p class="mb-0"><a href="#" class="more dark">Learn More <span
+                                class="icon-arrow_forward"></span></a></p>
+
+
+                </div>
+                <!-- End Column 4 -->
+
+
+
+            </div>
+        </div>
+    </div>
+    <!-- End Team Section -->
+
+
+
+    <!-- Start Testimonial Slider -->
+    <div class="testimonial-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 mx-auto text-center">
+                    <h2 class="section-title">Testimonials</h2>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="testimonial-slider-wrap text-center">
+
+                        <div id="testimonial-nav">
+                            <span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
+                            <span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
+                        </div>
+
+                        <div class="testimonial-slider">
+
+                            <div class="item">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 mx-auto">
+
+                                        <div class="testimonial-block text-center">
+                                            <blockquote class="mb-5">
+                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
+                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
+                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
+                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                            </blockquote>
+
+                                            <div class="author-info">
+                                                <div class="author-pic">
+                                                    <img src="{{ asset('clients/images/person-1.jpg') }}"
+                                                        alt="Maria Jones" class="img-fluid">
+                                                </div>
+                                                <h3 class="font-weight-bold">Maria Jones</h3>
+                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END item -->
+
+                            <div class="item">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 mx-auto">
+
+                                        <div class="testimonial-block text-center">
+                                            <blockquote class="mb-5">
+                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
+                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
+                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
+                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                            </blockquote>
+
+                                            <div class="author-info">
+                                                <div class="author-pic">
+                                                    <img src="{{ asset('clients/images/person-2.jpg') }}"
+                                                        alt="Maria Jones" class="img-fluid">
+                                                </div>
+                                                <h3 class="font-weight-bold">Maria Jones</h3>
+                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END item -->
+
+                            <div class="item">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 mx-auto">
+
+                                        <div class="testimonial-block text-center">
+                                            <blockquote class="mb-5">
+                                                <p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio
+                                                    quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
+                                                    velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
+                                                    tristique senectus et netus et malesuada fames ac turpis egestas.
+                                                    Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
+                                            </blockquote>
+
+                                            <div class="author-info">
+                                                <div class="author-pic">
+                                                    <img src="{{ asset('clients/images/person-3.jpg') }}"
+                                                        alt="Maria Jones" class="img-fluid">
+                                                </div>
+                                                <h3 class="font-weight-bold">Maria Jones</h3>
+                                                <span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END item -->
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End We Help Section -->
-
+    <!-- End Testimonial Slider -->
 
 @endsection
