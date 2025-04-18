@@ -130,31 +130,38 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::resource('products', ProductController::class)->except(['show']);
 
     Route::resource('colors', ColorController::class);
-//show hoá đơn
-    Route::get('/invoice/{orderId}', [HistoryPaymentController::class, 'show'])->name('invoice.show');
-// tải hoá đơn
-    Route::get('/invoice/download/{orderId}', [HistoryPaymentController::class, 'downloadPDF'])->name('invoice.download');
-//lịch sử mua hàng và giao dịch
-    Route::get('/payment/history', [HistoryPaymentController::class, 'index'])->name('payment.history');
-    Route::get('/history/detail/{id}', [HistoryPaymentController::class, 'history_detail'])->name('history.detail');
-// Show và cập nhật trạng thái thanh toán
-    Route::get('/payment/show', [AdminPaymentController::class, 'showOrderPayments'])->name('payment.show');
-    Route::put('/admin/order/{orderId}/update-payment-status', [AdminPaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
-// Route để lọc đơn hàng theo mã giao dịch
-Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
-// Feedbacks
-Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
-    Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
-//voucher
-Route::resource('vouchers', VoucherController::class);
-
-
-Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
-Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
-Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
-
 
     Route::resource('sizes', SizeController::class);
+
+    //show hoá đơn
+    Route::get('/invoice/{orderId}', [HistoryPaymentController::class, 'show'])->name('invoice.show');
+
+    // tải hoá đơn
+    Route::get('/invoice/download/{orderId}', [HistoryPaymentController::class, 'downloadPDF'])->name('invoice.download');
+
+    //lịch sử mua hàng và giao dịch
+    Route::get('/payment/history', [HistoryPaymentController::class, 'index'])->name('payment.history');
+    Route::get('/history/detail/{id}', [HistoryPaymentController::class, 'history_detail'])->name('history.detail');
+
+    // Show và cập nhật trạng thái thanh toán
+    Route::get('/payment/show', [AdminPaymentController::class, 'showOrderPayments'])->name('payment.show');
+    Route::put('/admin/order/{orderId}/update-payment-status', [AdminPaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
+
+    // Route để lọc đơn hàng theo mã giao dịch
+    Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
+    
+    // Feedbacks
+    Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
+    Route::patch('/feedbacks/{id}/toggle-hide', [AdminFeedbackController::class, 'toggleHide'])->name('feedbacks.toggleHide'); // Route cho toggleHide
+
+
+    //voucher
+    Route::resource('vouchers', VoucherController::class);
+
+    Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
+    Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
+    Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 
     Route::get('/users', [CustomerController::class, 'index'])->name('users.index');
     Route::get('/users/{id}', [CustomerController::class, 'show'])->name('users.show');

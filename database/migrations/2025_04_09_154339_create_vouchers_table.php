@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();             // Mã voucher
             $table->string('type')->default('fixed');     // Kiểu: fixed hoặc percent
-            $table->integer('amount');
+            $table->integer('value');
             $table->integer('min_order_amount');
             $table->integer('usage_limit')->nullable();   // Giới hạn số lần dùng
             $table->integer('used')->default(0);          // Đã dùng bao nhiêu lần
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->dateTime('expires_at')->nullable();   // Hết hạn
             $table->boolean('is_active')->default(true);  // Có đang hoạt động không
             $table->timestamps();
+
         });
     }
 

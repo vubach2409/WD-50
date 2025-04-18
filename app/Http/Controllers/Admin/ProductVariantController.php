@@ -80,8 +80,16 @@ class ProductVariantController extends Controller
         ]);
 
         // Kiểm tra trùng màu và kích thước trong cùng sản phẩm
-        $product->variants()->create($request->except('image', 'color_id', 'size_id'));
-
+        $product->variants()->create([
+            'variation_name' => $request->variation_name,
+            'sku' => $request->sku,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'color_id' => $request->color_id,
+            'size_id' => $request->size_id,
+            'weight' => $request->weight,
+            'image' => $request->image ? $request->file('image')->store('variants', 'public') : null,
+        ]);
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được thêm thành công!');
     }
@@ -146,7 +154,24 @@ class ProductVariantController extends Controller
             'weight.min' => 'Trọng lượng không thể nhỏ hơn 0.',
         ]);
 
-        $variant->update($request->except('image', 'color_id', 'size_id'));
+        $data = [
+            'variation_name' => $request->variation_name,
+            'sku' => $request->sku,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'color_id' => $request->color_id,
+            'size_id' => $request->size_id,
+            'weight' => $request->weight,
+        ];
+        
+        if ($request->hasFile('image')) {
+            if ($variant->image) {
+                Storage::disk('public')->delete($variant->image);
+            }
+            $data['image'] = $request->file('image')->store('variants', 'public');
+        }
+        
+        $variant->update($data);
 
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được cập nhật thành công!');
