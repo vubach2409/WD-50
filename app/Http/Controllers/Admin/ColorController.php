@@ -1,4 +1,5 @@
 <?php 
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -21,10 +22,14 @@ class ColorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:colors,name|max:255',
+            'name' => 'required|string|max:255|unique:colors,name',
+        ], [
+            'name.required' => 'Vui lòng nhập tên màu.',
+            'name.unique' => 'Tên màu đã tồn tại.',
+            'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
         ]);
 
-        Color::create($request->all());
+        Color::create($request->only('name'));
         return redirect()->route('admin.colors.index')->with('success', 'Thêm màu thành công!');
     }
 
@@ -36,10 +41,14 @@ class ColorController extends Controller
     public function update(Request $request, Color $color)
     {
         $request->validate([
-            'name' => 'required|max:255|unique:colors,name,' . $color->id,
+            'name' => 'required|string|max:255|unique:colors,name,' . $color->id,
+        ], [
+            'name.required' => 'Vui lòng nhập tên màu.',
+            'name.unique' => 'Tên màu đã tồn tại.',
+            'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
         ]);
 
-        $color->update($request->all());
+        $color->update($request->only('name'));
         return redirect()->route('admin.colors.index')->with('success', 'Cập nhật màu thành công!');
     }
 

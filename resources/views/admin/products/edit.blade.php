@@ -37,7 +37,7 @@
                             <td>
                                 <input type="number" name="price_sale"
                                     class="form-control @error('price_sale') is-invalid @enderror"
-                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale') }}">
+                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale',$product->price_sale)  }}">
                                 @error('price_sale')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror

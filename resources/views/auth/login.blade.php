@@ -16,7 +16,7 @@
             <div class="form-group">
                 <label for="email">{{ __('Email') }}</label>
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email"
-                       value="{{ old('email') }}" required autocomplete="email" autofocus>
+                       value="{{ old('email') }}"  autocomplete="email" autofocus>
                 @error('email')
                     <span class="invalid-feedback">
                         <strong>{{ $message }}</strong>
@@ -28,7 +28,7 @@
                 <label for="password">{{ __('Password') }}</label>
                 <div class="password-wrapper">
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                           name="password" required autocomplete="current-password">
+                           name="password"  autocomplete="current-password">
                     <span class="toggle-password" onclick="togglePassword()">👁️</span>
                 </div>
                 @error('password')

@@ -1,5 +1,13 @@
 @extends('layouts.app')
 
+@php
+    use Illuminate\Support\MessageBag;
+    $passwordErrors = session('errors') instanceof MessageBag ? session('errors')->get('password') : [];
+    $confirmError = collect($passwordErrors)->first(function ($msg) {
+        return str_contains($msg, 'khớp');
+    });
+@endphp
+
 @section('content')
 <div class="register-container">
     <div class="card-header">{{ __('Đăng Ký') }}</div>
@@ -7,9 +15,12 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
+        {{-- Tên --}}
         <div class="form-group">
             <label for="name">{{ __('Tên') }}</label>
-            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+            <input id="name" type="text"
+                   class="form-control @error('name') is-invalid @enderror"
+                   name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -17,9 +28,12 @@
             @enderror
         </div>
 
+        {{-- Email --}}
         <div class="form-group">
             <label for="email">{{ __('Email') }}</label>
-            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+            <input id="email" type="email"
+                   class="form-control @error('email') @enderror"
+                   name="email" value="{{ old('email') }}" autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -27,10 +41,13 @@
             @enderror
         </div>
 
+        {{-- Mật khẩu --}}
         <div class="form-group">
             <label for="password">{{ __('Mật khẩu') }}</label>
             <div class="password-wrapper">
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                <input id="password" type="password"
+                       class="form-control @error('password') is-invalid @enderror"
+                       name="password" autocomplete="new-password">
                 <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
             </div>
             @error('password')
@@ -40,25 +57,35 @@
             @enderror
         </div>
 
+        {{-- Xác nhận mật khẩu --}}
         <div class="form-group">
             <label for="password-confirm">{{ __('Xác nhận mật khẩu') }}</label>
             <div class="password-wrapper">
-                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                <input id="password-confirm" type="password"
+                       class="form-control @if($confirmError) is-invalid @endif"
+                       name="password_confirmation" autocomplete="new-password">
                 <span class="toggle-password" onclick="togglePassword('password-confirm')">👁️</span>
             </div>
+            @if ($confirmError)
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $confirmError }}</strong>
+                </span>
+            @endif
         </div>
 
+        {{-- Submit --}}
         <div class="form-group">
             <button type="submit" class="btn btn-primary">
                 {{ __('Đăng ký') }}
             </button>
             <div class="auth-links text-center">
-                Đã có tài khoản?<a href="{{ route('login') }}" class="btn-link"> Đăng nhập</a>
+                Đã có tài khoản? <a href="{{ route('login') }}" class="btn-link">Đăng nhập</a>
             </div>
         </div>
     </form>
 </div>
 
+{{-- Toggle --}}
 <script>
     function togglePassword(fieldId) {
         const passwordField = document.getElementById(fieldId);

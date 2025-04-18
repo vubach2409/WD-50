@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('size_id')->nullable();
             $table->string('variation_name');
             $table->string('sku')->unique();
-            $table->decimal('price', 15, 2);
+            $table->integer('price');
             $table->text('image')->nullable();
             $table->integer('stock')->default(0);
             $table->timestamps();
