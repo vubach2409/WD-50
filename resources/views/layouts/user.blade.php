@@ -23,7 +23,7 @@
 
 
 
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>Nội Thất PoLy</title>
 </head>
 
 <body>

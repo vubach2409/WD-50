@@ -25,6 +25,102 @@ body {
     filter: grayscale(50%);
 }
 
+.product-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px; /* Tạo bo góc cho khung sản phẩm */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+  transform: scale(1.05); /* Khi hover, phóng to một chút */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ */
+}
+
+.product-image {
+  transition: opacity 0.3s ease;
+}
+
+.product-item:hover .product-image {
+  opacity: 0.5; /* Khi hover, làm mờ ảnh sản phẩm */
+}
+
+.product-info {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.product-item:hover .product-info {
+  opacity: 0.5; /* Khi hover, làm mờ thông tin sản phẩm */
+}
+
+.product-action-btn {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-item:hover .product-action-btn {
+  opacity: 1; /* Chỉ hiển thị nút khi hover */
+}
+.product-action-btn a {
+  transition: background-color 0.3s ease, color 0.3s ease; /* Thêm hiệu ứng chuyển màu */
+}
+
+.product-action-btn a {
+  color: #e2e2e2; /* Màu chữ mặc định */
+  background-color: #20589b; /* Màu nền khi hover */
+  font-size: 13px;
+}
+
+.product-action-btn a:hover {
+  background-color: #188766; /* Màu nền khi hover */
+  color: white; /* Màu chữ khi hover */
+}
+
+    .product-item {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .product-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-image img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.3s ease;
+    }
+
+    .product-item:hover .product-image img {
+        transform: scale(1.1); /* Zoom effect when hover */
+    }
+
+    .product-action-btn a {
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .product-item:hover .product-action-btn a {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+
+    .product-title {
+        font-size: 15px;
+        font-weight: 400;
+    }
+
+    .product-price {
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+
 .out-of-stock-label {
     position: absolute;
     top: 50%;
