@@ -45,8 +45,8 @@ class VoucherController extends Controller
             ],
             'min_order_amount' => 'required|integer|min:0',
             'usage_limit' => 'nullable|integer|min:1',
-            'starts_at' => 'nullable|date|before_or_equal:expires_at' . now()->toDateString(),
-            'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(), 
+            'starts_at' => 'nullable|date|before_or_equal:expires_at',
+            'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(),
             'is_active' => 'boolean',
         ], [
             'expires_at.after_or_equal' => 'Ngày hết hạn phải lớn hơn hoặc bằng ngày hiện tại.',
@@ -67,11 +67,11 @@ class VoucherController extends Controller
         ]);
 
         $data = $request->all();
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->boolean('is_active');  // Sử dụng boolean để đảm bảo đúng kiểu
 
         Voucher::create($data);
 
-        return redirect()->route('admin.vouchers.index')->with('success', 'Tạo mã giảm giá thành công.');
+        return redirect()->route('admin.vouchers.index')->with('success', 'Tạo mã giảm giá thành công!');
     }
 
     /**
@@ -102,8 +102,8 @@ class VoucherController extends Controller
             ],
             'min_order_amount' => 'required|integer|min:0',
             'usage_limit' => 'nullable|integer|min:1',
-            'starts_at' => 'nullable|date|before_or_equal:expires_at'. now()->toDateString(),
-            'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(), 
+            'starts_at' => 'nullable|date|before_or_equal:expires_at',
+            'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(),
             'is_active' => 'boolean',
         ], [
             'expires_at.after_or_equal' => 'Ngày hết hạn phải lớn hơn hoặc bằng ngày hiện tại.',
@@ -124,27 +124,16 @@ class VoucherController extends Controller
         ]);
 
         $data = $request->all();
-        $data['is_active'] = $request->has('is_active');
+        $data['is_active'] = $request->boolean('is_active');  // Sử dụng boolean
 
         $voucher->update($data);
 
-        return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật mã giảm giá thành công.');
+        return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật voucher thành công!');
     }
 
-    /**
-     * Xóa voucher khỏi cơ sở dữ liệu.
-     */
     public function destroy(Voucher $voucher)
     {
         $voucher->delete();
-        return back()->with('success', 'Xóa mã giảm giá thành công.');
-    }
-
-    /**
-     * (Không sử dụng) Hiển thị chi tiết một voucher cụ thể.
-     */
-    public function show(string $id)
-    {
-        //
+        return back()->with('success', 'Xóa mã giảm giá thành công!');
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
@@ -19,7 +20,7 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->category_id) {
+        if ($request->category_id) {    
             $query->where('category_id', $request->category_id);
         }
 
@@ -66,7 +67,7 @@ class ProductController extends Controller
                 'max:255',
                 Rule::unique('products')->where(function ($query) use ($request) {
                     return $query->where('category_id', $request->category_id)
-                                 ->where('brand_id', $request->brand_id); // Kiểm tra theo cả danh mục và thương hiệu
+                                 ->where('brand_id', $request->brand_id); 
                 }),
             ],
             'description' => 'nullable|string',
@@ -115,7 +116,6 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        // Validate dữ liệu đầu vào khi sửa sản phẩm
         $request->validate([
             'name' => [
                 'required',
@@ -124,7 +124,7 @@ class ProductController extends Controller
                 Rule::unique('products')->where(function ($query) use ($request, $product) {
                     return $query->where('category_id', $request->category_id)
                                  ->where('brand_id', $request->brand_id)
-                                 ->where('id', '!=', $product->id); // Loại trừ sản phẩm hiện tại
+                                 ->where('id', '!=', $product->id); 
                 }),
             ],
             'description' => 'nullable|string',
@@ -166,7 +166,10 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $product->variants()->delete();
+
         $product->delete();
+
         return redirect()->route('admin.products.index')->with('success', 'Xoá sản phẩm thành công!');
     }
     public function trash()
@@ -177,6 +180,7 @@ class ProductController extends Controller
     public function restore($id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);
+
         $product->restore();
 
         return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã được khôi phục.');
@@ -184,9 +188,16 @@ class ProductController extends Controller
     public function forceDelete($id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);
+
+        $product->variants()->onlyTrashed()->forceDelete();
+
+        if ($product->image && Storage::disk('public')->exists('products/' . $product->image)) {
+            Storage::disk('public')->delete('products/' . $product->image);
+        }
+
         $product->forceDelete();
+
         return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã bị xóa vĩnh viễn!');
     }
 
-    
 }

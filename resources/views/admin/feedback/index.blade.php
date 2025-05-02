@@ -3,8 +3,8 @@
 @section('title', 'Quản lý đánh giá')
 
 @section('content')
-<div class="container-fluid mt-4">
-    <h2 class="text-primary mb-4">Danh sách đánh giá</h2>
+<div class="container-fluid">
+    <h2 class="text-primary">Danh sách đánh giá</h2>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

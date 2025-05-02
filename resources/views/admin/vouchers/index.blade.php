@@ -41,9 +41,9 @@
                                 <td class="text-center align-middle">{{ $voucher->usage_limit ?? '∞' }}</td>
                                 <td class="text-center align-middle">
                                     @if ($voucher->is_active)
-                                        <span class="badge bg-success">Hoạt động</span>
+                                        <span class="badge bg-success text-light">Hoạt động</span>
                                     @else
-                                        <span class="badge bg-warning">Tắt</span>
+                                        <span class="badge bg-danger text-light">Tắt</span> 
                                     @endif
                                 </td>
                                 <td class="text-center align-middle">

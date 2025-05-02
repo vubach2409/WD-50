@@ -87,8 +87,8 @@
                         <th>Kích hoạt</th>
                         <td class="text-end">
                             <select name="is_active" class="form-control">
-                                <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Kích hoạt</option>
-                                <option value="0" {{ old('is_active', 1) == 0 ? 'selected' : '' }}>Ngừng Kích hoạt</option>
+                                <option value="1" {{ old('is_active', $voucher->is_active ?? 1) == 1 ? 'selected' : '' }}>Kích hoạt</option>
+                                <option value="0" {{ old('is_active', $voucher->is_active ?? 1) == 0 ? 'selected' : '' }}>Ngừng Kích hoạt</option>
                             </select>
                         </td>
                     </tr>

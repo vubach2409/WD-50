@@ -1,55 +1,80 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container">
-        <h1 class="mb-4">Chi tiết đơn hàng #{{ $order->id }}</h1>
+<div class="container-fluid">
+    <div class="card shadow rounded-3">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-box-open me-2"></i>
+                Chi tiết đơn hàng #{{ $order->id }}
+            </h4>
+        </div>
+        <div class="card-body">
+            <!-- Thông tin khách hàng -->
+            <h5 class="card-title">- Thông tin khách hàng</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Tên khách hàng:</strong> {{ $order->user->name }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Email:</strong> {{ $order->user->email }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Số điện thoại:</strong> {{ $order->consignee_phone }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Địa chỉ:</strong> {{ $order->consignee_address }}, {{ $order->subdistrict }}, {{ $order->city }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Mã giao dịch:</strong> {{ $order->transaction_id }}
+                </li>
+            </ul>
 
-        <div class="card">
-            <div class="card-header">
-                Thông tin đơn hàng
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Thông tin khách hàng</h5>
-                <p><strong>Tên khách hàng:</strong> {{ $order->user->name }}</p>
-                <p><strong>Email:</strong> {{ $order->user->email }}</p>
-                <p><strong>Số điện thoại:</strong> {{ $order->consignee_phone }}</p>
-                <p><strong>Địa chỉ:</strong> {{ $order->consignee_address }}, {{ $order->subdistrict }}, {{ $order->city }}
-                </p>
-                <p><strong>Mã giao dịch:</strong> {{ $order->transaction_id }}</p>
+            <hr>
 
-                <hr>
-
-                <h5 class="card-title">Chi tiết sản phẩm</h5>
-                <table class="table table-bordered">
-                    <thead>
+            <!-- Chi tiết sản phẩm -->
+            <h5 class="card-title">- Chi tiết sản phẩm</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($order->items as $item)
                         <tr>
-                            <th>Sản phẩm</th>
-                            <th>Số lượng</th>
-                            <th>Đơn giá</th>
-                            <th>Tổng tiền</th>
+                            <td>{{ $item->product->name }}</td>
+                            <td>{{ $item->quantity }}</td>
+                            <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
+                            <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($order->items as $item)
-                            <tr>
-                                <td>{{ $item->product->name }}</td>
-                                <td>{{ $item->quantity }}</td>
-                                <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
-                                <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                    @endforeach
+                </tbody>
+            </table>
 
-                <hr>
+            <hr>
 
-                <h5 class="card-title">Thông tin thanh toán</h5>
-                <p><strong>Trạng thái:</strong> {{ ucfirst($order->payment->status) }}</p>
-                <p><strong>Vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }} VND</p>
-                <p><strong>Tổng tiền:</strong> {{ number_format($order->total, 0, ',', '.') }} VND</p>
+            <!-- Thông tin thanh toán -->
+            <h5 class="card-title">- Thông tin thanh toán</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Trạng thái:</strong> {{ ucfirst($order->payment->status) }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }} VND
+                </li>
+                <li class="list-group-item">
+                    <strong>Tổng tiền:</strong> {{ number_format($order->total, 0, ',', '.') }} VND
+                </li>
+            </ul>
 
-                <a href="{{ route('admin.orders.show') }}" class="btn btn-primary">Quay lại danh sách đơn hàng</a>
-            </div>
+            <center>
+                <a href="{{ route('admin.orders.show') }}" class="btn btn-secondary mt-3">Quay lại danh sách đơn hàng</a>
+            </center>
         </div>
     </div>
+</div>
 @endsection

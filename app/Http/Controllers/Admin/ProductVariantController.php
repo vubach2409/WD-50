@@ -38,8 +38,8 @@ class ProductVariantController extends Controller
                 'exists:colors,id',
                 Rule::unique('product_variants')->where(function ($query) use ($request, $product) {
                     return $query->where('color_id', $request->color_id)
-                                ->where('size_id', $request->size_id)
-                                ->where('product_id', $product->id);
+                        ->where('size_id', $request->size_id)
+                        ->where('product_id', $product->id);
                 }),
             ],
             'size_id' => [
@@ -47,8 +47,8 @@ class ProductVariantController extends Controller
                 'exists:sizes,id',
                 Rule::unique('product_variants')->where(function ($query) use ($request, $product) {
                     return $query->where('color_id', $request->color_id)
-                                ->where('size_id', $request->size_id)
-                                ->where('product_id', $product->id);
+                        ->where('size_id', $request->size_id)
+                        ->where('product_id', $product->id);
                 }),
             ],
             'variation_name' => 'required|string|max:255',
@@ -56,7 +56,6 @@ class ProductVariantController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'weight' => 'nullable|numeric|min:0',
         ], [
             'variation_name.required' => 'Tên biến thể không được để trống.',
             'variation_name.max' => 'Tên biến thể không được quá 255 ký tự.',
@@ -75,11 +74,8 @@ class ProductVariantController extends Controller
             'image.image' => 'Tệp tải lên phải là hình ảnh.',
             'image.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg.',
             'image.max' => 'Ảnh không được lớn hơn 2MB.',
-            'weight.numeric' => 'Trọng lượng phải là số.',
-            'weight.min' => 'Trọng lượng không thể nhỏ hơn 0.',
         ]);
 
-        // Kiểm tra trùng màu và kích thước trong cùng sản phẩm
         $product->variants()->create([
             'variation_name' => $request->variation_name,
             'sku' => $request->sku,
@@ -87,9 +83,9 @@ class ProductVariantController extends Controller
             'stock' => $request->stock,
             'color_id' => $request->color_id,
             'size_id' => $request->size_id,
-            'weight' => $request->weight,
             'image' => $request->image ? $request->file('image')->store('variants', 'public') : null,
         ]);
+
         return redirect()->route('admin.product_variants.index', $product)
             ->with('success', 'Biến thể được thêm thành công!');
     }
@@ -103,6 +99,7 @@ class ProductVariantController extends Controller
             'sizes' => Size::all()
         ]);
     }
+
     public function update(Request $request, Product $product, ProductVariant $variant)
     {
         $request->validate([
@@ -111,9 +108,9 @@ class ProductVariantController extends Controller
                 'exists:colors,id',
                 Rule::unique('product_variants')->where(function ($query) use ($request, $product, $variant) {
                     return $query->where('color_id', $request->color_id)
-                                ->where('size_id', $request->size_id)
-                                ->where('product_id', $product->id)
-                                ->where('id', '!=', $variant->id); // Loại trừ biến thể hiện tại
+                        ->where('size_id', $request->size_id)
+                        ->where('product_id', $product->id)
+                        ->where('id', '!=', $variant->id);
                 }),
             ],
             'size_id' => [
@@ -121,9 +118,9 @@ class ProductVariantController extends Controller
                 'exists:sizes,id',
                 Rule::unique('product_variants')->where(function ($query) use ($request, $product, $variant) {
                     return $query->where('color_id', $request->color_id)
-                                ->where('size_id', $request->size_id)
-                                ->where('product_id', $product->id)
-                                ->where('id', '!=', $variant->id); // Loại trừ biến thể hiện tại
+                        ->where('size_id', $request->size_id)
+                        ->where('product_id', $product->id)
+                        ->where('id', '!=', $variant->id);
                 }),
             ],
             'variation_name' => 'required|string|max:255',
@@ -131,7 +128,6 @@ class ProductVariantController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'weight' => 'nullable|numeric|min:0',
         ], [
             'variation_name.required' => 'Tên biến thể không được để trống.',
             'variation_name.max' => 'Tên biến thể không được quá 255 ký tự.',
@@ -150,8 +146,6 @@ class ProductVariantController extends Controller
             'image.image' => 'Tệp tải lên phải là hình ảnh.',
             'image.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg.',
             'image.max' => 'Ảnh không được lớn hơn 2MB.',
-            'weight.numeric' => 'Trọng lượng phải là số.',
-            'weight.min' => 'Trọng lượng không thể nhỏ hơn 0.',
         ]);
 
         $data = [
@@ -161,16 +155,15 @@ class ProductVariantController extends Controller
             'stock' => $request->stock,
             'color_id' => $request->color_id,
             'size_id' => $request->size_id,
-            'weight' => $request->weight,
         ];
-        
+
         if ($request->hasFile('image')) {
             if ($variant->image) {
                 Storage::disk('public')->delete($variant->image);
             }
             $data['image'] = $request->file('image')->store('variants', 'public');
         }
-        
+
         $variant->update($data);
 
         return redirect()->route('admin.product_variants.index', $product)
@@ -204,15 +197,17 @@ class ProductVariantController extends Controller
             ->with('success', 'Biến thể đã được khôi phục!');
     }
 
-    public function forceDelete(Product $product, ProductVariant $variant)
+    public function forceDelete(Product $product, $variantId)
     {
+        $variant = ProductVariant::withTrashed()->where('product_id', $product->id)->findOrFail($variantId);
+
         if ($variant->image) {
             Storage::disk('public')->delete($variant->image);
         }
 
         $variant->forceDelete();
 
-        return redirect()->route('admin.product_variants.index', $product)
+        return redirect()->route('admin.product_variants.trash', $product)
             ->with('success', 'Biến thể đã bị xóa vĩnh viễn!');
     }
 

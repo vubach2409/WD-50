@@ -2,13 +2,14 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2>Biến thể đã xóa: {{ $product->name }}</h2>
+    <h2 class="text-primary">Biến thể đã xóa: {{ $product->name }}</h2>
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
         </div>
     @endif
+
     @if ($variants->isEmpty())
         <div class="alert alert-info">
             <i class="fas fa-info-circle me-1"></i> Chưa có biến thể nào bị xóa.
@@ -29,49 +30,49 @@
                 </tr>
             </thead>
             <tbody>
-                    @foreach ($variants as $variant)
-                    <tr>
-                        <td class="align-middle">{{ $variant->sku }}</td>
-                        <td class="text-left align-middle">{{ $variant->variation_name }}</td>
-                        <td class="align-middle">{{ number_format($variant->price, 0, ',', '.') }}đ</td>
-                        <td class="align-middle">
-                            @if($variant->image)
-                                <img src="{{ asset('storage/' . $variant->image) }}" alt="Ảnh biến thể" width="100" height="100" class="border">
-                            @else
-                                <span class="text-muted">Không có ảnh</span>
-                            @endif
-                        </td>
-                        <td class="align-middle">
-                            @if($variant->color)
-                                {{ $variant->color->name }}
-                            @else
-                                <span class="text-muted">Không có</span>
-                            @endif
-                        </td>
-                        <td class="align-middle">{{ optional($variant->size)->name ?? 'Không có' }}</td>
-                        <td class="align-middle">{{ $variant->stock }}</td>
-                        <td class="align-middle">
-                            <form action="{{ route('admin.product_variants.restore', [$product->id, $variant->id]) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('POST') 
-                                <button type="submit" class="btn btn-success" onclick="return confirm('Khôi phục sản phẩm này?')">Khôi phục</button>
-                            </form>
+                @foreach ($variants as $variant)
+                <tr>
+                    <td class="align-middle">{{ $variant->sku }}</td>
+                    <td class="text-left align-middle">{{ $variant->variation_name }}</td>
+                    <td class="align-middle">{{ number_format($variant->price, 0, ',', '.') }}đ</td>
+                    <td class="align-middle">
+                        @if($variant->image)
+                            <img src="{{ asset('storage/' . $variant->image) }}" alt="Ảnh biến thể" width="100" height="100" class="border">
+                        @else
+                            <span class="text-muted">Không có ảnh</span>
+                        @endif
+                    </td>
+                    <td class="align-middle">
+                        @if($variant->color)
+                            {{ $variant->color->name }}
+                        @else
+                            <span class="text-muted">Không có</span>
+                        @endif
+                    </td>
+                    <td class="align-middle">{{ $variant->size->name ?? 'Không có' }}</td>
+                    <td class="align-middle">{{ $variant->stock }}</td>
+                    <td class="align-middle">
+                        <form action="{{ route('admin.product_variants.restore', [$product->id, $variant->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Khôi phục sản phẩm này?');">
+                            @csrf
+                            @method('POST') 
+                            <button type="submit" class="btn btn-success">Khôi phục</button>
+                        </form>
 
-                            <form action="{{ route('admin.product_variants.forceDelete', [$product->id, $variant->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Xóa vĩnh viễn sản phẩm này?')">Xóa vĩnh viễn</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                @endif
+                        <form action="{{ route('admin.product_variants.forceDelete', [$product->id, $variant->id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Xóa vĩnh viễn</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
-    
-    <div class="text-center mt-4">
-        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
+    @endif
+
+    <div class="text-center">
+        <a href="{{ route('admin.product_variants.index', $product->id) }}" class="btn btn-secondary">Quay lại</a>
     </div>
 </div>
 @endsection
