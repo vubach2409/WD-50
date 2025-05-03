@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Trang Chủ')
+@section('title', 'Cửa hàng')
 
 @section('content')
     <div class="untree_co-section product-section before-footer-section">
@@ -41,11 +41,11 @@
                     <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
                 </select>
 
-                <button type="submit" class="btn btn-outline-primary">Lọc</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm">Lọc</button>
             </form>
 
             {{-- DANH SÁCH SẢN PHẨM --}}
-            <div class="row">
+            <div class="row mt-5">
                 @forelse ($products as $product)
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-5 position-relative">
                         <a class="product-item d-block text-decoration-none"
