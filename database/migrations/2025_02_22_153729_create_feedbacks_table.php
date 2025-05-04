@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->integer('star');
             $table->text('content')->nullable();
+            $table->boolean('is_hidden')->default(false); 
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -22,11 +22,15 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:brands,name',
             'description' => 'nullable|string',
+        ], [
+            'name.required' => 'Vui lòng nhập tên thương hiệu.',
+            'name.unique' => 'Tên thương hiệu đã tồn tại.',
+            'name.max' => 'Tên thương hiệu không được vượt quá 255 ký tự.',
         ]);
 
-        Brand::create($request->all());
+        Brand::create($request->only('name', 'description'));
         return redirect()->route('admin.brands.index')->with('success', 'Thêm thương hiệu thành công!');
     }
 
@@ -39,14 +43,19 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:brands,name,' . $id,
             'description' => 'nullable|string',
+        ], [
+            'name.required' => 'Vui lòng nhập tên thương hiệu.',
+            'name.unique' => 'Tên thương hiệu đã tồn tại.',
+            'name.max' => 'Tên thương hiệu không được vượt quá 255 ký tự.',
         ]);
 
         $brand = Brand::findOrFail($id);
-        $brand->update($request->all());
+        $brand->update($request->only('name', 'description'));
         return redirect()->route('admin.brands.index')->with('success', 'Cập nhật thương hiệu thành công!');
     }
+
     public function destroy($id)
     {
         $brand = Brand::findOrFail($id);

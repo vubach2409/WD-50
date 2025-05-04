@@ -21,6 +21,7 @@ class Product extends Model
         'category_id', 
         'brand_id',
         'deleted_at',
+        
     ];
 
     public function category()

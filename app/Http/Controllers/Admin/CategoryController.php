@@ -22,11 +22,15 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'nullable|string'
+        ], [
+            'name.required' => 'Vui lòng nhập tên danh mục.',
+            'name.unique' => 'Tên danh mục đã tồn tại.',
+            'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
         ]);
 
-        Category::create($request->all());
+        Category::create($request->only('name', 'description'));
         return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục thành công!');
     }
 
@@ -38,11 +42,15 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string'
+        ], [
+            'name.required' => 'Vui lòng nhập tên danh mục.',
+            'name.unique' => 'Tên danh mục đã tồn tại.',
+            'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
         ]);
 
-        $category->update($request->all());
+        $category->update($request->only('name', 'description'));
         return redirect()->route('admin.categories.index')->with('success', 'Cập nhật danh mục thành công!');
     }
 

@@ -4,8 +4,7 @@
 <div class="container-fluid">
     <h2 class="text-primary">Chỉnh sửa danh mục</h2>
 
-    <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" 
-          onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật danh mục này?');">
+    <form action="{{ route('admin.categories.update', $category->id) }}" method="POST">
         @csrf
         @method('PUT')
 

@@ -12,7 +12,8 @@ class HomeController extends Controller
     {
         try {
             $products = Product::orderBy('price','desc')->take(3)->get();
-            return view('client.index', compact('products'));
+            $popularProducts = Product::inRandomOrder()->take(3)->get();
+            return view('client.index', compact('products','popularProducts'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading products. Please try again later.');
         }

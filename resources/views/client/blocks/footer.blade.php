@@ -49,7 +49,7 @@
 
                 <div class="col-lg-8">
                     <div class="row links-wrap">
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-4">
                             <ul class="list-unstyled">
                                 <li><a href="#">Về chúng tôi</a></li>
                                 <li><a href="#">Dịch Vụ</a></li>
@@ -58,7 +58,7 @@
                             </ul>
                         </div>
 
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-4">
                             <ul class="list-unstyled">
                                 <li><a href="#">Ủng hộ</a></li>
                                 <li><a href="#">Cơ sở kiến thức</a></li>
@@ -66,20 +66,12 @@
                             </ul>
                         </div>
 
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-4">
                             <ul class="list-unstyled">
                                 <li><a href="#">Việc làm</a></li>
                                 <li><a href="#">Đội ngũ của chúng tôi</a></li>
                                 <li><a href="#">Khả năng lãnh đạo</a></li>
                                 <li><a href="#">Chính sách bảo mật</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-6 col-sm-6 col-md-3">
-                            <ul class="list-unstyled">
-                                <li><a href="#">Ghế Bắc Âu</a></li>
-                                <li><a href="#">Kruzo Aero</a></li>
-                                <li><a href="#">Ghế Công Thái Học</a></li>
                             </ul>
                         </div>
                     </div>

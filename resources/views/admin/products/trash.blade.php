@@ -65,7 +65,7 @@
         </div>
     @endif
 
-    <div class="text-center mt-4">
+    <div class="text-center">
         <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
     </div>
 

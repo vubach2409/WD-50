@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -18,7 +20,7 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->category_id) {
+        if ($request->category_id) {    
             $query->where('category_id', $request->category_id);
         }
 
@@ -57,8 +59,17 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // Validate dữ liệu đầu vào
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where(function ($query) use ($request) {
+                    return $query->where('category_id', $request->category_id)
+                                 ->where('brand_id', $request->brand_id); 
+                }),
+            ],
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'price_sale' => 'required|numeric|min:0|lte:price',
@@ -68,12 +79,13 @@ class ProductController extends Controller
         ], [
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.max' => 'Tên sản phẩm không được quá 255 ký tự.',
+            'name.unique' => 'Tên sản phẩm này đã tồn tại trong danh mục và thương hiệu đã chọn.',
             'price.required' => 'Giá sản phẩm không được để trống.',
             'price.numeric' => 'Giá sản phẩm phải là số.',
             'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'price_sale.required' => 'Giá sản phẩm không được để trống.',
-            'price_sale.numeric' => 'Giá sản phẩm phải là số.',
-            'price_sale.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'price_sale.required' => 'Giá khuyến mãi không được để trống.',
+            'price_sale.numeric' => 'Giá khuyến mãi phải là số.',
+            'price_sale.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0.',
             'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
@@ -84,6 +96,7 @@ class ProductController extends Controller
             'image.max' => 'Ảnh không được lớn hơn 2MB.',
         ]);
 
+        // Lưu sản phẩm
         $product = new Product($request->except('image'));
 
         if ($request->hasFile('image')) {
@@ -104,7 +117,16 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where(function ($query) use ($request, $product) {
+                    return $query->where('category_id', $request->category_id)
+                                 ->where('brand_id', $request->brand_id)
+                                 ->where('id', '!=', $product->id); 
+                }),
+            ],
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'price_sale' => 'required|numeric|min:0|lte:price',
@@ -114,12 +136,13 @@ class ProductController extends Controller
         ], [
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.max' => 'Tên sản phẩm không được quá 255 ký tự.',
+            'name.unique' => 'Tên sản phẩm này đã tồn tại trong danh mục và thương hiệu đã chọn.',
             'price.required' => 'Giá sản phẩm không được để trống.',
             'price.numeric' => 'Giá sản phẩm phải là số.',
             'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'price_sale.required' => 'Giá sản phẩm không được để trống.',
-            'price_sale.numeric' => 'Giá sản phẩm phải là số.',
-            'price_sale.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'price_sale.required' => 'Giá khuyến mãi không được để trống.',
+            'price_sale.numeric' => 'Giá khuyến mãi phải là số.',
+            'price_sale.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0.',
             'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
@@ -130,19 +153,23 @@ class ProductController extends Controller
             'image.max' => 'Ảnh không được lớn hơn 2MB.',
         ]);
 
+        // Cập nhật sản phẩm
         $product->update($request->except('image'));
 
         if ($request->hasFile('image')) {
             $product->image = $request->file('image')->store('products', 'public');
-            $product->save();
         }
 
+        $product->save();
         return redirect()->route('admin.products.index')->with('success', 'Cập nhật sản phẩm thành công!');
     }
 
     public function destroy(Product $product)
     {
+        $product->variants()->delete();
+
         $product->delete();
+
         return redirect()->route('admin.products.index')->with('success', 'Xoá sản phẩm thành công!');
     }
     public function trash()
@@ -153,16 +180,27 @@ class ProductController extends Controller
     public function restore($id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);
+
         $product->restore();
 
-        return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã được khôi phục.');
+        $product->variants()->onlyTrashed()->restore();
+
+        return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm và biến thể đã được khôi phục.');
     }
+
     public function forceDelete($id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);
+
+        $product->variants()->onlyTrashed()->forceDelete();
+
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->forceDelete();
+
         return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã bị xóa vĩnh viễn!');
     }
 
-    
 }

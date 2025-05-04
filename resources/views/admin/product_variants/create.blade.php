@@ -86,7 +86,7 @@
                         <tr>
                             <th>Số lượng kho</th>
                             <td>
-                                <input type="number" name="stock" class="form-control" value="{{ old('stock', 0) }}">
+                                <input type="number" name="stock" class="form-control" value="{{ old('stock', 1) }}">
                                 @error('stock')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
