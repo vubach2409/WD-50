@@ -37,10 +37,12 @@
                             {{ $voucher->expires_at ? $voucher->expires_at->format('d/m/Y') : '-' }}
                         </td>
                         <td>
-                            @if ($voucher->is_active)
-                                <span class="badge bg-success">Hoạt động</span>
+                            @if (!$voucher->is_active)
+                                <span class="badge bg-secondary">Ngừng hoạt động</span>
+                            @elseif ($voucher->expires_at && $voucher->expires_at < now())
+                                <span class="badge bg-danger">Hết hạn</span>
                             @else
-                                <span class="badge bg-warning">Tắt</span>
+                                <span class="badge bg-success">Đang hoạt động</span>
                             @endif
                         </td>
                         <td>

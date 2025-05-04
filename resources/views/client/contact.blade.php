@@ -26,7 +26,7 @@
                                         </svg>
                                     </div> <!-- /.icon -->
                                     <div class="service-contents">
-                                        <p>43 Raymouth Rd. Baltemoer, London 3910</p>
+                                        <p>29 Trịnh Văn Bô, Phương Canh, Nam Từ Liêm, Hà Nội</p>
                                     </div> <!-- /.service-contents-->
                                 </div> <!-- /.service -->
                             </div>
@@ -42,7 +42,7 @@
                                         </svg>
                                     </div> <!-- /.icon -->
                                     <div class="service-contents">
-                                        <p>info@yourdomain.com</p>
+                                        <p>noithatpoly654info@gmail.com</p>
                                     </div> <!-- /.service-contents-->
                                 </div> <!-- /.service -->
                             </div>
@@ -58,7 +58,7 @@
                                         </svg>
                                     </div> <!-- /.icon -->
                                     <div class="service-contents">
-                                        <p>+1 294 3925 3939</p>
+                                        <p>+84 353 1744 09</p>
                                     </div> <!-- /.service-contents-->
                                 </div> <!-- /.service -->
                             </div>
