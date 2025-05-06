@@ -86,7 +86,7 @@ class ProductController extends Controller
             'price_sale.required' => 'Giá khuyến mãi không được để trống.',
             'price_sale.numeric' => 'Giá khuyến mãi phải là số.',
             'price_sale.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0.',
-            'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
+            'price_sale.lte' => 'Giá min phải nhỏ hơn hoặc bằng giá max.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
