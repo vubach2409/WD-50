@@ -92,7 +92,7 @@ class OrderController extends Controller
              return redirect()->route('account.orders')->with('success','Đơn hàng đã được huỷ thành công');
         }else {
             // Nếu đơn hàng không ở trạng thái 'pending', không thể hủy
-            return redirect()->route('admin.orders.index')->with('error', 'Không thể hủy đơn hàng này vì trạng thái không phải là "Chờ xác nhận".');
+            return redirect()->route('account.orders')->with('error', 'Không thể hủy đơn hàng này vì trạng thái không phải là "Chờ xác nhận".');
         }
     }
     // OrderController.php

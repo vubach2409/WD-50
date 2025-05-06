@@ -22,7 +22,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Giá</th>
+                            <th>Giá max</th>
                             <td>
                                 <input type="number" name="price"
                                     class="form-control @error('price') is-invalid @enderror"
@@ -33,11 +33,11 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Giá khuyến mãi</th>
+                            <th>Giá min</th>
                             <td>
                                 <input type="number" name="price_sale"
                                     class="form-control @error('price_sale') is-invalid @enderror"
-                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale',$product->price_sale)  }}">
+                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale', $product->price_sale) }}">
                                 @error('price_sale')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror

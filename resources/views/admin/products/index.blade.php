@@ -11,69 +11,67 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        <form method="GET" action="{{ route('admin.products.index') }}" class="mb-3">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-2">
+                    <input type="text" name="search" class="form-control" placeholder="Nhập tên sản phẩm..."
+                        value="{{ request('search') }}">
+                </div>
+                <div class="col-lg-3 col-md-6 mb-2">
+                    <select name="category_id" class="form-control">
+                        <option value="">-- Chọn danh mục --</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-2">
+                    <select name="brand_id" class="form-control">
+                        <option value="">-- Chọn thương hiệu --</option>
+                        @foreach ($brands as $brand)
+                            <option value="{{ $brand->id }}" {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-2">
+                    <select name="price_range" class="form-control">
+                        <option value="">-- Chọn khoảng giá --</option>
+                        <option value="1-5000000" {{ request('price_range') == '1-5000000' ? 'selected' : '' }}>Dưới 5
+                            triệu</option>
+                        <option value="5000000-10000000"
+                            {{ request('price_range') == '5000000-10000000' ? 'selected' : '' }}>5 - 10 triệu</option>
+                        <option value="10000000-20000000"
+                            {{ request('price_range') == '10000000-20000000' ? 'selected' : '' }}>10 - 20 triệu</option>
+                        <option value="20000000-" {{ request('price_range') == '20000000-' ? 'selected' : '' }}>Trên 20
+                            triệu</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="text-right">
+                <button type="submit" class="btn btn-success">Lọc</button>
+                <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Xóa lọc</a>
+            </div>
+        </form>
         @if ($products->isEmpty())
             <div class="alert alert-info">
                 <i class="fas fa-info-circle me-1"></i> Chưa có sản phẩm nào.
             </div>
-        @else
-            <form method="GET" action="{{ route('admin.products.index') }}" class="mb-3">
-                <div class="row">
-                    <div class="col-lg-3 col-md-6 mb-2">
-                        <input type="text" name="search" class="form-control" placeholder="Nhập tên sản phẩm..."
-                            value="{{ request('search') }}">
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-2">
-                        <select name="category_id" class="form-control">
-                            <option value="">-- Chọn danh mục --</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-2">
-                        <select name="brand_id" class="form-control">
-                            <option value="">-- Chọn thương hiệu --</option>
-                            @foreach ($brands as $brand)
-                                <option value="{{ $brand->id }}"
-                                    {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
-                                    {{ $brand->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-2">
-                        <select name="price_range" class="form-control">
-                            <option value="">-- Chọn khoảng giá --</option>
-                            <option value="1-5000000" {{ request('price_range') == '1-5000000' ? 'selected' : '' }}>Dưới 5
-                                triệu</option>
-                            <option value="5000000-10000000"
-                                {{ request('price_range') == '5000000-10000000' ? 'selected' : '' }}>5 - 10 triệu</option>
-                            <option value="10000000-20000000"
-                                {{ request('price_range') == '10000000-20000000' ? 'selected' : '' }}>10 - 20 triệu
-                            </option>
-                            <option value="20000000-" {{ request('price_range') == '20000000-' ? 'selected' : '' }}>Trên 20
-                                triệu</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="text-right">
-                    <button type="submit" class="btn btn-success">Lọc</button>
-                    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Xóa lọc</a>
-                </div>
-            </form>
-
+        @endif
+        @if (!$products->isEmpty())
             <div class="table-responsive">
                 <table class="table table-hover table-bordered text-center" id="productsTable">
                     <thead>
                         <tr>
                             <th>STT</th>
                             <th class="text-left">Tên sản phẩm</th>
-                            <th>Giá gốc</th>
-                            <th>Giá khuyến mãi</th>
+                            <th>Giá max</th>
+                            <th>Giá min</th>
                             <th>Danh mục</th>
                             <th>Thương hiệu</th>
                             <th>Ảnh</th>
@@ -84,7 +82,12 @@
                         @foreach ($products as $index => $product)
                             <tr>
                                 <td class="align-middle">{{ $index + 1 }}</td>
-                                <td class="text-left align-middle">{{ $product->name }}</td>
+                                <td class="text-left align-middle">
+                                    <a href="{{ route('admin.products.show', $product->id) }}"
+                                        style="text-decoration:none; color:inherit;">
+                                        {{ $product->name }}
+                                    </a>
+                                </td>
                                 <td class="align-middle">{{ number_format($product->price) }} đ</td>
                                 <td class="align-middle">{{ number_format($product->price_sale) }} đ</td>
                                 <td class="align-middle">{{ $product->category->name }}</td>

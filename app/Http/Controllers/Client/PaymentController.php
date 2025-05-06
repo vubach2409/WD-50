@@ -129,20 +129,8 @@ class PaymentController extends Controller
                                 $voucherModel->used += 1;
                                 $voucherModel->save();
                             }
-                            if ($voucher && isset($voucher['code'])) {
-                                $voucherModel = Voucher::where('code', $voucher['code'])->first();
-                                if ($voucherModel && $voucherModel->usage_limit > 0) {
-                                    $voucherModel->decrement('usage_limit');
-                                }
-                        
-                                // Tăng số lượt dùng mã giảm giá nếu có
-                                if ($voucherModel) {
-                                    $voucherModel->used += 1;
-                                    $voucherModel->save();
-                                }
-                            }}
+                           }
 
-                
                         DB::commit();
                 
                         return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công, chúng tôi sẽ liên hệ với bạn sớm nhất!');
@@ -306,8 +294,12 @@ class PaymentController extends Controller
                     }
             
                     // 5. Tính tổng tiền
-                    $totalPrice = $cartItems->sum(fn($item) => $item->quantity * $item->product->price);
+                    // Tính tổng tiền dựa trên biến thể nếu có
+                    $totalPrice = $cartItems->sum(function ($item) {
+                        return $item->quantity * $item->variant->price;
+                    });
                     $voucher = session('voucher');
+
                     $discountAmount = 0;
 
                     if ($voucher && isset($voucher['type'])) {
@@ -318,7 +310,8 @@ class PaymentController extends Controller
                         }
                     }
 
-                    $finalTotal = $totalPrice + $shipping->fee - $discountAmount;
+                    
+                    $finalTotal = $totalPrice - $discountAmount + $shipping->fee;
 
             
                     // 6. Tạo đơn hàng
@@ -365,13 +358,15 @@ class PaymentController extends Controller
                     // 8. Lưu từng sản phẩm vào OrderDetail + trừ kho
                     foreach ($cartItems as $item) {
                         // Lưu chi tiết đơn hàng
+                        $price = $item->variant->price;
                         OrderDetail::create([
                             'order_id' => $order->id,
                             'product_id' => $item->product_id,
                             'variant_id' => $item->variant_id,
                             'quantity' => $item->quantity,
-                            'price' => $item->product->price,
+                            'price' => $price,
                         ]);
+                        
             
                         // Trừ tồn kho theo variant nếu có
                         if ($item->variant_id) {
@@ -400,15 +395,15 @@ class PaymentController extends Controller
                             $voucherModel->decrement('usage_limit');
                         }
                     }  
-                    // Tăng số lượt dùng mã giảm giá nếu có
-if (!empty($vnp_OrderInfo['voucher_code'])) {
-    $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
-    
-    if ($voucher) {
-        $voucher->used += 1;
-        $voucher->save();
-    }
-}
+                                        // Tăng số lượt dùng mã giảm giá nếu có
+                    if (!empty($vnp_OrderInfo['voucher_code'])) {
+                        $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
+                        
+                        if ($voucher) {
+                            $voucher->used += 1;
+                            $voucher->save();
+                        }
+                    }
 
                     DB::commit();
             

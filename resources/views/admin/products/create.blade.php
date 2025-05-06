@@ -21,7 +21,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Giá gốc</th>
+                            <th>Giá max</th>
                             <td>
                                 <input type="number" name="price"
                                     class="form-control @error('price') is-invalid @enderror"
@@ -32,7 +32,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Giá khuyến mãi</th>
+                            <th>Giá min</th>
                             <td>
                                 <input type="number" name="price_sale"
                                     class="form-control @error('price_sale') is-invalid @enderror"

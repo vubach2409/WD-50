@@ -4,18 +4,18 @@
     <div class="login-container">
         <div class="card-header">{{ __('Đăng Nhập') }}</div>
 
-        @if (session('status'))
+        @if(session('success'))
             <div class="alert alert-success">
-                {{ session('status') }}
+                {{ session('success') }}
             </div>
         @endif
-
+        
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div class="form-group">
                 <label for="email">{{ __('Email') }}</label>
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email"
+                <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email"
                        value="{{ old('email') }}"  autocomplete="email" autofocus>
                 @error('email')
                     <span class="invalid-feedback">

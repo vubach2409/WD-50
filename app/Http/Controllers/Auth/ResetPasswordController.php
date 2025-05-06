@@ -5,24 +5,21 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Redirect;
 
 class ResetPasswordController extends Controller
 {
     use ResetsPasswords;
 
     /**
-     * Where to redirect users after resetting their password.
+     * Nơi chuyển hướng sau khi đặt lại mật khẩu thành công.
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME; // Có thể không cần dùng
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
-     * Display the password reset view for the given token.
+     * Hiển thị form đặt lại mật khẩu.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string|null  $token
@@ -30,34 +27,22 @@ class ResetPasswordController extends Controller
      */
     public function showResetForm(Request $request, $token = null)
     {
-        return view('auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
+        return view('auth.passwords.reset')->with([
+            'token' => $token,
+            'email' => $request->email,
+        ]);
     }
 
     /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * Ghi đè hàm để redirect về trang đăng nhập với thông báo.
      */
-    public function reset(Request $request)
+    protected function sendResetResponse(Request $request, $response)
     {
-        $request->validate($this->rules(), $this->validationErrorMessages());
-
-        $response = $this->broker()->reset(
-            $this->credentials($request), function ($user, $password) {
-                $this->resetPassword($user, $password);
-            }
-        );
-
-        return $response == Password::PASSWORD_RESET
-                    ? Redirect::route('login')->with('status', trans($response))
-                    : back()->withErrors(['general' => trans($response)])->withInput();
+        return redirect()->route('login')->with('success', 'Mật khẩu của bạn đã được thay đổi thành công!');
     }
 
     /**
-     * Get the password reset validation rules.
+     * Luật xác thực đặt lại mật khẩu.
      *
      * @return array
      */
@@ -67,6 +52,23 @@ class ResetPasswordController extends Controller
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
+        ];
+    }
+
+    /**
+     * Thông báo lỗi tiếng Việt khi xác thực không hợp lệ.
+     *
+     * @return array
+     */
+    protected function validationErrorMessages()
+    {
+        return [
+            'token.required' => 'Mã đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
+            'email.required' => 'Vui lòng nhập địa chỉ email.',
+            'email.email' => 'Địa chỉ email không hợp lệ.',
+            'password.required' => 'Vui lòng nhập mật khẩu mới.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
         ];
     }
 }

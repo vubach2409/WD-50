@@ -183,16 +183,19 @@ class ProductController extends Controller
 
         $product->restore();
 
-        return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm đã được khôi phục.');
+        $product->variants()->onlyTrashed()->restore();
+
+        return redirect()->route('admin.products.trash')->with('success', 'Sản phẩm và biến thể đã được khôi phục.');
     }
+
     public function forceDelete($id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);
 
         $product->variants()->onlyTrashed()->forceDelete();
 
-        if ($product->image && Storage::disk('public')->exists('products/' . $product->image)) {
-            Storage::disk('public')->delete('products/' . $product->image);
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
         }
 
         $product->forceDelete();

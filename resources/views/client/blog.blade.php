@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Trang Chủ')
+@section('title', 'Tin tức')
 
 @section('content')
 
@@ -20,12 +20,12 @@
 
                 <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
                     <div class="post-entry">
-                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post-1.jpg') }}"
+                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post1.jpg') }}"
                                 alt="Image" class="img-fluid"></a>
                         <div class="post-content-entry">
-                            <h3><a href="#">First Time Home Owner Ideas</a></h3>
+                            <h3><a href="#">Kích Thước Tiêu Chuẩn Bàn Làm Việc Thông Minh Cho Gác Xép</a></h3>
                             <div class="meta">
-                                <span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 19,
+                                <span>by <a href="#">Nguyễn Thị Cúc Hoa</a></span> <span>on <a href="#">Dec 19,
                                         2021</a></span>
                             </div>
                         </div>
@@ -34,12 +34,12 @@
 
                 <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
                     <div class="post-entry">
-                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post-1.jpg') }}"
+                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post2.jpg') }}"
                                 alt="Image" class="img-fluid"></a>
                         <div class="post-content-entry">
-                            <h3><a href="#">How To Keep Your Furniture Clean</a></h3>
+                            <h3><a href="#">Phụ Kiện Trang Trí Phòng Ngủ Trẻ Em 2 Tầng Siêu Dễ Thương</a></h3>
                             <div class="meta">
-                                <span>by <a href="#">Robert Fox</a></span> <span>on <a href="#">Dec 15,
+                                <span>by <a href="#">Nguyễn Thị Cúc Hoa</a></span> <span>on <a href="#">Dec 15,
                                         2021</a></span>
                             </div>
                         </div>
@@ -48,12 +48,12 @@
 
                 <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
                     <div class="post-entry">
-                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post-1.jpg') }}"
+                        <a href="#" class="post-thumbnail"><img src="{{ asset('clients/images/post3.jpg') }}"
                                 alt="Image" class="img-fluid"></a>
                         <div class="post-content-entry">
-                            <h3><a href="#">Small Space Furniture Apartment Ideas</a></h3>
+                            <h3><a href="#">Mua Bếp Hafele Loại Nào Phù Hợp Cho Gia Đình 2 – 4 Người?</a></h3>
                             <div class="meta">
-                                <span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 12,
+                                <span>by <a href="#">Nguyễn Thị Cúc Hoa</a></span> <span>on <a href="#">Dec 12,
                                         2021</a></span>
                             </div>
                         </div>

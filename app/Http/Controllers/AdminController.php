@@ -14,19 +14,17 @@ class AdminController extends Controller
         $totalProducts = Product::count();
         $totalOrders = Orders::count();
         $totalCustomers = User::where('role', '!=', 'admin')->count();
-        $totalRevenue = Orders::sum('total');
-        // $topSellingProduct = Product::withCount('orders')->orderBy('quantity', 'desc')->first();
+        $totalRevenue = Orders::where('status', 'completed')->sum('total');
         $newProducts = Product::where('created_at', '>=', now()->subMonth())->count();
 
-        // Truyền dữ liệu vào view
         return view('admin.dashboard', compact(
             'totalProducts', 
             'totalOrders', 
             'totalCustomers', 
             'totalRevenue', 
-            // 'topSellingProduct', 
             'newProducts'
         ));
     }
+
 }
 
