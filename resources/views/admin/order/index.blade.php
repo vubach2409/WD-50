@@ -21,7 +21,7 @@
                 <table class="table table-hover table-bordered text-center">
                     <thead>
                         <tr>
-                            <th>Stt</th>
+                            <th>STT</th>
                             <th>Mã đơn hàng</th>
                             <th>Trạng thái</th>
                             <th>Tổng tiền</th>
