@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Trang Chủ')
+@section('title', 'Cảm ơn')
 
 @section('content')
     <div class="untree_co-section">
@@ -28,7 +28,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    <p><a href="{{ route('products') }}" class="btn btn-sm btn-outline-black">Back to shop</a></p>
+                    <p><a href="{{ route('products') }}" class="btn btn-sm btn-outline-black">Quay về cửa hàng</a></p>
                 </div>
             </div>
 

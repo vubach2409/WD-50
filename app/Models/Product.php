@@ -48,5 +48,11 @@ class Product extends Model
 {
     return $this->hasMany(Feedbacks::class)->latest();
 }
+public function updateStock()
+    {
+        $totalStock = $this->variants->sum('stock');
 
+        $this->stock = $totalStock;
+        $this->save();
+    }
 }

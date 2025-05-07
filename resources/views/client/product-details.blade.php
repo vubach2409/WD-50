@@ -59,7 +59,7 @@
 
 
                     <h4>
-                        <strong class="product-price d-block text-danger" id="defaultPrice">
+                        <strong class="product-price fs-5 d-block text-danger" id="defaultPrice">
                             <span id="salePrice">
                                 {{ number_format($product->price_sale, 0, ',', '.') }} đ
                             </span>
@@ -80,6 +80,7 @@
                             <div class="col-md-6 mb-2">
                                 <label class="form-label fw-semibold">Màu:</label>
                                 <select id="variantColor" class="form-select">
+                                    <option value="">-- Chọn màu --</option>
                                     @foreach ($product->variants->unique('color_id') as $variant)
                                         <option value="{{ $variant->color_id }}">{{ $variant->color->name }}</option>
                                     @endforeach
@@ -88,6 +89,7 @@
                             <div class="col-md-6 mb-2">
                                 <label class="form-label fw-semibold">Kích thước:</label>
                                 <select id="variantSize" class="form-select">
+                                    <option class="form-label fw-semibold">Chọn kích thước:</option>
                                     @foreach ($product->variants->unique('size_id') as $variant)
                                         <option value="{{ $variant->size_id }}">{{ $variant->size->name }}</option>
                                     @endforeach
@@ -320,4 +322,3 @@
     });
 </script>
 @endpush
-

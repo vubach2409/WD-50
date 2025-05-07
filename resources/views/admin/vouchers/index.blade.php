@@ -43,7 +43,7 @@
                                     @if ($voucher->is_active)
                                         <span class="badge bg-success text-light">Hoạt động</span>
                                     @else
-                                        <span class="badge bg-danger text-light">Tắt</span> 
+                                        <span class="badge bg-danger text-light">Ngừng hoạt động</span> 
                                     @endif
                                 </td>
                                 <td class="text-center align-middle">

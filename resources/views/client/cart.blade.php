@@ -102,13 +102,13 @@
                                     <form action="{{ route('cart.clear') }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm btn-block">
+                                        <button type="submit" class="btn btn-outline-black btn-sm btn-block">
                                             Xoá toàn bộ</button>
                                     </form>
                                 </div>
                                 <div class="col-md-6">
                                     <a href="{{ route('products') }}"><button
-                                            class="btn btn-primary btn-sm btn-block">Tiếp tục mua sắm</button></a>
+                                            class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</button></a>
                                 </div>
                             </div>
                             @if (session('voucher'))
@@ -125,7 +125,7 @@
 
                                     <form action="{{ route('cart.remove-voucher') }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button class="btn btn-danger btn-sm rounded-pill shadow-sm px-3">
+                                        <button class="btn btn-outline-danger btn-sm rounded-pill shadow-sm px-3">
                                             <i class="bi bi-x-circle me-1"></i> Huỷ mã
                                         </button>
 
@@ -140,7 +140,7 @@
                                                 placeholder="Coupon Code">
                                         </div>
                                         <div class="col-md-4">
-                                            <button class="btn btn-primary btn-bg mt-2 w-100 shadow-sm rounded-2 py-2">
+                                            <button class="btn btn-dark btn-sm w-100 shadow-sm rounded-2 py-2">
                                                 <i class="bi bi-check-circle me-1"></i>Áp dụng mã
                                             </button>
                                         </div>
@@ -149,7 +149,7 @@
                                 </form>
                             @endif
                             <a href="{{ route('cart.voucher-list') }}"
-                                class="btn btn-primary btn-sm mt-3 px-3 rounded-pill shadow-sm">
+                                class="btn btn-outline-primary btn-sm mt-3 px-3 rounded-pill shadow-sm">
                                 <i class="bi bi-tags-fill me-1"></i> Xem các mã giảm giá
                             </a>
 
@@ -206,7 +206,8 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <a href="{{ route('checkout') }}"
-                                                class="btn btn-primary btn-lg py-3 btn-block">Thanh toán
+                                                class="btn btn-black btn-lg py-3 btn-block">Thanh toán
+
                                             </a>
                                         </div>
                                     </div>
@@ -217,16 +218,4 @@
             </div>
         </div>
         @endif
-    </div>
     @endsection
-<style>
-    button.btn-danger {
-    background-color: #e74c3c;
-    color: #fff;
-    border: none;
-}
-
-button.btn-danger:hover {
-    background-color: #c0392b;
-}
-</style>

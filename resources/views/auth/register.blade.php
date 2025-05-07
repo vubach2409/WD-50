@@ -1,11 +1,9 @@
 @extends('layouts.app')
 
 @php
-    use Illuminate\Support\MessageBag;
-    $passwordErrors = session('errors') instanceof MessageBag ? session('errors')->get('password') : [];
-    $confirmError = collect($passwordErrors)->first(function ($msg) {
-        return str_contains($msg, 'khớp');
-    });
+    $confirmError = session('errors')?->get('password') 
+                    ? collect(session('errors')->get('password'))->first(fn($msg) => str_contains($msg, 'khớp'))
+                    : null;
 @endphp
 
 @section('content')
@@ -32,7 +30,7 @@
         <div class="form-group">
             <label for="email">{{ __('Email') }}</label>
             <input id="email" type="email"
-                   class="form-control @error('email') @enderror"
+                   class="form-control @error('email') is-invalid @enderror"
                    name="email" value="{{ old('email') }}" autocomplete="email">
             @error('email')
                 <span class="invalid-feedback" role="alert">
@@ -48,7 +46,7 @@
                 <input id="password" type="password"
                        class="form-control @error('password') is-invalid @enderror"
                        name="password" autocomplete="new-password">
-                <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                <span class="toggle-password" data-target="password">👁️</span>
             </div>
             @error('password')
                 <span class="invalid-feedback" role="alert">
@@ -64,7 +62,7 @@
                 <input id="password-confirm" type="password"
                        class="form-control @if($confirmError) is-invalid @endif"
                        name="password_confirmation" autocomplete="new-password">
-                <span class="toggle-password" onclick="togglePassword('password-confirm')">👁️</span>
+                <span class="toggle-password" data-target="password-confirm">👁️</span>
             </div>
             @if ($confirmError)
                 <span class="invalid-feedback" role="alert">
@@ -87,19 +85,20 @@
 
 {{-- Toggle --}}
 <script>
-    function togglePassword(fieldId) {
-        const passwordField = document.getElementById(fieldId);
-        const toggleIcon = passwordField.nextElementSibling;
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            toggleIcon.textContent = '🙈';
-        } else {
-            passwordField.type = 'password';
-            toggleIcon.textContent = '👁️';
-        }
-    }
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                this.textContent = '👁️';
+            }
+        });
+    });
 </script>
-
 
 <style>
 body {
@@ -117,7 +116,6 @@ body {
     padding: 2.5rem;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    max-width: 100% !important;
     width: 500px;
     animation: fadeIn 0.5s ease-in-out;
 }
@@ -134,7 +132,7 @@ body {
     margin-bottom: 1.5rem;
 }
 .form-group {
-    margin-bottom: 0.5rem; 
+    margin-bottom: 0.5rem;
 }
 .form-control {
     border: 1px solid #ddd;
@@ -171,16 +169,7 @@ body {
 }
 
 .btn-link:hover {
-    text-decoration: none;
     color: #764ba2;
-}
-
-.form-check {
-    margin-top: 0.5rem;
-}
-
-.form-check-label {
-    font-size: 0.9rem;
 }
 
 .invalid-feedback {
@@ -204,6 +193,5 @@ body {
     cursor: pointer;
     color: #666;
 }
-
 </style>
 @endsection

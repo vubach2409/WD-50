@@ -37,6 +37,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th>Ảnh sản phẩm</th>
                         <th>Sản phẩm</th>
                         <th>Số lượng</th>
                         <th>Đơn giá</th>
@@ -46,6 +47,13 @@
                 <tbody>
                     @foreach ($order->items as $item)
                         <tr>
+                            <td class="text-center">
+                                @if($item->product->image)
+                                    <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" width="100">
+                                @else
+                                    <span>Không có ảnh</span>
+                                @endif
+                            </td>
                             <td>{{ $item->product->name }}</td>
                             <td>{{ $item->quantity }}</td>
                             <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
