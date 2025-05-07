@@ -72,7 +72,6 @@
                             <th>Danh mục</th>
                             <th>Thương hiệu</th>
                             <th>Ảnh</th>
-                            <th>Kho</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -97,7 +96,6 @@
                                         <span class="text-muted">Không có ảnh</span>
                                     @endif
                                 </td>
-                                <td class="align-middle">{{ $product->stock }}</td>
                                 <td class="align-middle">
                                     <a href="{{ route('admin.products.edit', $product->id) }}"
                                         class="btn btn-warning">Sửa</a>
