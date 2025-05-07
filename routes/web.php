@@ -273,16 +273,18 @@ Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->na
         Route::get('/', [ProductVariantController::class, 'index'])->name('product_variants.index');
         Route::get('/create', [ProductVariantController::class, 'create'])->name('product_variants.create');
         Route::post('/', [ProductVariantController::class, 'store'])->name('product_variants.store');
+        
         Route::get('/{variant}/edit', [ProductVariantController::class, 'edit'])->name('product_variants.edit');
         Route::put('/{variant}', [ProductVariantController::class, 'update'])->name('product_variants.update');
         Route::delete('/{variant}', [ProductVariantController::class, 'destroy'])->name('product_variants.destroy');
-        
+    
         Route::get('/trash', [ProductVariantController::class, 'trash'])->name('product_variants.trash');
         Route::post('/{variant}/restore', [ProductVariantController::class, 'restore'])->name('product_variants.restore');
         Route::delete('/{variant}/force-delete', [ProductVariantController::class, 'forceDelete'])->name('product_variants.forceDelete');
-
+    
+        Route::get('/{variant}', [ProductVariantController::class, 'show'])->name('product_variants.show');
     });
-
+    
      // Route danh sách tất cả sản phẩm có biến thể
      Route::get('/product-variants', [ProductVariantController::class, 'productsWithVariants'])
      ->name('product_variants.list');

@@ -21,6 +21,12 @@ class ProductVariantController extends Controller
         ]);
     }
 
+    public function show($productId, $variantId)
+    {
+        $variant = ProductVariant::where('product_id', $productId)->findOrFail($variantId);
+        return view('admin.product_variants.show', compact('variant'));
+    } 
+
     public function create(Product $product)
     {
         return view('admin.product_variants.create', [

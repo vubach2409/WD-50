@@ -61,6 +61,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Xóa</button>
                             </form>
+                            <a href="{{ route('admin.product_variants.show', ['product' => $product->id, 'variant' => $variant->id]) }}" class="btn btn-info">Chi tiết</a>
                         </td>
                     </tr>
                 @endforeach
