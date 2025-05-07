@@ -79,12 +79,7 @@
                         @foreach ($products as $index => $product)
                             <tr>
                                 <td class="align-middle">{{ $index + 1 }}</td>
-                                <td class="text-left align-middle">
-                                    <a href="{{ route('admin.products.show', $product->id) }}"
-                                       style="text-decoration:none; color:inherit;">
-                                        {{ $product->name }}
-                                    </a>
-                                </td>
+                                <td class="align-middle">{{ $product->name }}</td>
                                 <td class="align-middle"> {{ number_format($product->price_sale) }} đ - {{ number_format($product->price) }} đ</td>
                                 <td class="align-middle">{{ $product->category->name }}</td>
                                 <td class="align-middle">{{ $product->brand->name }}</td>
@@ -107,8 +102,7 @@
                                         <button type="submit" class="btn btn-danger"
                                             onclick="return confirm('Bạn có chắc chắn?')">Xóa</button>
                                     </form>
-                                    <a href="{{ route('admin.product_variants.index', ['product' => $product->id]) }}"
-                                        class="btn btn-info">Biến thể</a>
+                                    <a href="{{ route('admin.products.show', ['product' => $product->id]) }}"class="btn btn-info">Chi tiết</a>
                                 </td>
                             </tr>
                         @endforeach

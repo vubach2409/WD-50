@@ -230,9 +230,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::post('products/restore/{id}', [ProductController::class, 'restore'])->name('products.restore');
     Route::delete('products/force-delete/{id}', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
 
-    
     Route::resource('products', ProductController::class);
-    Route::get('/products/product_detail', [ProductController::class, 'show'])->name('products.show');
+
+    Route::get('products/detail/{id}', [ProductController::class, 'show'])->name('products.detail');
 
     Route::resource('colors', ColorController::class);
 //show hoá đơn
