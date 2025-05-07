@@ -21,7 +21,7 @@
                 <table class="table table-hover table-bordered text-center">
                     <thead>
                         <tr>
-                            <th>STT</th>
+                            <th>Stt</th>
                             <th>Mã đơn hàng</th>
                             <th>Trạng thái</th>
                             <th>Tổng tiền</th>
@@ -41,10 +41,14 @@
                                         @csrf
                                         @method('PUT')
                                         <select name="status" class="form-control" onchange="this.form.submit()">
-                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
-                                            <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang giao</option>
-                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Đã giao</option>
-                                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Thất bại</option>
+                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ
+                                                xử lý</option>
+                                            <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>
+                                                Đang giao</option>
+                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>
+                                                Đã giao</option>
+                                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
+                                                Thất bại</option>
                                         </select>
                                     </form>
                                 </td>
@@ -53,7 +57,8 @@
                                 <td class="align-middle">{{ $order->transaction_id }}</td>
                                 <td class="align-middle">{{ $order->created_at->format('d-m-Y H:i') }}</td>
                                 <td class="align-middle">
-                                    <a href="{{ route('admin.orders.detail', ['id' => $order->id]) }}" class="btn btn-success">Chi tiết</a>
+                                    <a href="{{ route('admin.orders.detail', ['id' => $order->id]) }}"
+                                        class="btn btn-success">Chi tiết</a>
                                 </td>
                             </tr>
                         @endforeach
