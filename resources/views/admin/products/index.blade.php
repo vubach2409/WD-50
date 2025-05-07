@@ -32,8 +32,7 @@
                     <select name="brand_id" class="form-control">
                         <option value="">-- Chọn thương hiệu --</option>
                         @foreach ($brands as $brand)
-                            <option value="{{ $brand->id }}"
-                                {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                            <option value="{{ $brand->id }}" {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
                                 {{ $brand->name }}
                             </option>
                         @endforeach
@@ -55,11 +54,13 @@
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Xóa lọc</a>
             </div>
         </form>
+        
         @if ($products->isEmpty())
             <div class="alert alert-info">
                 <i class="fas fa-info-circle me-1"></i> Chưa có sản phẩm nào.
             </div>
         @endif
+        
         @if (!$products->isEmpty())
             <div class="table-responsive">
                 <table class="table table-hover table-bordered text-center" id="productsTable">
@@ -67,11 +68,12 @@
                         <tr>
                             <th>STT</th>
                             <th class="text-left">Tên sản phẩm</th>
-                            <th>Giá min - max</th>
+                            <th>Giá max</th>
+                            <th>Giá min</th>
                             <th>Danh mục</th>
                             <th>Thương hiệu</th>
                             <th>Ảnh</th>
-                            <th>Kho</th>  <!-- Added stock column -->
+                            <th>Kho</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -79,8 +81,14 @@
                         @foreach ($products as $index => $product)
                             <tr>
                                 <td class="align-middle">{{ $index + 1 }}</td>
-                                <td class="align-middle">{{ $product->name }}</td>
-                                <td class="align-middle"> {{ number_format($product->price_sale) }} đ - {{ number_format($product->price) }} đ</td>
+                                <td class="text-left align-middle">
+                                    <a href="{{ route('admin.products.show', $product->id) }}"
+                                        style="text-decoration:none; color:inherit;">
+                                        {{ $product->name }}
+                                    </a>
+                                </td>
+                                <td class="align-middle">{{ number_format($product->price) }} đ</td>
+                                <td class="align-middle">{{ number_format($product->price_sale) }} đ</td>
                                 <td class="align-middle">{{ $product->category->name }}</td>
                                 <td class="align-middle">{{ $product->brand->name }}</td>
                                 <td class="align-middle">
@@ -91,7 +99,7 @@
                                         <span class="text-muted">Không có ảnh</span>
                                     @endif
                                 </td>
-                                <td class="align-middle">{{ $product->stock }}</td>  <!-- Displaying stock -->
+                                <td class="align-middle">{{ $product->stock }}</td>
                                 <td class="align-middle">
                                     <a href="{{ route('admin.products.edit', $product->id) }}"
                                         class="btn btn-warning">Sửa</a>
@@ -102,7 +110,7 @@
                                         <button type="submit" class="btn btn-danger"
                                             onclick="return confirm('Bạn có chắc chắn?')">Xóa</button>
                                     </form>
-                                    <a href="{{ route('admin.products.show', ['product' => $product->id]) }}"class="btn btn-info">Chi tiết</a>
+                                    <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-info">Chi tiết</a>
                                 </td>
                             </tr>
                         @endforeach

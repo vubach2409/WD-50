@@ -62,14 +62,15 @@
                                             <td>{{ number_format($item->variant->price, 0, ',', '.') }}
                                                 VNĐ</td>
                                             <td>
-                                                <form action="{{ route('cart.update', $item->id) }}" method="POST">
+                                                {{-- <form action="{{ route('cart.update', $item->id) }}" method="POST">
                                                     @csrf
-                                                    @method('PUT')
-                                                    <input type="number" name="quantity" value="{{ $item->quantity }}"
-                                                        min="1" max="{{ $item->variant->stock }}"
-                                                        class="form-control" style="width: 80px; display:inline-block;" />
-                                                    <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
-                                                </form>
+                                                    @method('PUT') --}}
+                                                {{-- <input type="number" name="quantity" value="{{ $item->quantity }}"
+                                                    min="1" max="{{ $item->variant->stock }}" class="form-control"
+                                                    style="width: 80px; display:inline-block;" /> --}}
+                                                {{-- <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
+                                                </form> --}}
+                                                {{ $item->quantity }}
                                             </td>
                                             <td>
                                                 {{ number_format($item->variant->price * $item->quantity, 0, ',', '.') }}

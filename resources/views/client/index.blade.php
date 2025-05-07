@@ -23,7 +23,12 @@
                 <!-- Start Column 1 -->
                 <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
                     <h2 class="mb-4 section-title">Sản phẩm chất lượng cao, thiết kế tinh tế.</h2>
+<<<<<<< HEAD
                     <p class="mb-4">Chúng tôi cam kết mang đến cho bạn những sản phẩm nội thất được chế tác từ vật liệu cao cấp, phù hợp với mọi không gian sống. Tạo nên một ngôi nhà hoàn hảo cho bạn và gia đình.</p>
+=======
+                    <p class="mb-4">Chúng tôi cam kết mang đến cho bạn những sản phẩm nội thất được chế tác từ vật liệu
+                        cao cấp, phù hợp với mọi không gian sống. Tạo nên một ngôi nhà hoàn hảo cho bạn và gia đình.</p>
+>>>>>>> ph47966ttk
                     <p><a href="{{ route('products') }}" class="btn">Khám phá ngay</a></p>
                 </div>
                 <!-- End Column 1 -->
@@ -42,7 +47,11 @@
                                     @if ($product->is_new)
                                         <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
                                     @elseif($product->price_sale < $product->price)
+<<<<<<< HEAD
                                         <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
+=======
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
+>>>>>>> ph47966ttk
                                     @endif
                                 </div>
 
@@ -57,9 +66,17 @@
                                     <!-- Giá sản phẩm (không nền) -->
                                     <p class="product-price mb-2" style="background-color: transparent;">
                                         <span
+<<<<<<< HEAD
                                             class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
                                         @if ($product->price_sale < $product->price)
                                             <span class="text-muted text-decoration-line-through ms-2">
+=======
+                                            class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ
+                                            -
+                                        </span>
+                                        @if ($product->price_sale < $product->price)
+                                            <span class="text-danger fw-bold">
+>>>>>>> ph47966ttk
                                                 {{ number_format($product->price, 0, ',', '.') }}đ
                                             </span>
                                         @endif
@@ -89,7 +106,12 @@
             <div class="row justify-content-between">
                 <div class="col-lg-6">
                     <h2 class="section-title">Tại sao nên chọn chúng tôi?</h2>
+<<<<<<< HEAD
                     <p>Chúng tôi chuyên cung cấp những sản phẩm nội thất chất lượng cao, thiết kế hiện đại, đáp ứng nhu cầu của mọi gia đình. Chọn chúng tôi để tạo nên không gian sống lý tưởng cho bạn.</p>
+=======
+                    <p>Chúng tôi chuyên cung cấp những sản phẩm nội thất chất lượng cao, thiết kế hiện đại, đáp ứng nhu cầu
+                        của mọi gia đình. Chọn chúng tôi để tạo nên không gian sống lý tưởng cho bạn.</p>
+>>>>>>> ph47966ttk
 
                     <div class="row my-5">
                         <div class="col-6 col-md-6">
@@ -98,7 +120,12 @@
                                     <img src="{{ asset('clients/images/truck.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>Giao hàng nhanh chóng</h3>
+<<<<<<< HEAD
                                 <p>Chúng tôi cam kết giao hàng nhanh chóng và đúng hạn, giúp bạn nhanh chóng sở hữu sản phẩm yêu thích.</p>
+=======
+                                <p>Chúng tôi cam kết giao hàng nhanh chóng và đúng hạn, giúp bạn nhanh chóng sở hữu sản phẩm
+                                    yêu thích.</p>
+>>>>>>> ph47966ttk
                             </div>
                         </div>
 
@@ -108,7 +135,12 @@
                                     <img src="{{ asset('clients/images/bag.svg') }}" class="imf-fluid">
                                 </div>
                                 <h3>Mua sắm dễ dàng</h3>
+<<<<<<< HEAD
                                 <p>Chúng tôi cung cấp giao diện dễ sử dụng và phương thức thanh toán thuận tiện, giúp bạn có trải nghiệm mua sắm tuyệt vời.</p>
+=======
+                                <p>Chúng tôi cung cấp giao diện dễ sử dụng và phương thức thanh toán thuận tiện, giúp bạn có
+                                    trải nghiệm mua sắm tuyệt vời.</p>
+>>>>>>> ph47966ttk
                             </div>
                         </div>
 
@@ -118,7 +150,12 @@
                                     <img src="{{ asset('clients/images/support.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>Hỗ trợ khách hàng 24/7</h3>
+<<<<<<< HEAD
                                 <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn bất cứ lúc nào với đội ngũ tư vấn chuyên nghiệp và tận tâm.</p>
+=======
+                                <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn bất cứ lúc nào với đội ngũ tư vấn chuyên nghiệp và tận
+                                    tâm.</p>
+>>>>>>> ph47966ttk
                             </div>
                         </div>
 
@@ -128,7 +165,12 @@
                                     <img src="{{ asset('clients/images/return.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
                                 <h3>Chế độ đổi trả dễ dàng</h3>
+<<<<<<< HEAD
                                 <p>Chúng tôi cung cấp chính sách đổi trả đơn giản, giúp bạn an tâm khi mua sắm với chúng tôi.</p>
+=======
+                                <p>Chúng tôi cung cấp chính sách đổi trả đơn giản, giúp bạn an tâm khi mua sắm với chúng
+                                    tôi.</p>
+>>>>>>> ph47966ttk
                             </div>
                         </div>
 
@@ -159,7 +201,13 @@
                 </div>
                 <div class="col-lg-5 ps-lg-5">
                     <h2 class="section-title mb-4">Chúng tôi giúp bạn thiết kế nội thất hiện đại</h2>
+<<<<<<< HEAD
                     <p>Chúng tôi cung cấp các giải pháp thiết kế nội thất hiện đại, tối ưu không gian sống và mang lại sự thoải mái cho mọi gia đình. Với kinh nghiệm và sự sáng tạo, chúng tôi cam kết mang đến cho bạn không gian sống hoàn hảo.</p>
+=======
+                    <p>Chúng tôi cung cấp các giải pháp thiết kế nội thất hiện đại, tối ưu không gian sống và mang lại sự
+                        thoải mái cho mọi gia đình. Với kinh nghiệm và sự sáng tạo, chúng tôi cam kết mang đến cho bạn không
+                        gian sống hoàn hảo.</p>
+>>>>>>> ph47966ttk
 
                     <ul class="list-unstyled custom-list my-4">
                         <li>Thiết kế nội thất sáng tạo, hiện đại</li>
@@ -183,12 +231,19 @@
                             <!-- Product image -->
                             <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
                                 <div class="product-image position-relative">
+<<<<<<< HEAD
                                     <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid" alt="{{ $product->name }}">
     
+=======
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
+                                        alt="{{ $product->name }}">
+
+>>>>>>> ph47966ttk
                                     <!-- Labels for "New" and "Sale" -->
                                     @if ($product->is_new)
                                         <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
                                     @elseif($product->price_sale < $product->price)
+<<<<<<< HEAD
                                         <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
                                     @endif
                                 </div>
@@ -203,6 +258,24 @@
                                     <!-- Product price -->
                                     <p class="product-price mb-2" style="background-color: transparent;">
                                         <span class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
+=======
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
+                                    @endif
+                                </div>
+
+                                <!-- Product info -->
+                                <div class="product-info p-3">
+                                    <!-- Product name -->
+                                    <h5 class="product-title text-dark mb-1"
+                                        style="font-size: 1rem; background-color: transparent;">
+                                        {{ $product->name }}
+                                    </h5>
+
+                                    <!-- Product price -->
+                                    <p class="product-price mb-2" style="background-color: transparent;">
+                                        <span
+                                            class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
+>>>>>>> ph47966ttk
                                         @if ($product->price_sale < $product->price)
                                             <span class="text-muted text-decoration-line-through ms-2">
                                                 {{ number_format($product->price, 0, ',', '.') }}đ
@@ -210,10 +283,18 @@
                                         @endif
                                     </p>
                                 </div>
+<<<<<<< HEAD
     
                                 <!-- Action button (View product) -->
                                 <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
                                     <a href="{{ route('product.details', $product->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
+=======
+
+                                <!-- Action button (View product) -->
+                                <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
+                                    <a href="{{ route('product.details', $product->id) }}"
+                                        class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
+>>>>>>> ph47966ttk
                                         <i class="bi bi-eye me-1"></i> Xem chi tiết
                                     </a>
                                 </div>

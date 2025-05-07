@@ -20,7 +20,7 @@
                                 @enderror
                             </td>
                         </tr>
-                    
+
                         <tr>
                             <th>Giá min</th>
                             <td>
@@ -32,6 +32,7 @@
                                 @enderror
                             </td>
                         </tr>
+
                         <tr>
                             <th>Giá max</th>
                             <td>
@@ -43,6 +44,7 @@
                                 @enderror
                             </td>
                         </tr>
+
                         <tr>
                             <th>Danh mục</th>
                             <td>
@@ -60,6 +62,7 @@
                                 @enderror
                             </td>
                         </tr>
+
                         <tr>
                             <th>Thương hiệu</th>
                             <td>
@@ -77,6 +80,7 @@
                                 @enderror
                             </td>
                         </tr>
+
                         <tr>
                             <th>Ảnh sản phẩm</th>
                             <td>
@@ -87,6 +91,7 @@
                                 @enderror
                             </td>
                         </tr>
+
                         <tr>
                             <th>Mô tả sản phẩm</th>
                             <td>
@@ -100,6 +105,7 @@
                     </tbody>
                 </table>
             </div>
+
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary">Thêm</button>
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>

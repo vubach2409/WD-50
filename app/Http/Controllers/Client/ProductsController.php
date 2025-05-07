@@ -33,7 +33,7 @@ class ProductsController extends Controller
             }
         }
     
-        $products = $query->paginate(12); // Hiển thị 12 sản phẩm mỗi trang
+        $products = $query->paginate(9); // Hiển thị 12 sản phẩm mỗi trang
         $categories = Category::all(); // Load danh sách danh mục
     
         return view('client.products', compact('products', 'categories'));

@@ -51,7 +51,6 @@ class Product extends Model
 public function updateStock()
     {
         $totalStock = $this->variants->sum('stock');
-
         $this->stock = $totalStock;
         $this->save();
     }

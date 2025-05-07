@@ -201,3 +201,8 @@
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 </ul>
+<style>
+    .navbar {
+    font-family: 'Arial', sans-serif; /* Ví dụ: đổi sang Arial */
+}
+</style>

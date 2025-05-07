@@ -215,7 +215,6 @@ Route::post('/chat/send', function (Request $request) {
 
 
 
-
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
     
@@ -315,12 +314,6 @@ Route::post('/confirm/paymnet', [PaymentController::class, 'PaymentOnline'])->na
 
 // // thanh toán vnpay
 
-// Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment'])->name('checkout.process');
-
-// Route::middleware('handle.payment')->group(function () {
-//     Route::post('/confirm/payment', [PaymentController::class, 'CodPayment']);
-//     Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment']);
-// })->name('checkout.process');
 
 Route::get('/thanks/vnpay', [PaymentController::class, 'xuly'])->name('thanks.vnpay');
 // thankyou

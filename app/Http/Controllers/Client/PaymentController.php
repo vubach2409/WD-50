@@ -129,20 +129,8 @@ class PaymentController extends Controller
                                 $voucherModel->used += 1;
                                 $voucherModel->save();
                             }
-                            if ($voucher && isset($voucher['code'])) {
-                                $voucherModel = Voucher::where('code', $voucher['code'])->first();
-                                if ($voucherModel && $voucherModel->usage_limit > 0) {
-                                    $voucherModel->decrement('usage_limit');
-                                }
-                        
-                                // Tăng số lượt dùng mã giảm giá nếu có
-                                if ($voucherModel) {
-                                    $voucherModel->used += 1;
-                                    $voucherModel->save();
-                                }
-                            }}
+                           }
 
-                
                         DB::commit();
                 
                         return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công, chúng tôi sẽ liên hệ với bạn sớm nhất!');
@@ -407,15 +395,15 @@ class PaymentController extends Controller
                             $voucherModel->decrement('usage_limit');
                         }
                     }  
-                    // Tăng số lượt dùng mã giảm giá nếu có
-if (!empty($vnp_OrderInfo['voucher_code'])) {
-    $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
-    
-    if ($voucher) {
-        $voucher->used += 1;
-        $voucher->save();
-    }
-}
+                                        // Tăng số lượt dùng mã giảm giá nếu có
+                    if (!empty($vnp_OrderInfo['voucher_code'])) {
+                        $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
+                        
+                        if ($voucher) {
+                            $voucher->used += 1;
+                            $voucher->save();
+                        }
+                    }
 
                     DB::commit();
             
