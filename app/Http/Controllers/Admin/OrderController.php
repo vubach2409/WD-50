@@ -26,14 +26,37 @@ class OrderController extends Controller
             ->with('error', 'Không thể cập nhật trạng thái của đơn hàng đã hủy!');
     }
 
+    if ($order->status == 'completed') {
+        return redirect()->route('admin.orders.show', ['order' => $order->id])
+            ->with('error', 'Không thể cập nhật trạng thái của đơn hàng đã giao!');
+    }
+
+    
+
     // Kiểm tra xem trạng thái có hợp lệ không
     $request->validate([
         'status' => 'required|in:pending,shipping,completed,cancelled'
     ]);
 
+    $newStatus = $request->status;
+
+    // Chỉ cho phép chuyển từ pending sang shipping hoặc cancelled
+    if ($order->status === 'pending' && !in_array($newStatus, ['shipping', 'cancelled'])) {
+        return redirect()->route('admin.orders.show', ['order' => $order->id])
+            ->with('error', 'Chỉ được phép chuyển từ trạng thái chờ xử lý sang đang giao hoặc đã hủy!');
+        // Chỉ cho phép chuyển từ shippinh sang complete   
+    } else if($order->status === 'shipping' && !in_array($newStatus, ['completed'])){
+        return redirect()->route('admin.orders.show',['order' => $order->id])->with('error','Chỉ được phép chuyển từ đang giao sang đã giao');
+
+    }
+
+    
+
+    // Nếu không phải trạng thái pending thì không cho cập nhật (đã xử lý ở trên)
     // Cập nhật trạng thái đơn hàng
-    $order->status = $request->status;
+    $order->status = $newStatus;
     $order->save();
+
 
     $payment = $order->payment; // Lấy thông tin thanh toán liên quan đến đơn hàng
     // Kiểm tra nếu trạng thái đơn hàng là 'completed'
@@ -67,21 +90,9 @@ class OrderController extends Controller
                     $variant->stock -= $orderItem->quantity;
                     $variant->save();
 
-                    // Cập nhật lại stock của sản phẩm chính
-                    $variant->product->updateStock();
+                    
                 }
-            } else {
-                // Nếu đơn hàng là từ sản phẩm gốc
-                $product = Product::withTrashed()->find($orderItem->product_id);
-                if ($product) {
-                    // Trừ stock của sản phẩm chính
-                    $product->stock -= $orderItem->quantity;
-                    $product->save();
-
-                    // Cập nhật lại stock của sản phẩm chính
-                    $product->updateStock();
-                }
-            }
+            } 
         }
     }
 
@@ -107,18 +118,9 @@ class OrderController extends Controller
                 $variant->stock += $orderItem->quantity;
                 $variant->restore(); // Nếu trước đó bị soft delete
                 $variant->save();
-                $variant->product->updateStock(); // Đồng bộ lại stock của sản phẩm chính
+             
             }
-        } else {
-            // Nếu đơn hàng là từ sản phẩm gốc
-            $product = Product::withTrashed()->find($orderItem->product_id);
-            if ($product) {
-                $product->stock += $orderItem->quantity;
-                $product->restore(); // Nếu bị soft delete
-                $product->save();
-                $product->updateStock(); // Đồng bộ lại stock của sản phẩm chính
-            }
-        }
+        } 
     }
 
     // Trừ stock khi đơn hàng được đặt
@@ -131,13 +133,6 @@ class OrderController extends Controller
                 if ($variant) {
                     $variant->stock -= $orderItem->quantity; // Giảm stock của biến thể
                     $variant->save(); // Lưu lại sự thay đổi stock của biến thể
-                }
-            } else {
-                // Nếu là sản phẩm gốc, trừ stock của sản phẩm gốc
-                $product = Product::find($orderItem->product_id);
-                if ($product) {
-                    $product->stock -= $orderItem->quantity; // Giảm stock của sản phẩm gốc
-                    $product->save(); // Lưu lại sự thay đổi stock của sản phẩm gốc
                 }
             }
         }
@@ -156,12 +151,7 @@ class OrderController extends Controller
                     $product = $variant->product;
                     $product->updateStock(); // Cập nhật stock của sản phẩm chính
                 }
-            } else {
-                $product = Product::find($orderItem->product_id);
-                if ($product) {
-                    $product->updateStock(); // Cập nhật stock của sản phẩm chính
-                }
-            }
+            } 
         }
     }
 }
