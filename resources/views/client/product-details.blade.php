@@ -22,7 +22,6 @@
             @endif
 
             <div class="row">
-                <!-- Product Image -->
                 <div class="col-md-6">
                     <img id="productImage" src="{{ asset('storage/' . $product->image) }}" class="img-fluid mb-3"
                         alt="{{ $product->name }}">
@@ -38,7 +37,6 @@
                     </div>
                 </div>
 
-                <!-- Product Info -->
                 <div class="col-md-6">
                     <h1 class="d-flex align-items-center gap-2">
                         {{ $product->name }}
@@ -113,7 +111,6 @@
                 </div>
             </div>
 
-            <!-- Mô tả chi tiết sản phẩm -->
             <div class="mt-5">
                 <h4 class="mb-3">Chi tiết sản phẩm</h4>
                 <div class="border rounded p-3 bg-light">
@@ -121,11 +118,9 @@
                 </div>
             </div>
 
-            <!-- Bình luận sản phẩm -->
             <div class="mt-5">
                 <h4 class="mb-3">Bình luận sản phẩm</h4>
 
-                <!-- Form gửi bình luận -->
                 @auth
                     <form action="{{ route('product.comment', $product->id) }}" method="POST" class="mb-4">
                         @csrf
@@ -148,14 +143,12 @@
                     <div class="alert alert-warning">Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để bình luận.</div>
                 @endauth
 
-                <!-- Danh sách bình luận -->
                 <div class="border rounded p-3">
                     @forelse ($product->feedbacks as $feedback)
                         <div class="mb-3">
                             <strong>{{ $feedback->user->name }}</strong>
                             <small class="text-muted">- {{ $feedback->created_at->diffForHumans() }}</small>
 
-                            <!-- Hiển thị sao -->
                             <div class="text-warning mb-1">
                                 @for ($i = 1; $i <= 5; $i++)
                                     <i class="bi {{ $i <= $feedback->star ? 'bi-star-fill' : 'bi-star' }}"></i>
@@ -171,8 +164,6 @@
                 </div>
             </div>
 
-
-            <!-- Sản phẩm liên quan -->
             <div class="mt-5">
                 <h4 class="mb-4">Sản phẩm liên quan</h4>
                 <div class="row g-3">
@@ -260,10 +251,15 @@
             const sizeId = document.getElementById('variantSize').value;
             const selected = variants.find(v => String(v.color_id) === colorId && String(v.size_id) === sizeId);
 
+            stockBox.classList.remove('out-of-stock');
+
             if (selected) {
                 priceBox.textContent = Number(selected.price).toLocaleString('vi-VN');
                 skuBox.textContent = selected.sku ?? 'Không có SKU';
                 stockBox.textContent = selected.stock > 0 ? `Còn hàng (${selected.stock})` : 'Hết hàng';
+                if (selected.stock === 0) {
+                    stockBox.classList.add('out-of-stock');
+                }
                 imageBox.src = selected.image ? '/storage/' + selected.image : imageBox.src;
                 quantityInput.max = selected.stock;
                 quantityInput.disabled = selected.stock === 0;
@@ -274,6 +270,7 @@
                 priceBox.textContent = '{{ number_format($product->price, 0, ',', '.') }}';
                 skuBox.textContent = '{{ $product->sku ?? 'Không có SKU' }}';
                 stockBox.textContent = 'Chưa chọn';
+                stockBox.classList.remove('out-of-stock'); 
                 imageBox.src = '{{ asset('storage/' . $product->image) }}';
                 quantityInput.value = 0;
                 quantityInput.disabled = true;
@@ -295,7 +292,6 @@
                     const rating = this.getAttribute('data-value');
                     input.value = rating;
                     
-                    // Highlight sao
                     stars.forEach(s => {
                         if (s.getAttribute('data-value') <= rating) {
                             s.classList.remove('bi-star');
@@ -308,6 +304,18 @@
                 });
             });
         });
-            
     </script>
 @endpush
+<style>
+    #productImage {
+    width: 100%;
+    height: 500px; 
+}
+.out-of-stock {
+    color: red;
+    font-weight: bold;
+    background-color: #ffcccc;
+    padding: 5px;
+    border-radius: 5px;
+}
+</style>
