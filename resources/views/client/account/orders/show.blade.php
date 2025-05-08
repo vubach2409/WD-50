@@ -75,25 +75,30 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('storage/' . $item->variant->image) }}"
-                                                        class="img-thumbnail me-3"
-                                                        style="width: 60px; height: 60px; object-fit: cover;">
+                                                    @if ($item->variant_image)
+                                                        <img src="{{ asset('storage/' . $item->variant_image) }}"
+                                                            class="img-thumbnail me-3"
+                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                    @else
+                                                        <img src="{{ asset('images/no-image.png') }}"
+                                                            class="img-thumbnail me-3"
+                                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                                    @endif
 
                                                     <div>
-                                                        <h6 class="mb-0">{{ $item->product->name }}</h6>
-                                                        @if ($item->variant)
-                                                            <small class="text-muted">Biến thể:
-                                                                {{ $item->variant->variation_name }}
-                                                                @if ($item->variant->color)
-                                                                    - {{ $item->variant->color->name }}
-                                                                @endif
-                                                                @if ($item->variant->size)
-                                                                    - {{ $item->variant->size->name }}
-                                                                @endif
-                                                            </small><br>
-                                                        @endif
+                                                        <h6 class="mb-0">{{ $item->product_name }}</h6>
+                                                        <small class="text-muted">
+                                                            Biến thể: 
+                                                            {{ $item->variant_name ?? 'Không có' }}
+                                                            @if ($item->color_name)
+                                                                - {{ $item->color_name }}
+                                                            @endif
+                                                            @if ($item->size_name)
+                                                                - {{ $item->size_name }}
+                                                            @endif
+                                                        </small><br>
                                                         <small class="text-muted">SKU:
-                                                            {{ $item->variant->sku ?? '.' }}</small>
+                                                            {{ $item->variant_sku ?? '.' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
