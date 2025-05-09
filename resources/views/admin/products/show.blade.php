@@ -17,7 +17,7 @@
                             <strong>Tên sản phẩm:</strong> {{ $product->name }}
                         </li>
                         <li class="list-group-item">
-                            <strong>Giá:</strong> {{ number_format($product->price_sale) }} đ - <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }} đ</span>
+                            <strong>Khoảng giá:</strong> {{ number_format($product->price_sale) }} đ - <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }} đ</span>
                         </li>
                         <li class="list-group-item">
                             <strong>Danh mục:</strong> {{ $product->category->name }}
@@ -57,6 +57,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>SKU</th>
+                                <th>Hình ảnh</th>
                                 <th>Màu sắc</th>
                                 <th>Kích thước</th>
                                 <th>Giá</th>
@@ -68,6 +69,7 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $variant->sku }}</td>
+                                    <td class="text-center"><img src="{{ asset('storage/' . $variant->image) }}" alt="Ảnh biến thể" width="100" height="100" class="border"></td>
                                     <td>{{ $variant->color->name }}</td>
                                     <td>{{ $variant->size->name }}</td>
                                     <td>{{ number_format($variant->price) }} đ</td>
@@ -89,6 +91,13 @@
             <div class="text-center mt-4">
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary mt-3 px-4">Quay lại</a>
                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning mt-3 px-4">Sửa</a>
+                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
+                    class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger mt-3 px-4"
+                        onclick="return confirm('Bạn có chắc chắn?')">Xóa</button>
+                </form>
                 <a href="{{ route('admin.product_variants.index', ['product' => $product->id]) }}" class="btn btn-info mt-3 px-4">Xem biến thể</a>
             </div>
         </div>
