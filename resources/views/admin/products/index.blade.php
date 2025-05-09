@@ -68,8 +68,7 @@
                         <tr>
                             <th>STT</th>
                             <th class="text-left">Tên sản phẩm</th>
-                            <th>Giá max</th>
-                            <th>Giá min</th>
+                            <th>Khoảng giá</th>
                             <th>Danh mục</th>
                             <th>Thương hiệu</th>
                             <th>Ảnh</th>
@@ -87,8 +86,7 @@
                                         {{ $product->name }}
                                     </a>
                                 </td>
-                                <td class="align-middle">{{ number_format($product->price) }} đ</td>
-                                <td class="align-middle">{{ number_format($product->price_sale) }} đ</td>
+                                <td class="align-middle">{{ number_format($product->price_sale) }} đ - {{ number_format($product->price) }} đ</td>
                                 <td class="align-middle">{{ $product->category->name }}</td>
                                 <td class="align-middle">{{ $product->brand->name }}</td>
                                 <td class="align-middle">

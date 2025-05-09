@@ -66,7 +66,7 @@ class ProductVariantController extends Controller
                 $max = $product->price;
                 if ($min > $max) [$min, $max] = [$max, $min];
                 if ($value < $min || $value > $max) {
-                    $fail("Giá biến thể phải nằm trong khoảng từ {$min} đến {$max}.");
+                    $fail("Giá biến thể sản phẩm phải nằm trong khoảng từ " . number_format($min, 0, ',', ',') . " đ đến " . number_format($max, 0, ',', ',') . " đ.");
                 }
             },
         ],
@@ -146,7 +146,7 @@ class ProductVariantController extends Controller
                 $min = min($product->price, $product->price_sale ?? $product->price);
                 $max = max($product->price, $product->price_sale ?? $product->price);
                 if ($value < $min || $value > $max) {
-                    $fail("Giá biến thể sản phẩm phải nằm trong khoảng từ {$min} đ đến {$max} đ.");
+                    $fail("Giá biến thể sản phẩm phải nằm trong khoảng từ " . number_format($min, 0, ',', ',') . " đ đến " . number_format($max, 0, ',', ',') . " đ.");
                 }
             },
         ],
