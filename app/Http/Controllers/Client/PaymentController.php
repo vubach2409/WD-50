@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
@@ -101,7 +102,15 @@ class PaymentController extends Controller
                             $variantSku = $variant ? $variant->sku : null;
                             $colorName = $variant && $variant->color ? $variant->color->name : null;
                             $sizeName = $variant && $variant->size ? $variant->size->name : null;
-                            $variantImage = $variant ? $variant->image : null;
+                        
+                            $originalImage = $variant ? $variant->image : null;
+                            $variantImage = null;
+                            
+                            if ($originalImage && Storage::disk('public')->exists($originalImage)) {
+                                $newImageName = 'order_detail/' . time() . '_' . basename($originalImage);
+                                Storage::disk('public')->copy($originalImage, $newImageName);
+                                $variantImage = $newImageName;
+                            }
                             OrderDetail::create([
                                 'order_id' => $order->id,
                                 'product_id' => $item->product_id,  
@@ -111,8 +120,8 @@ class PaymentController extends Controller
                                 'variant_sku' => $variantSku,
                                 'color_name' => $colorName,
                                 'size_name' => $sizeName,
-                                'variant_image' => $variantImage,
-                                'price' => $price,  
+                                'variant_image' => $variantImage, 
+                                'price' => $price,
                                 'quantity' => $item->quantity,
                             ]);
                 
@@ -377,7 +386,15 @@ class PaymentController extends Controller
                         $variantSku = $variant ? $variant->sku : null;
                         $colorName = $variant && $variant->color ? $variant->color->name : null;
                         $sizeName = $variant && $variant->size ? $variant->size->name : null;
-                        $variantImage = $variant ? $variant->image : null;
+                        $originalImage = $variant ? $variant->image : null;
+                        $variantImage = null;
+                        
+                        if ($originalImage && Storage::disk('public')->exists($originalImage)) {
+                            $newImageName = 'order_detail/' . time() . '_' . basename($originalImage);
+                            Storage::disk('public')->copy($originalImage, $newImageName);
+                            $variantImage = $newImageName;
+                        }
+                    
                         OrderDetail::create([
                             'order_id' => $order->id,
                             'product_id' => $item->product_id,  
@@ -387,8 +404,8 @@ class PaymentController extends Controller
                             'variant_sku' => $variantSku,
                             'color_name' => $colorName,
                             'size_name' => $sizeName,
-                            'variant_image' => $variantImage,
-                            'price' => $price,  
+                            'variant_image' => $variantImage, // 👈 Vẫn là cột variant_image
+                            'price' => $price,
                             'quantity' => $item->quantity,
                         ]);
                         // Trừ tồn kho theo variant nếu có
