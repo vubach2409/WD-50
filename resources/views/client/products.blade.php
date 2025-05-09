@@ -100,8 +100,7 @@
                                                 <span
                                                     class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
                                             @elseif($product->price_sale < $product->price)
-                                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm
-                                                    giá</span>
+                                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
                                             @endif
                                         </div>
 
