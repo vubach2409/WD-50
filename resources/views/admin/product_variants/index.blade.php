@@ -71,7 +71,7 @@
     @endif
     
     <div class="text-center mt-4">
-        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
+        <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-secondary">Quay lại</a>
     </div>
 </div>
 @endsection

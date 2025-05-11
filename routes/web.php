@@ -217,7 +217,7 @@ Route::post('/chat/send', function (Request $request) {
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
-
+    
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'index']);
     

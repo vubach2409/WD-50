@@ -44,7 +44,44 @@
                         <div class="alert alert-warning w-100">{{ __('Không có hình ảnh') }}</div>
                     @endif
                 </div>
+                
             </div>
+
+            <hr>
+
+            <h3 class="text-center mt-4 text-primary">Số lượng biến thể sản phẩm: {{ $product->variants->count() }}</h3>
+            @if ($variants->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>SKU</th>
+                                <th>Màu sắc</th>
+                                <th>Kích thước</th>
+                                <th>Giá</th>
+                                <th>Số lượng tồn kho</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($variants as $index => $variant)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $variant->sku }}</td>
+                                    <td>{{ $variant->color->name }}</td>
+                                    <td>{{ $variant->size->name }}</td>
+                                    <td>{{ number_format($variant->price) }} đ</td>
+                                    <td>{{ $variant->stock }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i> Sản phẩm này không có biến thể nào.
+                </div>
+            @endif
 
             <hr>
 
@@ -52,7 +89,7 @@
             <div class="text-center mt-4">
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary mt-3 px-4">Quay lại</a>
                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning mt-3 px-4">Sửa</a>
-                <a href="{{ route('admin.product_variants.index', ['product' => $product->id]) }}" class="btn btn-info mt-3 px-4">Biến thể</a>
+                <a href="{{ route('admin.product_variants.index', ['product' => $product->id]) }}" class="btn btn-info mt-3 px-4">Xem biến thể</a>
             </div>
         </div>
     </div>

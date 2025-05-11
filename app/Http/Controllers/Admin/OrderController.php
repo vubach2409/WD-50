@@ -104,7 +104,7 @@ class OrderController extends Controller
     // Hiển thị chi tiết đơn hàng
     public function show($id)
     {
-        $order = Orders::with('user', 'payment', 'items.product')->findOrFail($id);
+        $order = Orders::with('user', 'payment')->findOrFail($id);
         return view('admin.order.show', compact('order'));
     }
 
