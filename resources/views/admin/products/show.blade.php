@@ -17,7 +17,11 @@
                             <strong>Tên sản phẩm:</strong> {{ $product->name }}
                         </li>
                         <li class="list-group-item">
+<<<<<<< HEAD
                             <strong>Khoảng giá:</strong> {{ number_format($product->price_sale) }} đ - <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }} đ</span>
+=======
+                            <strong>Giá:</strong> {{ number_format($product->price_sale) }} đ - <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }} đ</span>
+>>>>>>> 3d6d0c78435cd13ac3db14b2a9e3384a04296e23
                         </li>
                         <li class="list-group-item">
                             <strong>Danh mục:</strong> {{ $product->category->name }}
@@ -44,11 +48,9 @@
                         <div class="alert alert-warning w-100">{{ __('Không có hình ảnh') }}</div>
                     @endif
                 </div>
-                
             </div>
 
             <hr>
-
             <h3 class="text-center mt-4 text-primary">Số lượng biến thể sản phẩm: {{ $product->variants->count() }}</h3>
             @if ($variants->count() > 0)
                 <div class="table-responsive">

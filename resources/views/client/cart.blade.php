@@ -213,10 +213,7 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a href="{{ route('checkout') }}" class="btn btn-black btn-lg py-3 btn-block">Thanh
-                                        toán
-
-                                    </a>
+                                    <a href="{{ route('checkout') }}" class="btn btn-black btn-lg py-3 btn-block">Thanh toán</a>
                                 </div>
                             </div>
                         </div>
@@ -252,3 +249,4 @@
         });
     </script>
 @endsection
+

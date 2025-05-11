@@ -24,6 +24,7 @@ class ColorController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:colors,name',
             'code' => 'required|string|max:7|unique:colors,code', // validate code
+
         ], [
             'name.required' => 'Vui lòng nhập tên màu.',
             'name.unique' => 'Tên màu đã tồn tại.',
@@ -48,17 +49,18 @@ class ColorController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:colors,name,' . $color->id,
             'code' => 'required|string|max:7|unique:colors,code,' . $color->id,
+
         ], [
             'name.required' => 'Vui lòng nhập tên màu.',
             'name.unique' => 'Tên màu đã tồn tại.',
             'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
-
             'code.required' => 'Vui lòng nhập mã màu.',
             'code.unique' => 'Mã màu đã tồn tại.',
             'code.max' => 'Mã màu không hợp lệ.',
         ]);
 
         $color->update($request->only('name', 'code'));
+
         return redirect()->route('admin.colors.index')->with('success', 'Cập nhật màu thành công!');
     }
 

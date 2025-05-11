@@ -24,6 +24,7 @@
                         <th class="text-center align-middle">STT</th>
                         <th class="text-center align-middle">Màu</th>
                         <th class="text-center align-middle">Mã màu</th>
+
                         <th class="text-center align-middle">Hành động</th>
                     </tr>
                 </thead>

@@ -20,7 +20,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Mã màu</th>
+                        <th>Mã màu #...</th>
                         <td>
                             <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" 
                                 placeholder="Nhập mã màu" value="{{ old('code', $color->code) }}">

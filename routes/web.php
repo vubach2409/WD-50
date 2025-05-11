@@ -266,6 +266,11 @@ Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->na
     Route::get('/users/{id}', [CustomerController::class, 'show'])->name('users.show');
     Route::delete('/users/{id}', [CustomerController::class, 'destroy'])->name('users.destroy');
 
+Route::get('admin/users/{id}/edit', [CustomerController::class, 'edit'])->name('users.edit');
+
+// Route xử lý cập nhật thông tin người dùng
+Route::put('admin/users/{id}', [CustomerController::class, 'update'])->name('users.update');
+
 
     // Routes cho biến thể sản phẩm
     Route::prefix('products/{product}/variants')->group(function () {
@@ -303,7 +308,9 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    
     Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+
 
     Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
