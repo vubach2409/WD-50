@@ -23,6 +23,7 @@
                     <tr>
                         <th class="text-center align-middle">STT</th>
                         <th class="text-center align-middle">Màu</th>
+                        <th class="text-center align-middle">Mã màu</th>
                         <th class="text-center align-middle">Hành động</th>
                     </tr>
                 </thead>
@@ -31,6 +32,7 @@
                     <tr>
                         <td class="text-center align-middle">{{ $index + 1 }}</td>
                         <td class="text-center align-middle">{{ $color->name }}</td>
+                        <td class="text-center align-middle">{{ $color->code }}</td>
                         <td class="text-center align-middle">
                             <a href="{{ route('admin.colors.edit', $color->id) }}" class="btn btn-warning">Sửa</a>
                             <form action="{{ route('admin.colors.destroy', $color->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
