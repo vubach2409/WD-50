@@ -44,11 +44,7 @@
                                     @if ($voucher->is_active)
                                         <span class="badge bg-success text-light">Hoạt động</span>
                                     @else
-<<<<<<< HEAD
-                                        <span class="badge bg-danger text-light">Ngừng hoạt động</span> 
-=======
                                         <span class="badge bg-danger text-light">Ngừng hoạt động</span>
->>>>>>> ph47966ttk
                                     @endif
                                 </td>
                                 <td class="text-center align-middle">
