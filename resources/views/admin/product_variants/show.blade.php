@@ -15,6 +15,9 @@
                 <div class="col-md-6">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
+                            <strong>Tên sản phẩm: </strong> {{ $product->name }}
+                        </li>
+                        <li class="list-group-item">
                             <strong>Tên biến thể: </strong> {{ $variant->variation_name }}
                         </li>
                         <li class="list-group-item">

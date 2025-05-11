@@ -38,8 +38,10 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Ảnh sản phẩm</th>
+                            <th>Ảnh</th>
                             <th>Sản phẩm</th>
+                            <th>Biến thể</th>
+                            <th>SKU</th>
                             <th>Số lượng</th>
                             <th>Đơn giá</th>
                             <th>Tổng tiền</th>
@@ -49,14 +51,18 @@
                         @foreach ($order->items as $item)
                             <tr>
                                 <td class="text-center">
-                                    @if ($item->product->image)
-                                        <img src="{{ asset('storage/' . $item->product->image) }}"
-                                            alt="{{ $item->product->name }}" width="100">
+                                    @if ($item->variant_image)
+                                        <img src="{{ asset('storage/' . $item->variant_image) }}"
+                                            alt="{{ $item->product_name }}" width="100">
                                     @else
                                         <span>Không có ảnh</span>
                                     @endif
                                 </td>
-                                <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->product_name }}</td>
+                                <td>
+                                    {{ $item->color_name ?? 'Không màu' }} / {{ $item->size_name ?? 'Không size' }}
+                                </td>
+                                <td>{{ $item->variant_sku ?? 'Không có' }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
                                 <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>

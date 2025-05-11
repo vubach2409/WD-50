@@ -95,12 +95,25 @@ class PaymentController extends Controller
                 
                         foreach ($cartItems as $item) {
                             $price = $item->variant->price;
+                            $variant = $item->variant; 
+                            $productName = $item->product ? $item->product->name : 'N/A'; 
+                            $variantName = $variant ? $variant->variation_name : null;
+                            $variantSku = $variant ? $variant->sku : null;
+                            $colorName = $variant && $variant->color ? $variant->color->name : null;
+                            $sizeName = $variant && $variant->size ? $variant->size->name : null;
+                            $variantImage = $variant ? $variant->image : null;
                             OrderDetail::create([
                                 'order_id' => $order->id,
-                                'product_id' => $item->product_id,
-                                'quantity' => $item->quantity,
-                                'price' => $price,
+                                'product_id' => $item->product_id,  
+                                'product_name' => $productName,    
                                 'variant_id' => $item->variant_id,
+                                'variant_name' => $variantName,
+                                'variant_sku' => $variantSku,
+                                'color_name' => $colorName,
+                                'size_name' => $sizeName,
+                                'variant_image' => $variantImage,
+                                'price' => $price,  
+                                'quantity' => $item->quantity,
                             ]);
                 
                             // Trừ tồn kho biến thể hoặc sản phẩm
@@ -357,17 +370,27 @@ class PaymentController extends Controller
             
                     // 8. Lưu từng sản phẩm vào OrderDetail + trừ kho
                     foreach ($cartItems as $item) {
-                        // Lưu chi tiết đơn hàng
                         $price = $item->variant->price;
+                        $variant = $item->variant; 
+                        $productName = $item->product ? $item->product->name : 'N/A'; 
+                        $variantName = $variant ? $variant->variation_name : null;
+                        $variantSku = $variant ? $variant->sku : null;
+                        $colorName = $variant && $variant->color ? $variant->color->name : null;
+                        $sizeName = $variant && $variant->size ? $variant->size->name : null;
+                        $variantImage = $variant ? $variant->image : null;
                         OrderDetail::create([
                             'order_id' => $order->id,
-                            'product_id' => $item->product_id,
+                            'product_id' => $item->product_id,  
+                            'product_name' => $productName,    
                             'variant_id' => $item->variant_id,
+                            'variant_name' => $variantName,
+                            'variant_sku' => $variantSku,
+                            'color_name' => $colorName,
+                            'size_name' => $sizeName,
+                            'variant_image' => $variantImage,
+                            'price' => $price,  
                             'quantity' => $item->quantity,
-                            'price' => $price,
                         ]);
-                        
-            
                         // Trừ tồn kho theo variant nếu có
                         if ($item->variant_id) {
                             $variant = ProductVariant::where('id', $item->variant_id)->lockForUpdate()->first();
