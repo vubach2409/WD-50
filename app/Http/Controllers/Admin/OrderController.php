@@ -138,6 +138,7 @@ class OrderController extends Controller
         }
 
         // Sau khi trừ stock của các biến thể, đồng bộ lại stock của sản phẩm chính
+        // Sau khi trừ stock của các biến thể, đồng bộ lại stock của sản phẩm chính
         $this->syncProductStock($order);
     }
 
