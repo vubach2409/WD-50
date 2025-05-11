@@ -100,7 +100,7 @@ class VoucherController extends Controller
                     }
                 },
             ],
-            'min_order_amount' => 'required|integer|min:0',
+            'min_order_amount' => 'required|min:0',
             'usage_limit' => 'nullable|integer|min:1',
             'starts_at' => 'nullable|date|before_or_equal:expires_at',
             'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(),
@@ -115,7 +115,6 @@ class VoucherController extends Controller
             'value.numeric' => 'Giá trị giảm phải là số.',
             'value.min' => 'Giá trị giảm phải lớn hơn 0.',
             'min_order_amount.required' => 'Vui lòng nhập đơn hàng tối thiểu.',
-            'min_order_amount.integer' => 'Đơn hàng tối thiểu phải là số nguyên.',
             'usage_limit.integer' => 'Giới hạn sử dụng phải là số nguyên.',
             'usage_limit.min' => 'Giới hạn sử dụng phải lớn hơn 0.',
             'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',

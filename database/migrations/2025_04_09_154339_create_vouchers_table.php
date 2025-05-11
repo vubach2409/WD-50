@@ -15,15 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();             // Mã voucher
             $table->string('type')->default('fixed');     // Kiểu: fixed hoặc percent
-            $table->integer('value');
-            $table->integer('min_order_amount');
+            $table->decimal('value', 10, 2);              // Giá trị: tiền hoặc %
+            $table->decimal('min_order_amount', 10, 2)->nullable(); // Giá trị tối thiểu đơn hàng
             $table->integer('usage_limit')->nullable();   // Giới hạn số lần dùng
             $table->integer('used')->default(0);          // Đã dùng bao nhiêu lần
             $table->dateTime('starts_at')->nullable();    // Bắt đầu
             $table->dateTime('expires_at')->nullable();   // Hết hạn
             $table->boolean('is_active')->default(true);  // Có đang hoạt động không
             $table->timestamps();
-
         });
     }
 

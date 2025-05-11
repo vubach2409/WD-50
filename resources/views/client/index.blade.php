@@ -22,49 +22,64 @@
 
                 <!-- Start Column 1 -->
                 <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-                    <h2 class="mb-4 section-title">Crafted with excellent material.</h2>
-                    <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
-                        vulputate velit imperdiet dolor tempor tristique. </p>
-                    <p><a href="shop.html" class="btn">Explore</a></p>
+                    <h2 class="mb-4 section-title">Được chế tác bằng vật liệu tuyệt vời.</h2>
+                    <p class="mb-4">Cho đến khi cuộc sống ghét những người chơi ăn malesuada. Anh ta không muốn gì cả và
+                        không muốn gì cả. Có kẻ vulputate muốn cơn đau bất chợt buồn bã. </p>
+                    <p><a href="{{ route('products') }}" class="btn">Khám phá</a></p>
                 </div>
                 <!-- End Column 1 -->
 
                 <!-- Start Column 2: Display products in 3 columns -->
                 @foreach ($products as $product)
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-5 position-relative">
-                        <a class="product-item d-block text-decoration-none"
-                            href="{{ route('product.details', $product->id) }}">
-                            <div class="position-relative">
-                                <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid product-thumbnail"
-                                    alt="{{ $product->name }}">
-                                {{-- NHÃN --}}
-                                @if ($product->is_new)
-                                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                                @elseif($product->price_sale < $product->price)
-                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
-                                @endif
-                            </div>
+                        <div class="product-item position-relative overflow-hidden">
+                            <!-- Product image -->
+                            <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
+                                <div class="product-image position-relative">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
+                                        alt="{{ $product->name }}">
 
-                            <h3 class="product-title mt-2 mb-1">{{ $product->name }}</h3>
-                            <strong class="product-price d-block text-danger">
-                                {{ number_format($product->price_sale, 0, ',', '.') }}đ
-                                @if ($product->price_sale < $product->price)
-                                    <span class="text-muted text-decoration-line-through ms-2">
-                                        {{ number_format($product->price, 0, ',', '.') }}đ
-                                    </span>
-                                @endif
-                            </strong>
+                                    <!-- Labels for "New" and "Sale" -->
+                                    @if ($product->is_new)
+                                        <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
+                                    @elseif($product->price_sale < $product->price)
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
+                                    @endif
+                                </div>
 
-                            {{-- NÚT CHỌN SẢN PHẨM --}}
-                            <a href="{{ route('product.details', $product->id) }}"
-                                class="btn btn-select-product w-100 mt-2">
-                                <i class="bi bi-eye me-1"></i> Chọn sản phẩm
+                                <!-- Product info -->
+                                <div class="product-info p-3">
+                                    <!-- Tên sản phẩm (không nền) -->
+                                    <h5 class="product-title text-dark mb-1"
+                                        style="font-size: 1rem; background-color: transparent;">
+                                        {{ $product->name }}
+                                    </h5>
+
+                                    <!-- Giá sản phẩm (không nền) -->
+                                    <p class="product-price mb-2" style="background-color: transparent;">
+                                        <span
+                                            class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
+                                        @if ($product->price_sale < $product->price)
+                                            <span class="text-muted text-decoration-line-through ms-2">
+                                                {{ number_format($product->price, 0, ',', '.') }}đ
+                                            </span>
+                                        @endif
+                                    </p>
+                                </div>
+
+                                <!-- Action button (View product) -->
+                                <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
+                                    <a href="{{ route('product.details', $product->id) }}"
+                                        class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
+                                        <i class="bi bi-eye me-1"></i> Xem thêm
+                                    </a>
+                                </div>
                             </a>
-
-
-                        </a>
+                        </div>
                     </div>
                 @endforeach
+
+
 
             </div>
         </div>
@@ -77,9 +92,9 @@
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col-lg-6">
-                    <h2 class="section-title">Why Choose Us</h2>
-                    <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit
-                        imperdiet dolor tempor tristique.</p>
+                    <h2 class="section-title">Tại sao chọn chúng tôi</h2>
+                    <p>Cho đến khi cuộc sống ghét những người chơi ăn malesuada. Anh ta không muốn gì cả và không muốn gì
+                        cả. Có kẻ vulputate muốn cơn đau bất chợt buồn bã.</p>
 
                     <div class="row my-5">
                         <div class="col-6 col-md-6">
@@ -87,9 +102,9 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/truck.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Fast &amp; Free Shipping</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
-                                    vulputate.
+                                <h3>Giao hàng nhanh</h3>
+                                <p>Cho đến khi cuộc sống ghét những người chơi ăn malesuada. Anh ta không muốn gì cả và
+                                    không muốn gì cả. Một số thì thốt lên.
                                 </p>
                             </div>
                         </div>
@@ -99,9 +114,9 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/bag.svg') }}" class="imf-fluid">
                                 </div>
-                                <h3>Easy to Shop</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
-                                    vulputate.
+                                <h3>Dễ dàng mua sắm </h3>
+                                <p>Cho đến khi cuộc sống ghét những người chơi ăn malesuada. Anh ta không muốn gì cả và
+                                    không muốn gì cả. Một số thì thốt lên.
                                 </p>
                             </div>
                         </div>
@@ -111,9 +126,9 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/support.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>24/7 Support</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
-                                    vulputate.
+                                <h3>Hỗ trợ 24/7</h3>
+                                <p>Cho đến khi cuộc sống ghét những người chơi ăn malesuada. Anh ta không muốn gì cả và
+                                    không muốn gì cả. Một số thì thốt lên.
                                 </p>
                             </div>
                         </div>
@@ -123,9 +138,9 @@
                                 <div class="icon">
                                     <img src="{{ asset('clients/images/return.svg') }}" alt="Image" class="imf-fluid">
                                 </div>
-                                <h3>Hassle Free Returns</h3>
-                                <p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam
-                                    vulputate.
+                                <h3>Trả hàng không rắc rối</h3>
+                                <p>Cho đến khi cuộc sống ghét những người chơi ăn malesuada. Anh ta không muốn gì cả và
+                                    không muốn gì cả. Một số thì thốt lên.
                                 </p>
                             </div>
                         </div>
@@ -157,71 +172,75 @@
                     </div>
                 </div>
                 <div class="col-lg-5 ps-lg-5">
-                    <h2 class="section-title mb-4">We Help You Make Modern Interior Design</h2>
-                    <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada.
-                        Nullam
-                        ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque
-                        habitant
-                        morbi tristique senectus et netus et malesuada</p>
+                    <h2 class="section-title mb-4">Chúng tôi giúp bạn thiết kế nội thất hiện đại</h2>
+                    <p>Cho đến khi nó dễ hơn cả thuốc trang điểm thông thường. Cho đến khi cuộc sống ghét những người chơi
+                        ăn malesuada. Anh ta không muốn gì cả và không muốn gì cả. Có kẻ vulputate muốn cơn đau bất chợt
+                        buồn bã. Trẻ em phải chịu đựng tuổi già đau buồn và căn bệnh đau buồn.
+
+                    </p>
 
                     <ul class="list-unstyled custom-list my-4">
-                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
-                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
-                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
-                        <li>Donec vitae odio quis nisl dapibus malesuada</li>
+                        <li>Cho đến khi cuộc sống ghét những người chơi ăn malesuada</li>
+                        <li>Cho đến khi cuộc sống ghét những người chơi ăn malesuada</li>
+                        <li>Cho đến khi cuộc sống ghét những người chơi ăn malesuada</li>
+                        <li>Cho đến khi cuộc sống ghét những người chơi ăn malesuada</li>
                     </ul>
-                    <p><a herf="#" class="btn">Explore</a></p>
+                    <p><a href="{{ route('products') }}" class="btn">Khám phá</a></p>
                 </div>
             </div>
         </div>
     </div>
     <!-- End We Help Section -->
-
-    <!-- Start Popular Product -->
     <div class="popular-product">
         <div class="container">
-            <div class="row">
-
-                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <div class="product-item-sm d-flex">
-                        <div class="thumbnail">
-                            <img src="{{ asset('clients/images/product-1.png') }}" alt="Image" class="img-fluid">
-                        </div>
-                        <div class="pt-3">
-                            <h3>Nordic Chair</h3>
-                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-                            <p><a href="#">Read More</a></p>
+            <div class="row justify-content-center">
+                @foreach ($popularProducts as $product)
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-5 position-relative">
+                        <div class="product-item position-relative overflow-hidden">
+                            <!-- Product image -->
+                            <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
+                                <div class="product-image position-relative">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid" alt="{{ $product->name }}">
+    
+                                    <!-- Labels for "New" and "Sale" -->
+                                    @if ($product->is_new)
+                                        <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
+                                    @elseif($product->price_sale < $product->price)
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
+                                    @endif
+                                </div>
+    
+                                <!-- Product info -->
+                                <div class="product-info p-3">
+                                    <!-- Product name -->
+                                    <h5 class="product-title text-dark mb-1" style="font-size: 1rem; background-color: transparent;">
+                                        {{ $product->name }}
+                                    </h5>
+    
+                                    <!-- Product price -->
+                                    <p class="product-price mb-2" style="background-color: transparent;">
+                                        <span class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
+                                        @if ($product->price_sale < $product->price)
+                                            <span class="text-muted text-decoration-line-through ms-2">
+                                                {{ number_format($product->price, 0, ',', '.') }}đ
+                                            </span>
+                                        @endif
+                                    </p>
+                                </div>
+    
+                                <!-- Action button (View product) -->
+                                <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
+                                    <a href="{{ route('product.details', $product->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
+                                        <i class="bi bi-eye me-1"></i> Xem thêm
+                                    </a>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <div class="product-item-sm d-flex">
-                        <div class="thumbnail">
-                            <img src="{{ asset('clients/images/product-2.png') }}" alt="Image" class="img-fluid">
-                        </div>
-                        <div class="pt-3">
-                            <h3>Kruzo Aero Chair</h3>
-                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-                            <p><a href="#">Read More</a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <div class="product-item-sm d-flex">
-                        <div class="thumbnail">
-                            <img src="{{ asset('clients/images/product-3.png') }}" alt="Image" class="img-fluid">
-                        </div>
-                        <div class="pt-3">
-                            <h3>Ergonomic Chair</h3>
-                            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p>
-                            <p><a href="#">Read More</a></p>
-                        </div>
-                    </div>
-                </div>
-
+                @endforeach
             </div>
         </div>
     </div>
+    
+
 @endsection

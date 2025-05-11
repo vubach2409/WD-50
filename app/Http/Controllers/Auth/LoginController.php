@@ -8,47 +8,58 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    /**
+     * Hiển thị form đăng nhập.
+     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
+    /**
+     * Xử lý đăng nhập người dùng.
+     */
     public function login(Request $request)
     {
-        // Validate với thông báo lỗi tiếng Việt
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6|max:50',
         ], [
             'email.required' => 'Vui lòng nhập địa chỉ email.',
             'email.email' => 'Địa chỉ email không đúng định dạng.',
             'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất :min ký tự.',
+            'password.max' => 'Mật khẩu không được vượt quá :max ký tự.',
         ]);
 
         // Thử đăng nhập
-        if (Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
             $user = Auth::user();
 
             // Điều hướng theo vai trò
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
-            } else {
-                return redirect()->route('home');
             }
+
+            return redirect()->route('home');
         }
 
-        // Trả về lỗi nếu đăng nhập thất bại
+        // Đăng nhập thất bại
         return back()->withErrors([
-            'email' => 'Email hoặc mật khẩu không chính xác.'
-        ])->withInput(); // giữ lại input đã nhập
+            'email' => 'Email hoặc mật khẩu không chính xác.',
+        ])->withInput();
     }
 
+    /**
+     * Đăng xuất người dùng.
+     */
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('success', 'Bạn đã đăng xuất thành công!');
+        return redirect('/login');
     }
 }
