@@ -107,10 +107,22 @@ public function addToCart(Request $request)
    public function update(Request $request, $id)
    {
        $cartItem = Carts::findOrFail($id);
-       $cartItem->quantity = $request->input('quantity');
+   
+       $quantity = (int) $request->input('quantity');
+   
+       if ($quantity < 1) {
+           return redirect()->back()->with('error', 'Số lượng phải lớn hơn 0.');
+       }
+   
+       // Kiểm tra tồn kho biến thể
+       if ($quantity > $cartItem->variant->stock) {
+           return redirect()->back()->with('error', 'Số lượng vượt quá tồn kho hiện có.');
+       }
+   
+       $cartItem->quantity = $quantity;
        $cartItem->save();
    
-       return response()->json(['message' => 'Cập nhật thành công']);
+       return redirect()->back()->with('success', 'Cập nhật số lượng thành công.');
    }
    
    

@@ -22,6 +22,7 @@
             @endif
 
             <div class="row">
+                <!-- Product Image -->
                 <div class="col-md-6">
                     <img id="productImage" src="{{ asset('storage/' . $product->image) }}" class="img-fluid mb-3"
                         alt="{{ $product->name }}">
@@ -37,6 +38,7 @@
                     </div>
                 </div>
 
+                <!-- Product Info -->
                 <div class="col-md-6">
                     <h1 class="d-flex align-items-center gap-2">
                         {{ $product->name }}
@@ -56,16 +58,19 @@
                     </div>
 
 
-                    <h4><span id="defaultPrice">
-                            <strong class="product-price d-block text-danger">
-                                {{ number_format($product->price_sale, 0, ',', '.') }}đ
-                                @if ($product->price_sale < $product->price)
-                                    <span class="text-muted text-decoration-line-through ms-2">
-                                        {{ number_format($product->price, 0, ',', '.') }}đ
-                                    </span>
-                                @endif
-                            </strong>
-                        </span></h4>
+                    <h4>
+                        <strong class="product-price d-block text-danger" id="defaultPrice">
+                            <span id="salePrice">
+                                {{ number_format($product->price_sale, 0, ',', '.') }} đ
+                            </span>
+                            @if ($product->price_sale < $product->price)
+                                <span id="originalPrice" class="text-muted text-decoration-line-through ms-2">
+                                    {{ number_format($product->price, 0, ',', '.') }} đ
+                                </span>
+                            @endif
+                        </strong>
+                    </h4>
+                    
                     <p>{{ $product->description }}</p>
                     <p><strong>SKU:</strong> <span id="variantSku">{{ $product->sku ?? 'Không có SKU' }}</span></p>
                     <p><strong>Kho:</strong> <span id="stockStatus">Chưa chọn</span></p>
@@ -73,20 +78,21 @@
                     @if ($product->variants->count() > 0)
                         <div class="row mb-3">
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-semibold">Chọn màu:</label>
+                                <label class="form-label fw-semibold">Màu:</label>
                                 <select id="variantColor" class="form-select">
-                                    <option value="">-- Chọn màu --</option>
                                     @foreach ($product->variants->unique('color_id') as $variant)
                                         <option value="{{ $variant->color_id }}">{{ $variant->color->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-semibold">Chọn kích thước:</label>
+                                <label class="form-label fw-semibold">Kích thước:</label>
                                 <select id="variantSize" class="form-select">
-                                    <option value="">-- Chọn kích thước --</option>
+                                    @foreach ($product->variants->unique('size_id') as $variant)
+                                        <option value="{{ $variant->size_id }}">{{ $variant->size->name }}</option>
+                                    @endforeach
                                 </select>
-                            </div>                            
+                            </div>
                         </div>
                     @else
                         <div class="alert alert-danger">Sản phẩm này hiện không còn hàng.</div>
@@ -101,16 +107,17 @@
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Số lượng:</label>
                             <input type="number" class="form-control" id="quantity" name="quantity" value="1"
-                                min="1" disabled>
+                                min="1">
                         </div>
 
-                        <button class="btn btn-primary w-100" type="submit" id="addToCartBtn" disabled>
+                        <button class="btn btn-primary w-100" type="submit" id="addToCartBtn">
                             <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
                         </button>
                     </form>
                 </div>
             </div>
 
+            <!-- Mô tả chi tiết sản phẩm -->
             <div class="mt-5">
                 <h4 class="mb-3">Chi tiết sản phẩm</h4>
                 <div class="border rounded p-3 bg-light">
@@ -118,9 +125,11 @@
                 </div>
             </div>
 
+            <!-- Bình luận sản phẩm -->
             <div class="mt-5">
                 <h4 class="mb-3">Bình luận sản phẩm</h4>
 
+                <!-- Form gửi bình luận -->
                 @auth
                     <form action="{{ route('product.comment', $product->id) }}" method="POST" class="mb-4">
                         @csrf
@@ -143,12 +152,14 @@
                     <div class="alert alert-warning">Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để bình luận.</div>
                 @endauth
 
+                <!-- Danh sách bình luận -->
                 <div class="border rounded p-3">
                     @forelse ($product->feedbacks as $feedback)
                         <div class="mb-3">
                             <strong>{{ $feedback->user->name }}</strong>
                             <small class="text-muted">- {{ $feedback->created_at->diffForHumans() }}</small>
 
+                            <!-- Hiển thị sao -->
                             <div class="text-warning mb-1">
                                 @for ($i = 1; $i <= 5; $i++)
                                     <i class="bi {{ $i <= $feedback->star ? 'bi-star-fill' : 'bi-star' }}"></i>
@@ -164,6 +175,8 @@
                 </div>
             </div>
 
+
+            <!-- Sản phẩm liên quan -->
             <div class="mt-5">
                 <h4 class="mb-4">Sản phẩm liên quan</h4>
                 <div class="row g-3">
@@ -197,125 +210,114 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
-    <script>
-        const variants = @json($product->variants);
-        const colorSelect = document.getElementById('variantColor');
-        const priceBox = document.getElementById('defaultPrice');
-        const skuBox = document.getElementById('variantSku');
-        const stockBox = document.getElementById('stockStatus');
-        const imageBox = document.getElementById('productImage');
-        const quantityInput = document.getElementById('quantity');
-        const variantIdInput = document.getElementById('variant_id');
-        const addToCartBtn = document.getElementById('addToCartBtn');
-        const hasVariants = variants.length > 0;
-        const allOutOfStock = hasVariants && variants.every(v => v.stock == 0);
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+<script>
+    const variants = @json($product->variants);
+    const colorSelect = document.getElementById('variantColor');
+    const priceBox = document.getElementById('defaultPrice');
+    const skuBox = document.getElementById('variantSku');
+    const stockBox = document.getElementById('stockStatus');
+    const imageBox = document.getElementById('productImage');
+    const quantityInput = document.getElementById('quantity');
+    const variantIdInput = document.getElementById('variant_id');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    const sizeSelect = document.getElementById('variantSize');
+    const hasVariants = variants.length > 0;
+    const allOutOfStock = hasVariants && variants.every(v => v.stock == 0);
 
+    if (!hasVariants || allOutOfStock) {
+        stockBox.textContent = 'Hết hàng';
+        quantityInput.value = 0;
+        quantityInput.disabled = true;
+        addToCartBtn.disabled = true;
+    }
 
-        if (!hasVariants || allOutOfStock) {
-            stockBox.textContent = 'Hết hàng';
-            quantityInput.value = 0;
-            quantityInput.disabled = true;
-            addToCartBtn.disabled = true;
-        }
+    function updateVariantInfo() {
+    const colorId = colorSelect.value;
+    const sizeId = sizeSelect.value;
+    const selected = variants.find(v => String(v.color_id) === colorId && String(v.size_id) === sizeId);
 
-        function renderSizesByColor(colorId) {
-            const sizeSelect = document.getElementById('variantSize');
-            sizeSelect.innerHTML = '<option value="">-- Chọn kích thước --</option>'; // Reset select
-            
-            const sizesForColor = variants.filter(v => String(v.color_id) === colorId).map(v => v.size);
-            const uniqueSizes = [];
-            const sizeIds = new Set();
-            sizesForColor.forEach(size => {
-                if (!sizeIds.has(size.id)) {
-                    sizeIds.add(size.id);
-                    uniqueSizes.push(size);
-                }
-            });
+    const salePrice = document.getElementById('salePrice');
+    const originalPrice = document.getElementById('originalPrice');
 
-            if (uniqueSizes.length > 0) {
-                uniqueSizes.forEach(size => {
-                    sizeSelect.innerHTML += `<option value="${size.id}">${size.name} cm</option>`;
-                });
-                sizeSelect.disabled = false;
+    if (selected) {
+        // Giá sale luôn hiển thị đỏ
+        salePrice.textContent = Number(selected.price).toLocaleString('vi-VN') + ' đ';
+
+        // Nếu có giá gốc và giá gốc > giá sale thì hiển thị
+        if (selected.price_original && selected.price_original > selected.price) {
+            if (!originalPrice) {
+                // Nếu chưa có span gốc thì thêm vào
+                const span = document.createElement('span');
+                span.id = 'originalPrice';
+                span.className = 'text-muted text-decoration-line-through ms-2';
+                span.textContent = Number(selected.price_original).toLocaleString('vi-VN') + ' đ';
+                salePrice.parentNode.appendChild(span);
             } else {
-                sizeSelect.innerHTML = '<option value="">Không có kích thước phù hợp</option>';
-                sizeSelect.disabled = true;
+                originalPrice.textContent = Number(selected.price_original).toLocaleString('vi-VN') + ' đ';
+                originalPrice.style.display = 'inline';
             }
-            sizeSelect.addEventListener('change', updateVariantInfo); // Gọi lại hàm cập nhật khi chọn kích thước
-        }
-
-
-        function updateVariantInfo() {
-            const colorId = colorSelect.value;
-            const sizeId = document.getElementById('variantSize').value;
-            const selected = variants.find(v => String(v.color_id) === colorId && String(v.size_id) === sizeId);
-
-            stockBox.classList.remove('out-of-stock');
-
-            if (selected) {
-                priceBox.textContent = Number(selected.price).toLocaleString('vi-VN');
-                skuBox.textContent = selected.sku ?? 'Không có SKU';
-                stockBox.textContent = selected.stock > 0 ? `Còn hàng (${selected.stock})` : 'Hết hàng';
-                if (selected.stock === 0) {
-                    stockBox.classList.add('out-of-stock');
-                }
-                imageBox.src = selected.image ? '/storage/' + selected.image : imageBox.src;
-                quantityInput.max = selected.stock;
-                quantityInput.disabled = selected.stock === 0;
-                quantityInput.value = selected.stock > 0 ? 1 : 0;
-                addToCartBtn.disabled = selected.stock === 0;
-                variantIdInput.value = selected.id;
-            } else {
-                priceBox.textContent = '{{ number_format($product->price, 0, ',', '.') }}';
-                skuBox.textContent = '{{ $product->sku ?? 'Không có SKU' }}';
-                stockBox.textContent = 'Chưa chọn';
-                stockBox.classList.remove('out-of-stock'); 
-                imageBox.src = '{{ asset('storage/' . $product->image) }}';
-                quantityInput.value = 0;
-                quantityInput.disabled = true;
-                addToCartBtn.disabled = true;
+        } else {
+            // Nếu không có giá gốc, ẩn đi
+            if (originalPrice) {
+                originalPrice.style.display = 'none';
             }
         }
 
-        colorSelect.addEventListener('change', () => {
-            renderSizesByColor(colorSelect.value);
-            updateVariantInfo();
-        });
+        skuBox.textContent = selected.sku ?? 'Không có SKU';
+        stockBox.textContent = selected.stock > 0 ? `Còn hàng (${selected.stock})` : 'Hết hàng';
+        imageBox.src = selected.image ? '/storage/' + selected.image : imageBox.src;
+        quantityInput.max = selected.stock;
+        quantityInput.disabled = selected.stock === 0;
+        quantityInput.value = selected.stock > 0 ? 1 : 0;
+        addToCartBtn.disabled = selected.stock === 0;
+        variantIdInput.value = selected.id;
+    } else {
+        // Nếu chưa chọn biến thể hợp lệ
+        salePrice.textContent = '{{ number_format($product->price_sale, 0, ',', '.') }} đ';
+        if (originalPrice) {
+            originalPrice.textContent = '{{ number_format($product->price, 0, ',', '.') }} đ';
+            originalPrice.style.display = '{{ $product->price_sale < $product->price ? "inline" : "none" }}';
+        }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const stars = document.querySelectorAll('.rating-stars i');
-            const input = document.getElementById('starRating');
+        skuBox.textContent = '{{ $product->sku ?? 'Không có SKU' }}';
+        stockBox.textContent = 'Chưa chọn';
+        imageBox.src = '{{ asset('storage/' . $product->image) }}';
+        quantityInput.value = 0;
+        quantityInput.disabled = true;
+        addToCartBtn.disabled = true;
+    }
+}
 
-            stars.forEach(star => {
-                star.addEventListener('click', function() {
-                    const rating = this.getAttribute('data-value');
-                    input.value = rating;
-                    
-                    stars.forEach(s => {
-                        if (s.getAttribute('data-value') <= rating) {
-                            s.classList.remove('bi-star');
-                            s.classList.add('bi-star-fill');
-                        } else {
-                            s.classList.remove('bi-star-fill');
-                            s.classList.add('bi-star');
-                        }
-                    });
+
+    // Chỉ giữ lại 2 event listener này:
+    colorSelect.addEventListener('change', updateVariantInfo);
+    sizeSelect.addEventListener('change', updateVariantInfo);
+    
+    updateVariantInfo();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.rating-stars i');
+        const input = document.getElementById('starRating');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.getAttribute('data-value');
+                input.value = rating;
+
+                // Highlight sao
+                stars.forEach(s => {
+                    if (s.getAttribute('data-value') <= rating) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill');
+                    } else {
+                        s.classList.remove('bi-star-fill');
+                        s.classList.add('bi-star');
+                    }
                 });
             });
         });
-    </script>
+    });
+</script>
 @endpush
-<style>
-    #productImage {
-    width: 100%;
-    height: 500px; 
-}
-.out-of-stock {
-    color: red;
-    font-weight: bold;
-    background-color: #ffcccc;
-    padding: 5px;
-    border-radius: 5px;
-}
-</style>
+

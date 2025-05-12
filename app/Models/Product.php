@@ -21,7 +21,6 @@ class Product extends Model
         'category_id', 
         'brand_id',
         'deleted_at',
-        
     ];
 
     public function category()
@@ -48,10 +47,5 @@ class Product extends Model
 {
     return $this->hasMany(Feedbacks::class)->latest();
 }
-public function updateStock()
-    {
-        $totalStock = $this->variants->sum('stock');
-        $this->stock = $totalStock;
-        $this->save();
-    }
+
 }

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('role')->default('user');
             $table->string('avatar')->nullable();
             $table->string('phone', 15)->nullable();
-            $table->rememberToken(); 
             $table->timestamps();
         });
     }

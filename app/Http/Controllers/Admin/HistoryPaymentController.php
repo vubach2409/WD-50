@@ -9,17 +9,18 @@ use Illuminate\Support\Facades\Auth;
 
 class HistoryPaymentController extends Controller
 {
-    public function index() {
-        $orders = Orders::with(['payment'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-    
-        return view('admin.historypayment.index', compact('orders'));
+    public function index(){
+        $orders = Orders::where('user_id', Auth::id())
+        ->with(['payment'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('admin.historypayment.index', compact('orders'));
     }
-    
     public function history_detail($id)
     {
-        $order = Orders::with(['items.product', 'payment', 'user'])
+        $order = Orders::where('user_id', Auth::id())
+            ->with(['items.product', 'payment', 'user'])
             ->where('id', $id)
             ->firstOrFail();
     

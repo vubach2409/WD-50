@@ -14,33 +14,18 @@
                     <tbody>
                         <tr>
                             <th>Tên biến thể</th>
-                            <td>
-                                <input type="text" name="variation_name" class="form-control"
-                                    value="{{ old('variation_name', $variant->variation_name) }}" required>
-                                @error('variation_name')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
+                            <td><input type="text" name="variation_name" class="form-control"
+                                    value="{{ old('variation_name', $variant->variation_name) }}" required></td>
                         </tr>
                         <tr>
                             <th>Mã SKU</th>
-                            <td>
-                                <input type="text" name="sku" class="form-control"
-                                    value="{{ old('sku', $variant->sku) }}" required>
-                                @error('sku')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
+                            <td><input type="text" name="sku" class="form-control"
+                                    value="{{ old('sku', $variant->sku) }}" required></td>
                         </tr>
                         <tr>
                             <th>Giá</th>
-                            <td>
-                                <input type="number" name="price" class="form-control"
-                                    value="{{ old('price', $variant->price) }}" step="0.01" required>
-                                @error('price')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
+                            <td><input type="number" name="price" class="form-control"
+                                    value="{{ old('price', $variant->price) }}" step="0.01" required></td>
                         </tr>
                         <tr>
                             <th>Hình ảnh</th>
@@ -52,9 +37,6 @@
                                             class="border rounded">
                                     </div>
                                 @endif
-                                @error('image')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
                             </td>
                         </tr>
                         <tr>
@@ -69,9 +51,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('color_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
                             </td>
                         </tr>
                         <tr>
@@ -86,20 +65,12 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('size_id')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
                             </td>
                         </tr>
                         <tr>
                             <th>Số lượng kho</th>
-                            <td>
-                                <input type="number" name="stock" class="form-control"
-                                    value="{{ old('stock', $variant->stock) }}">
-                                @error('stock')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
+                            <td><input type="number" name="stock" class="form-control"
+                                    value="{{ old('stock', $variant->stock) }}" required></td>
                         </tr>
                     </tbody>
                 </table>

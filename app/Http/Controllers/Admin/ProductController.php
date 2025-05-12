@@ -48,9 +48,8 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
-        $variants = $product->variants;
-        return view('admin.products.show', compact('product', 'variants'));
-    }
+        return view('admin.products.show', compact('product'));
+    }   
     public function create()
     {
         $categories = Category::all();
@@ -81,13 +80,13 @@ class ProductController extends Controller
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.max' => 'Tên sản phẩm không được quá 255 ký tự.',
             'name.unique' => 'Tên sản phẩm này đã tồn tại trong danh mục và thương hiệu đã chọn.',
-            'price.required' => 'Giá max không được để trống.',
-            'price.numeric' => 'Giá max phải là số.',
-            'price.min' => 'Giá max phải lớn hơn hoặc bằng 0.',
-            'price_sale.required' => 'Giá min không được để trống.',
-            'price_sale.numeric' => 'Giá min phải là số.',
-            'price_sale.min' => 'Giá min phải lớn hơn hoặc bằng 0.',
-            'price_sale.lte' => 'Giá min phải nhỏ hơn hoặc bằng giá gốc.',
+            'price.required' => 'Giá sản phẩm không được để trống.',
+            'price.numeric' => 'Giá sản phẩm phải là số.',
+            'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'price_sale.required' => 'Giá khuyến mãi không được để trống.',
+            'price_sale.numeric' => 'Giá khuyến mãi phải là số.',
+            'price_sale.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0.',
+            'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
@@ -138,13 +137,13 @@ class ProductController extends Controller
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.max' => 'Tên sản phẩm không được quá 255 ký tự.',
             'name.unique' => 'Tên sản phẩm này đã tồn tại trong danh mục và thương hiệu đã chọn.',
-            'price.required' => 'Giá max không được để trống.',
-            'price.numeric' => 'Giá max phải là số.',
-            'price.min' => 'Giá max phải lớn hơn hoặc bằng 0.',
-            'price_sale.required' => 'Giá min không được để trống.',
-            'price_sale.numeric' => 'Giá min phải là số.',
-            'price_sale.min' => 'Giá min phải lớn hơn hoặc bằng 0.',
-            'price_sale.lte' => 'Giá min phải nhỏ hơn hoặc bằng giá gốc.',
+            'price.required' => 'Giá sản phẩm không được để trống.',
+            'price.numeric' => 'Giá sản phẩm phải là số.',
+            'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
+            'price_sale.required' => 'Giá khuyến mãi không được để trống.',
+            'price_sale.numeric' => 'Giá khuyến mãi phải là số.',
+            'price_sale.min' => 'Giá khuyến mãi phải lớn hơn hoặc bằng 0.',
+            'price_sale.lte' => 'Giá khuyến mãi phải nhỏ hơn hoặc bằng giá gốc.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
@@ -195,8 +194,8 @@ class ProductController extends Controller
 
         $product->variants()->onlyTrashed()->forceDelete();
 
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
+        if ($product->image && Storage::disk('public')->exists('products/' . $product->image)) {
+            Storage::disk('public')->delete('products/' . $product->image);
         }
 
         $product->forceDelete();

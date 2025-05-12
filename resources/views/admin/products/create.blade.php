@@ -20,21 +20,8 @@
                                 @enderror
                             </td>
                         </tr>
-
                         <tr>
-                            <th>Giá min</th>
-                            <td>
-                                <input type="number" name="price_sale"
-                                    class="form-control @error('price_sale') is-invalid @enderror"
-                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale') }}">
-                                @error('price_sale')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>Giá max</th>
+                            <th>Giá gốc</th>
                             <td>
                                 <input type="number" name="price"
                                     class="form-control @error('price') is-invalid @enderror"
@@ -44,7 +31,17 @@
                                 @enderror
                             </td>
                         </tr>
-
+                        <tr>
+                            <th>Giá khuyến mãi</th>
+                            <td>
+                                <input type="number" name="price_sale"
+                                    class="form-control @error('price_sale') is-invalid @enderror"
+                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale') }}">
+                                @error('price_sale')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </td>
+                        </tr>
                         <tr>
                             <th>Danh mục</th>
                             <td>
@@ -62,7 +59,6 @@
                                 @enderror
                             </td>
                         </tr>
-
                         <tr>
                             <th>Thương hiệu</th>
                             <td>
@@ -80,7 +76,6 @@
                                 @enderror
                             </td>
                         </tr>
-
                         <tr>
                             <th>Ảnh sản phẩm</th>
                             <td>
@@ -91,7 +86,6 @@
                                 @enderror
                             </td>
                         </tr>
-
                         <tr>
                             <th>Mô tả sản phẩm</th>
                             <td>
@@ -105,7 +99,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary">Thêm</button>
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>

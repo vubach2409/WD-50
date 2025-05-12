@@ -27,26 +27,10 @@
 
                                 @if ($order->payment)
                                     <p><strong>Trạng thái thanh toán:</strong>
-                                        @php
-                                            $status = $order->payment->status;
-                                            $isVNPay = $order->payment->payment_method === 'vnpay';
-                                            $badgeClass = match ($status) {
-                                                'completed' => 'success',
-                                                'pending' => 'warning',
-                                                'failed' => $isVNPay ? 'warning' : 'danger',
-                                                default => 'secondary',
-                                            };
-                                            $statusText =
-                                                $isVNPay && $status === 'failed'
-                                                    ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
-                                                    : ucfirst($status);
-                                        @endphp
-
-                                        <span class="badge bg-{{ $badgeClass }}">
-                                            {{ $statusText }}
+                                        <span
+                                            class="badge bg-{{ $order->payment->status === 'completed' ? 'success' : ($order->payment->status === 'pending' ? 'warning' : 'danger') }}">
+                                            {{ ucfirst($order->payment->status) }}
                                         </span>
-
-
                                     </p>
                                     <p><strong>Phương thức thanh toán:</strong>
                                         {{ ucfirst($order->payment->payment_method) }}</p>
@@ -91,30 +75,25 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    @if ($item->variant_image)
-                                                        <img src="{{ asset('storage/' . $item->variant_image) }}"
-                                                            class="img-thumbnail me-3"
-                                                            style="width: 60px; height: 60px; object-fit: cover;">
-                                                    @else
-                                                        <img src="{{ asset('images/no-image.png') }}"
-                                                            class="img-thumbnail me-3"
-                                                            style="width: 60px; height: 60px; object-fit: cover;">
-                                                    @endif
+                                                    <img src="{{ asset('storage/' . $item->variant->image) }}"
+                                                        class="img-thumbnail me-3"
+                                                        style="width: 60px; height: 60px; object-fit: cover;">
 
                                                     <div>
-                                                        <h6 class="mb-0">{{ $item->product_name }}</h6>
-                                                        <small class="text-muted">
-                                                            Biến thể:
-                                                            {{ $item->variant_name ?? 'Không có' }}
-                                                            @if ($item->color_name)
-                                                                - {{ $item->color_name }}
-                                                            @endif
-                                                            @if ($item->size_name)
-                                                                - {{ $item->size_name }}
-                                                            @endif
-                                                        </small><br>
+                                                        <h6 class="mb-0">{{ $item->product->name }}</h6>
+                                                        @if ($item->variant)
+                                                            <small class="text-muted">Biến thể:
+                                                                {{ $item->variant->variation_name }}
+                                                                @if ($item->variant->color)
+                                                                    - {{ $item->variant->color->name }}
+                                                                @endif
+                                                                @if ($item->variant->size)
+                                                                    - {{ $item->variant->size->name }}
+                                                                @endif
+                                                            </small><br>
+                                                        @endif
                                                         <small class="text-muted">SKU:
-                                                            {{ $item->variant_sku ?? '.' }}</small>
+                                                            {{ $item->variant->sku ?? '.' }}</small>
                                                     </div>
                                                 </div>
                                             </td>

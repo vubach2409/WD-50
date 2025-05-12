@@ -22,7 +22,7 @@
                 <table class="table table-hover table-bordered text-center align-middle">
                     <thead>
                         <tr>
-                            <th class="text-center align-middle">STT</th>
+                            <th class="text-center align-middle">STT</th> 
                             <th class="text-center align-middle">Mã Voucher</th>
                             <th class="text-center align-middle">Loại</th>
                             <th class="text-center align-middle">Giá trị</th>
@@ -37,21 +37,18 @@
                                 <td class="text-center align-middle">{{ $index + 1 }}</td>
                                 <td class="text-center align-middle">{{ $voucher->code }}</td>
                                 <td class="text-center align-middle">{{ $voucher->type }}</td>
-                                <td class="text-center align-middle">{{ $voucher->value }}
-                                    {{ $voucher->type == 'percent' ? '%' : 'VNĐ' }}</td>
+                                <td class="text-center align-middle">{{ $voucher->value }} {{ $voucher->type == 'percent' ? '%' : 'VNĐ' }}</td>
                                 <td class="text-center align-middle">{{ $voucher->usage_limit ?? '∞' }}</td>
                                 <td class="text-center align-middle">
                                     @if ($voucher->is_active)
                                         <span class="badge bg-success text-light">Hoạt động</span>
                                     @else
-                                        <span class="badge bg-danger text-light">Ngừng hoạt động</span>
+                                        <span class="badge bg-danger text-light">Ngừng hoạt động</span> 
                                     @endif
                                 </td>
                                 <td class="text-center align-middle">
-                                    <a href="{{ route('admin.vouchers.edit', $voucher->id) }}"
-                                        class="btn btn-warning">Sửa</a>
-                                    <form action="{{ route('admin.vouchers.destroy', $voucher->id) }}" method="POST"
-                                        class="d-inline" onsubmit="return confirm('Xóa voucher này?');">
+                                    <a href="{{ route('admin.vouchers.edit', $voucher->id) }}" class="btn btn-warning">Sửa</a>
+                                    <form action="{{ route('admin.vouchers.destroy', $voucher->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Xóa voucher này?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">Xóa</button>

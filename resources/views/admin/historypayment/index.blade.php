@@ -28,22 +28,18 @@
                                 <td>#{{ $order->id }}</td>
                                 <td>{{ $order->created_at->format('d/m/Y') }}</td>
                                 <td>{{ number_format($order->total, 0, ',', '.') }}đ</td>
-                                <td><span class="badge bg-success text-light">{{ $order->payment->transaction_id }}</span></td>
+                                <td><span class="badge bg-success">{{ $order->payment->transaction_id }}</span></td>
                                 <td>{{ $order->payment->payment_method }}</td>
-                                <td class="text-center text-light">
+                                <td>
                                     @if ($order->payment)
-                                        @if (strtolower($order->payment->status) == 'success')
-                                            <span class="badge bg-success">Đã thanh toán</span>
-                                        @elseif (strtolower($order->payment->status) == 'pending')
-                                            <span class="badge bg-warning text-dark">Chờ thanh toán</span>
-                                        @else
-                                            <span class="badge bg-danger">Thất bại</span>
-                                        @endif
+                                        <span
+                                            class="badge {{ $order->payment->status == 'success' ? 'bg-success' : 'bg-warning' }}">
+                                            {{ $order->payment->status }}
+                                        </span>
                                     @else
                                         <span class="badge bg-danger">Chưa thanh toán</span>
                                     @endif
                                 </td>
-                                
                                 <td>
                                     <a href="{{ route('admin.history.detail', $order->id) }}" class="btn btn-dark">Xem</a>
                                 </td>

@@ -68,20 +68,16 @@ Route::controller(LoginController::class)->group(function () {
 });
 
 Route::controller(ForgotPasswordController::class)->group(function () {
-    // Trang hiển thị form nhập email quên mật khẩu (React)
-    Route::get('/forgot-password', 'showLinkRequestForm')->name('password.request');
-    // Xử lý việc gửi email chứa link đặt lại mật khẩu (API endpoint cho React)
-    Route::post('/forgot-password', 'sendResetLinkEmail')->name('password.email');
+    Route::get('/password/reset', 'showLinkRequestForm')->name('password.request');
+    Route::post('/password/email', 'sendResetLinkEmail')->name('password.email');
 });
 
 Route::controller(ResetPasswordController::class)->group(function () {
-    // Trang hiển thị form nhập mật khẩu mới (React, truy cập qua link trong email)
-    Route::get('/reset-password/{token}', 'showResetForm')->name('password.reset');
-    // Xử lý việc cập nhật mật khẩu mới (API endpoint cho React)
-    Route::post('/reset-password', 'reset')->name('password.update');
+    Route::get('/password/reset/{token}', 'showResetForm')->name('password.reset');
+    Route::post('/password/reset', 'reset')->name('password.update');
 });
 
-// Route này để backend có thể trả về token và email cho frontend
+
 Route::controller(VerificationController::class)->group(function () {
     Route::get('/email/verify', 'show')->name('verification.notice');
     Route::get('/email/verify/{id}/{hash}', 'verify')->name('verification.verify');
@@ -93,7 +89,6 @@ Route::controller(ConfirmPasswordController::class)->group(function () {
     Route::get('/password/confirm', 'showConfirmForm')->name('password.confirm');
     Route::post('/password/confirm', 'confirm');
 });
-
 
 
 Route::get('/home', [HomeController::class, 'index'])->name(name: 'home')->middleware(['auth', 'verified']);
@@ -215,6 +210,7 @@ Route::post('/chat/send', function (Request $request) {
 
 
 
+
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
     
@@ -225,13 +221,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 
     Route::resource('brands', BrandController::class);
 
-    Route::get('products/trash', [ProductController::class, 'trash'])->name('products.trash');
-    Route::post('products/restore/{id}', [ProductController::class, 'restore'])->name('products.restore');
-    Route::delete('products/force-delete/{id}', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
-
-    Route::resource('products', ProductController::class);
-
-    Route::get('products/detail/{id}', [ProductController::class, 'show'])->name('products.detail');
+    Route::resource('products', ProductController::class)->except(['show']);
 
     Route::resource('colors', ColorController::class);
 //show hoá đơn
@@ -248,15 +238,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
 // Feedbacks
 Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
-    Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
-    Route::patch('/feedbacks/{id}/toggle-hide', [AdminFeedbackController::class, 'toggleHide'])->name('feedbacks.toggleHide'); // Route cho toggleHide
-
+Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
+Route::patch('/feedbacks/{id}/toggle-hide', [AdminFeedbackController::class, 'toggleHide'])->name('feedbacks.toggleHide'); // Route cho toggleHide
 //voucher
 Route::resource('vouchers', VoucherController::class);
 
 
 Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
-Route::get('/order/index', [AdminOrderController::class, 'index'])->name('orders.index');
 Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
 Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 
@@ -267,24 +255,25 @@ Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->na
     Route::get('/users/{id}', [CustomerController::class, 'show'])->name('users.show');
     Route::delete('/users/{id}', [CustomerController::class, 'destroy'])->name('users.destroy');
 
+    Route::get('products/trash', [ProductController::class, 'trash'])->name('products.trash');
+    Route::post('products/restore/{id}', [ProductController::class, 'restore'])->name('products.restore');
+    Route::delete('products/force-delete/{id}', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
 
     // Routes cho biến thể sản phẩm
     Route::prefix('products/{product}/variants')->group(function () {
         Route::get('/', [ProductVariantController::class, 'index'])->name('product_variants.index');
         Route::get('/create', [ProductVariantController::class, 'create'])->name('product_variants.create');
         Route::post('/', [ProductVariantController::class, 'store'])->name('product_variants.store');
-        
         Route::get('/{variant}/edit', [ProductVariantController::class, 'edit'])->name('product_variants.edit');
         Route::put('/{variant}', [ProductVariantController::class, 'update'])->name('product_variants.update');
         Route::delete('/{variant}', [ProductVariantController::class, 'destroy'])->name('product_variants.destroy');
-    
+        
         Route::get('/trash', [ProductVariantController::class, 'trash'])->name('product_variants.trash');
         Route::post('/{variant}/restore', [ProductVariantController::class, 'restore'])->name('product_variants.restore');
         Route::delete('/{variant}/force-delete', [ProductVariantController::class, 'forceDelete'])->name('product_variants.forceDelete');
-    
-        Route::get('/{variant}', [ProductVariantController::class, 'show'])->name('product_variants.show');
+
     });
-    
+
      // Route danh sách tất cả sản phẩm có biến thể
      Route::get('/product-variants', [ProductVariantController::class, 'productsWithVariants'])
      ->name('product_variants.list');
@@ -304,8 +293,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-
+    Route::put('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 });
@@ -316,6 +304,12 @@ Route::post('/confirm/paymnet', [PaymentController::class, 'PaymentOnline'])->na
 
 // // thanh toán vnpay
 
+// Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment'])->name('checkout.process');
+
+// Route::middleware('handle.payment')->group(function () {
+//     Route::post('/confirm/payment', [PaymentController::class, 'CodPayment']);
+//     Route::post('/confirm/vnpay', [PaymentController::class, 'vnpayPayment']);
+// })->name('checkout.process');
 
 Route::get('/thanks/vnpay', [PaymentController::class, 'xuly'])->name('thanks.vnpay');
 // thankyou

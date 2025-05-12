@@ -4,19 +4,13 @@
     <div class="login-container">
         <div class="card-header">{{ __('Đăng Nhập') }}</div>
 
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div class="form-group">
                 <label for="email">{{ __('Email') }}</label>
-                <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email"
-                       value="{{ old('email') }}"  autocomplete="email" autofocus>
+                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email"
+                    value="{{ old('email') }}" required autocomplete="email" autofocus>
                 @error('email')
                     <span class="invalid-feedback">
                         <strong>{{ $message }}</strong>
@@ -28,7 +22,7 @@
                 <label for="password">{{ __('Password') }}</label>
                 <div class="password-wrapper">
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                           name="password"  autocomplete="current-password">
+                        name="password" required autocomplete="current-password">
                     <span class="toggle-password" onclick="togglePassword()">👁️</span>
                 </div>
                 @error('password')
@@ -40,7 +34,7 @@
 
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="remember" id="remember"
-                       {{ old('remember') ? 'checked' : '' }}>
+                    {{ old('remember') ? 'checked' : '' }}>
                 <label class="form-check-label" for="remember">
                     {{ __('Nhớ mật khẩu') }}
                 </label>
@@ -51,7 +45,9 @@
             </button>
 
             <div class="auth-links text-center ">
-                <a href="/forgot-password" class="btn-link">Quên mật khẩu</a> |
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="btn-link">Quên mật khẩu</a> |
+                @endif
                 <a href="{{ route('register') }}" class="btn-link">Đăng ký ngay</a>
             </div>
         </form>

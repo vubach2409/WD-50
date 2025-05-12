@@ -5,9 +5,9 @@
     <div class="card-header">{{ __('Đặt lại mật khẩu') }}</div>
 
     <div class="card-body">
-        @if (session('success'))
+        @if (session('status'))
             <div class="alert alert-success" role="alert">
-                {{ session('success') }}
+                {{ session('status') }}
             </div>
         @endif
 
@@ -16,8 +16,8 @@
 
             <div class="form-group">
                 <label for="email">{{ __('Địa chỉ Email') }}</label>
-                <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" 
-                    name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
+                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" 
+                    name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                 @error('email')
                     <span class="invalid-feedback">
                         <strong>{{ $message }}</strong>
@@ -27,7 +27,7 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">
-                    {{ __('Xác nhận quên mật khẩu') }}
+                    {{ __('Gửi mật khẩu mới về Email') }}
                 </button>
             </div>
         </form>
@@ -77,10 +77,8 @@
         color: #155724;
         padding: 1rem;
         border-radius: 8px;
+        margin-bottom: 1.5rem;
         font-size: 0.9rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
     .form-group {
         margin-bottom: 0.5rem;

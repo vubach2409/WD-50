@@ -95,25 +95,12 @@ class PaymentController extends Controller
                 
                         foreach ($cartItems as $item) {
                             $price = $item->variant->price;
-                            $variant = $item->variant; 
-                            $productName = $item->product ? $item->product->name : 'N/A'; 
-                            $variantName = $variant ? $variant->variation_name : null;
-                            $variantSku = $variant ? $variant->sku : null;
-                            $colorName = $variant && $variant->color ? $variant->color->name : null;
-                            $sizeName = $variant && $variant->size ? $variant->size->name : null;
-                            $variantImage = $variant ? $variant->image : null;
                             OrderDetail::create([
                                 'order_id' => $order->id,
-                                'product_id' => $item->product_id,  
-                                'product_name' => $productName,    
-                                'variant_id' => $item->variant_id,
-                                'variant_name' => $variantName,
-                                'variant_sku' => $variantSku,
-                                'color_name' => $colorName,
-                                'size_name' => $sizeName,
-                                'variant_image' => $variantImage,
-                                'price' => $price,  
+                                'product_id' => $item->product_id,
                                 'quantity' => $item->quantity,
+                                'price' => $price,
+                                'variant_id' => $item->variant_id,
                             ]);
                 
                             // Trừ tồn kho biến thể hoặc sản phẩm
@@ -142,8 +129,20 @@ class PaymentController extends Controller
                                 $voucherModel->used += 1;
                                 $voucherModel->save();
                             }
-                           }
+                            if ($voucher && isset($voucher['code'])) {
+                                $voucherModel = Voucher::where('code', $voucher['code'])->first();
+                                if ($voucherModel && $voucherModel->usage_limit > 0) {
+                                    $voucherModel->decrement('usage_limit');
+                                }
+                        
+                                // Tăng số lượt dùng mã giảm giá nếu có
+                                if ($voucherModel) {
+                                    $voucherModel->used += 1;
+                                    $voucherModel->save();
+                                }
+                            }}
 
+                
                         DB::commit();
                 
                         return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công, chúng tôi sẽ liên hệ với bạn sớm nhất!');
@@ -370,27 +369,17 @@ class PaymentController extends Controller
             
                     // 8. Lưu từng sản phẩm vào OrderDetail + trừ kho
                     foreach ($cartItems as $item) {
+                        // Lưu chi tiết đơn hàng
                         $price = $item->variant->price;
-                        $variant = $item->variant; 
-                        $productName = $item->product ? $item->product->name : 'N/A'; 
-                        $variantName = $variant ? $variant->variation_name : null;
-                        $variantSku = $variant ? $variant->sku : null;
-                        $colorName = $variant && $variant->color ? $variant->color->name : null;
-                        $sizeName = $variant && $variant->size ? $variant->size->name : null;
-                        $variantImage = $variant ? $variant->image : null;
                         OrderDetail::create([
                             'order_id' => $order->id,
-                            'product_id' => $item->product_id,  
-                            'product_name' => $productName,    
+                            'product_id' => $item->product_id,
                             'variant_id' => $item->variant_id,
-                            'variant_name' => $variantName,
-                            'variant_sku' => $variantSku,
-                            'color_name' => $colorName,
-                            'size_name' => $sizeName,
-                            'variant_image' => $variantImage,
-                            'price' => $price,  
                             'quantity' => $item->quantity,
+                            'price' => $price,
                         ]);
+                        
+            
                         // Trừ tồn kho theo variant nếu có
                         if ($item->variant_id) {
                             $variant = ProductVariant::where('id', $item->variant_id)->lockForUpdate()->first();
@@ -418,15 +407,15 @@ class PaymentController extends Controller
                             $voucherModel->decrement('usage_limit');
                         }
                     }  
-                                        // Tăng số lượt dùng mã giảm giá nếu có
-                    if (!empty($vnp_OrderInfo['voucher_code'])) {
-                        $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
-                        
-                        if ($voucher) {
-                            $voucher->used += 1;
-                            $voucher->save();
-                        }
-                    }
+                    // Tăng số lượt dùng mã giảm giá nếu có
+if (!empty($vnp_OrderInfo['voucher_code'])) {
+    $voucher = Voucher::where('code', $vnp_OrderInfo['voucher_code'])->lockForUpdate()->first();
+    
+    if ($voucher) {
+        $voucher->used += 1;
+        $voucher->save();
+    }
+}
 
                     DB::commit();
             

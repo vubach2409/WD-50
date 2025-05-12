@@ -61,7 +61,6 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Xóa</button>
                             </form>
-                            <a href="{{ route('admin.product_variants.show', ['product' => $product->id, 'variant' => $variant->id]) }}" class="btn btn-info">Chi tiết</a>
                         </td>
                     </tr>
                 @endforeach
@@ -71,7 +70,7 @@
     @endif
     
     <div class="text-center mt-4">
-        <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-secondary">Quay lại</a>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Quay lại</a>
     </div>
 </div>
 @endsection

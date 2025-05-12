@@ -13,11 +13,11 @@
         <div class="list-group list-group-flush">
             <a href="{{ route('account') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('account') ? 'active' : '' }}">
-                <i class="fas fa-user me-2"></i>Tài khoản của tôi
+                <i class="fas fa-user me-2"></i>Profile
             </a>
             <a href="{{ route('account.orders') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('account.orders*') ? 'active' : '' }}">
-                <i class="fas fa-shopping-bag me-2"></i>Đơn hàng
+                <i class="fas fa-shopping-bag me-2"></i>Orders
             </a>
             <a href="{{ route('transactions.history') }}"
                 class="list-group-item list-group-item-action {{ request()->routeIs('transactions.history*') ? 'active' : '' }}">

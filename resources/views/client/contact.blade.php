@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Liên lạc')
+@section('title', 'Trang Chủ')
 
 @section('content')
     <!-- Start Contact Form -->

@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Cảm ơn')
+@section('title', 'Trang Chủ')
 
 @section('content')
     <div class="untree_co-section">
