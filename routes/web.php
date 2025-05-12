@@ -256,6 +256,7 @@ Route::resource('vouchers', VoucherController::class);
 
 
 Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
+Route::get('/order/index', [AdminOrderController::class, 'index'])->name('orders.index');
 Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
 Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 
