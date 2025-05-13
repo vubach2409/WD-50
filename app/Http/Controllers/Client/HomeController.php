@@ -15,7 +15,7 @@ class HomeController extends Controller
             $popularProducts = Product::inRandomOrder()->take(3)->get();
             return view('client.index', compact('products','popularProducts'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Error loading products. Please try again later.');
+            return back()->with('error', 'Cố lỗi khi tải sản phẩm. Vui lòng thử lại sau.');
         }
     }
 }

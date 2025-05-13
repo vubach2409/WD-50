@@ -47,7 +47,7 @@ public function update(Request $request)
 
     if ($request->filled('current_password')) {
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
         }
 
         $user->password = Hash::make($request->new_password);
@@ -55,7 +55,7 @@ public function update(Request $request)
 
     $user->save();
 
-    return back()->with('success', 'Profile updated successfully.');
+    return back()->with('success', 'Hồ sơ đã được cập nhật.');
 }
 
 

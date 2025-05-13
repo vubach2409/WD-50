@@ -68,7 +68,10 @@
     <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
 
+
     <!-- Thêm vào phần <head> của layout -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     @yield('scripts')
 
 </body>

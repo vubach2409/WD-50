@@ -63,8 +63,7 @@ class AdminController extends Controller
             'pending' => 'Chờ xử lý',
             'shipping' => 'Đang giao',
             'completed' => 'Hoàn thành',
-            'cancelled' => 'Đã hủy',
-            // Thêm các trạng thái khác nếu có
+            'cancelled' => 'Thất bại',
         ];
 
         $orderStatusLabels = [];
