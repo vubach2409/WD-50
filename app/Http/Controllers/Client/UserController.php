@@ -29,105 +29,36 @@ class UserController extends Controller
     }
     
 
-    public function update(Request $request)
-    {
-        $user = User::find(Auth::id());
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'current_password' => 'required_with:new_password',
-            'new_password' => 'nullable|min:8|confirmed',
-        ]);
+public function update(Request $request)
+{
+    $user = User::find(Auth::id());
 
-        $user->name = $request->name;
-        $user->email = $request->email;
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        'phone' => 'nullable|regex:/^[0-9\-\+\s\(\)]+$/|min:8|max:20',
+        'current_password' => 'required_with:new_password',
+        'new_password' => 'nullable|min:8|confirmed',
+    ]);
 
-        if ($request->filled('current_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
-                return back()->withErrors(['current_password' => 'The current password is incorrect.']);
-            }
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
 
-            $user->password = Hash::make($request->new_password);
+    if ($request->filled('current_password')) {
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'The current password is incorrect.']);
         }
 
-        $user->save();
-
-        return back()->with('success', 'Profile updated successfully.');
+        $user->password = Hash::make($request->new_password);
     }
 
-    // public function index()
-    // {
-    //     $user = Auth::user();
-    //     return view('client.account.index', compact('user'));
-    // }
+    $user->save();
 
-    // public function update(Request $request)
-    // {
-    //     $user = Auth::user();
+    return back()->with('success', 'Profile updated successfully.');
+}
 
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-    //         'current_password' => 'required_with:new_password',
-    //         'new_password' => 'nullable|min:8|confirmed',
-    //     ]);
 
-    //     $user->name = $request->name;
-    //     $user->email = $request->email;
-
-    //     if ($request->filled('current_password')) {
-    //         if (!Hash::check($request->current_password, $user->password)) {
-    //             return back()->withErrors(['current_password' => 'The current password is incorrect.']);
-    //         }
-
-    //         $user->password = Hash::make($request->new_password);
-    //     }
-
-    //     $user->save();
-
-    //     return back()->with('success', 'Profile updated successfully.');
-    // }
-// public function updateProfile(Request $request)
-// {
-//     $user = User::find(Auth::id());
-
-//     // Validate dữ liệu đầu vào
-//     $request->validate([
-//         'name'     => 'required|string|max:255',
-//         'email'    => 'required|email|unique:users,email,' . $user->id,
-//         'phone'    => 'nullable|regex:/^[0-9]{10,15}$/',
-//         'avatar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-//         'password' => 'nullable|string|min:6',
-//     ]);
-
-//     // Xử lý avatar
-//     if ($request->hasFile('avatar')) {
-//         // Xóa ảnh cũ nếu tồn tại
-//         if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-//             Storage::disk('public')->delete($user->avatar);
-//         }
-
-//         // Lưu ảnh mới vào thư mục storage/app/public/client
-//         $avatarPath = $request->file('avatar')->store('client', 'public');
-//         $user->avatar = $avatarPath;
-//         $user->save();
-//     }
-
-//     // Chuẩn bị dữ liệu cập nhật
-//     $updateData = [
-//         'name'  => $request->name,
-//         'email' => $request->email,
-//         'phone' => $request->filled('phone') ? $request->phone : $user->phone,
-//     ];
-
-//     // Chỉ cập nhật mật khẩu nếu người dùng nhập mật khẩu mới
-//     if ($request->filled('password')) {
-//         $updateData['password'] = Hash::make($request->password);
-//     }
-
-//     $user->update($updateData);
-
-//     return redirect()->back()->with('success', 'Profile updated successfully.');
 }
 
     

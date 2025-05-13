@@ -17,6 +17,14 @@
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </td>
                     </tr>
+                    <tr>
+                        <th>Mã màu #...</th>
+                        <td>
+                            <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" 
+                                placeholder="Nhập mã màu" value="{{ old('code') }}">
+                            @error('code') <small class="text-danger">{{ $message }}</small> @enderror
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -27,4 +35,5 @@
         </div>
     </form>
 </div>
-@endsection
+@endsection 
+

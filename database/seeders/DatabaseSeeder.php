@@ -23,5 +23,14 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
+
+        User::firstOrCreate(
+            ['email' => 'nhanvien@gmail.com'],
+            [
+                'name' => 'Nhân Viên',
+                'password' => Hash::make('nhanvien123'),
+                'role' => 'nhanvien',
+            ]
+        );
     }
 }

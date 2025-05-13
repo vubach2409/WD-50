@@ -97,15 +97,6 @@
                                     @endif
                                 </td>
                                 <td class="align-middle">
-                                    <a href="{{ route('admin.products.edit', $product->id) }}"
-                                        class="btn btn-warning">Sửa</a>
-                                    <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('Bạn có chắc chắn?')">Xóa</button>
-                                    </form>
                                     <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-info">Chi tiết</a>
                                 </td>
                             </tr>

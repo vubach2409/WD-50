@@ -110,16 +110,14 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour"
             aria-expanded="true" aria-controls="collapseFour">
             <i class="fas fa-fw fa-users"></i>
-            <span>Quản lý người dùng</span>
+            <span>Quản lý tài khoản</span>
         </a>
         <div id="collapseFour" class="collapse {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.payment.history') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-                    Danh sách người dùng
-                </a>
-                <a class="collapse-item {{ request()->routeIs('admin.payment.history') ? 'active' : '' }}" href="{{ route('admin.payment.history') }}">
-                    Lịch sử mua hàng
+
+                    Danh sách tài khoản
                 </a>
             </div>
         </div>
