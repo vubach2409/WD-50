@@ -45,7 +45,21 @@
                                 @enderror
                             </td>
                         </tr>
+<<<<<<< Updated upstream
                         
+=======
+                        <tr>
+                            <th>Giá khuyến mãi</th>
+                            <td>
+                                <input type="number" name="price_sale"
+                                    class="form-control @error('price_sale') is-invalid @enderror"
+                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale',$product->price_sale)  }}">
+                                @error('price_sale')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </td>
+                        </tr>
+>>>>>>> Stashed changes
                         <tr>
                             <th>Danh mục</th>
                             <td>
