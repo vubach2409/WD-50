@@ -9,7 +9,8 @@ class Color extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 
+        'name',
+        'code', 
     ];
     public function variants()
     {

@@ -58,12 +58,21 @@
                             </div>
                             <div class="mt-2 d-flex justify-content-between">
                                 <a href="{{ route('cart.show') }}"
-                                    class="btn btn-outline-primary btn-sm px-2 py-1 w-50 me-1">Xem</a>
-                                <a href="{{ route('checkout') }}"
-                                    class="btn btn-primary btn-sm px-2 py-1 w-50 ms-1">Thanh toán</a>
+                                    class="btn btn-outline-primary btn-xs w-50 me-1">Xem</a>
+                                <a href="{{ route('checkout') }}" class="btn btn-primary btn-xs w-50 ms-1">Thanh
+                                    toán</a>
                             </div>
 
+
+
                         </div>
+                        <style>
+                            .btn-xs {
+                                font-size: 0.7rem;
+                                padding: 2px 6px;
+                                line-height: 1;
+                            }
+                        </style>
 
 
     </nav>
