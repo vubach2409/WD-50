@@ -215,7 +215,6 @@ class CartController extends Controller
         return back()->with('success', 'Áp dụng mã giảm giá thành công!');
     }
 
-
     public function removeVoucher()
     {
         session()->forget('voucher');
