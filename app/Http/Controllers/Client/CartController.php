@@ -239,26 +239,39 @@ public function listAvailableVouchers()
 }
 public function miniCart()
 {
-    $cartItems = Carts::with(['product', 'variant'])
-        ->where('user_id', auth()->id())
-        ->get();
+    if (Auth::check()) {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('user_id', Auth::id())
+            ->get();
+    } else {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('session_id', Session::getId())
+            ->get();
+    }
 
-    $items = $cartItems->map(function ($item) {
-        return [
+    $items = [];
+    $total_quantity = 0;
+    $total_price = 0;
+
+    foreach ($cartItems as $item) {
+        $items[] = [
             'name' => $item->product->name,
-            'price' => $item->variant ? $item->variant->price : 0,
             'quantity' => $item->quantity,
-            'image' => $item->product->image, // giả sử cột ảnh trong bảng products
+            'price' => $item->variant ? $item->variant->price : $item->product->price,
+            'product' => [
+                'image' => $item->product->image,
+            ],
+            'variant' => $item->variant ? ['image' => $item->variant->image] : null,
         ];
-    });
 
-    $total_price = $items->sum(fn($i) => $i['price'] * $i['quantity']);
-    $total_quantity = $items->sum('quantity');
+        $total_quantity += $item->quantity;
+        $total_price += $item->quantity * ($item->variant ? $item->variant->price : $item->product->price);
+    }
 
     return response()->json([
         'items' => $items,
-        'total_price' => $total_price,
         'total_quantity' => $total_quantity,
+        'total_price' => $total_price,
     ]);
 }
 
