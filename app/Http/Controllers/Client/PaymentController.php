@@ -379,7 +379,6 @@ class PaymentController extends Controller
             
                     // 8. Lưu từng sản phẩm vào OrderDetail + trừ kho
                     foreach ($cartItems as $item) {
-<<<<<<< Updated upstream
                         $price = $item->variant->price;
                         $variant = $item->variant; 
                         $productName = $item->product ? $item->product->name : 'N/A'; 
@@ -396,10 +395,6 @@ class PaymentController extends Controller
                             $variantImage = $newImageName;
                         }
                     
-=======
-                        // Lưu chi tiết đơn hàng
-                        $price = $item->variant->price;
->>>>>>> Stashed changes
                         OrderDetail::create([
                             'order_id' => $order->id,
                             'product_id' => $item->product_id,  
@@ -409,17 +404,10 @@ class PaymentController extends Controller
                             'variant_sku' => $variantSku,
                             'color_name' => $colorName,
                             'size_name' => $sizeName,
-                            'variant_image' => $variantImage, // 👈 Vẫn là cột variant_image
+                            'variant_image' => $variantImage, 
                             'price' => $price,
                             'quantity' => $item->quantity,
-<<<<<<< Updated upstream
                         ]);
-=======
-                            'price' => $price,
-                        ]);
-                        
-            
->>>>>>> Stashed changes
                         // Trừ tồn kho theo variant nếu có
                         if ($item->variant_id) {
                             $variant = ProductVariant::where('id', $item->variant_id)->lockForUpdate()->first();
