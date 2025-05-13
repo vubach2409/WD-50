@@ -27,6 +27,17 @@
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
                 </ul> --}}
                 <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+                    <li>
+                        @auth
+                            <a class="nav-link" href="{{ route('account') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @else
+                            <a class="nav-link" href="{{ route('login') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @endauth
+                    </li>
                     <li class="nav-item dropdown position-relative" id="mini-cart-container">
 
                         <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
@@ -53,17 +64,7 @@
                             </div>
                         </div>
                     </li>
-                    <li>
-                        @auth
-                            <a class="nav-link" href="{{ route('account') }}">
-                                <img src="{{ asset('clients/images/user.svg') }}">
-                            </a>
-                        @else
-                            <a class="nav-link" href="{{ route('login') }}">
-                                <img src="{{ asset('clients/images/user.svg') }}">
-                            </a>
-                        @endauth
-                    </li>
+
 
 
                 </ul>
