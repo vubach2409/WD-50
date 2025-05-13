@@ -22,21 +22,18 @@ class ColorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:colors,name',
-            'code' => 'required|string|max:7|unique:colors,code',
+            'code' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/|unique:colors,code',
         ], [
-            'name.required' => 'Vui lòng nhập tên màu.',
-            'name.unique' => 'Tên màu đã tồn tại.',
-            'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
-            'code.required' => 'Vui lòng nhập mã màu.',
+            'code.required' => 'Vui lòng chọn mã màu.',
             'code.unique' => 'Mã màu đã tồn tại.',
-            'code.max' => 'Mã màu không hợp lệ.', 
+            'code.regex' => 'Mã màu phải đúng định dạng HEX, ví dụ: #FF0000.',
         ]);
 
-        Color::create($request->only('name', 'code')); 
+        Color::create($request->only('code')); 
 
         return redirect()->route('admin.colors.index')->with('success', 'Thêm màu thành công!');
     }
+
 
     public function edit(Color $color)
     {
@@ -46,18 +43,14 @@ class ColorController extends Controller
     public function update(Request $request, Color $color)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:colors,name,' . $color->id,
-            'code' => 'required|string|max:7|unique:colors,code,' . $color->id,
+            'code' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/|unique:colors,code,' . $color->id,
         ], [
-            'name.required' => 'Vui lòng nhập tên màu.',
-            'name.unique' => 'Tên màu đã tồn tại.',
-            'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
-            'code.required' => 'Vui lòng nhập mã màu.',
+            'code.required' => 'Vui lòng chọn mã màu.',
             'code.unique' => 'Mã màu đã tồn tại.',
-            'code.max' => 'Mã màu không hợp lệ.',
+            'code.regex' => 'Mã màu phải đúng định dạng HEX, ví dụ: #FF0000.',
         ]);
 
-        $color->update($request->only('name', 'code'));
+        $color->update($request->only('code'));
         return redirect()->route('admin.colors.index')->with('success', 'Cập nhật màu thành công!');
     }
 
