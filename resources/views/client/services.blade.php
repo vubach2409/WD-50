@@ -89,8 +89,11 @@
                     </div>
                 </div>
                 <!-- End Why Choose Us Section -->
+<<<<<<< Updated upstream
 
                 <!-- Featured Products Section -->
+=======
+>>>>>>> Stashed changes
                 <h3 class="text-center mb-5">
                     Sản phẩm nổi bật
                 </h3>
@@ -104,7 +107,11 @@
                                         <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
                                             <div class="product-image position-relative">
                                                 <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid" alt="{{ $product->name }}">
+<<<<<<< Updated upstream
 
+=======
+                
+>>>>>>> Stashed changes
                                                 <!-- Labels for "New" and "Sale" -->
                                                 @if ($product->is_new)
                                                     <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
@@ -112,14 +119,22 @@
                                                     <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
                                                 @endif
                                             </div>
+<<<<<<< Updated upstream
 
+=======
+                
+>>>>>>> Stashed changes
                                             <!-- Product info -->
                                             <div class="product-info p-3">
                                                 <!-- Product name -->
                                                 <h5 class="product-title text-dark mb-1" style="font-size: 1rem; background-color: transparent;">
                                                     {{ $product->name }}
                                                 </h5>
+<<<<<<< Updated upstream
 
+=======
+                
+>>>>>>> Stashed changes
                                                 <!-- Product price -->
                                                 <p class="product-price mb-2" style="background-color: transparent;">
                                                     <span class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
@@ -130,7 +145,11 @@
                                                     @endif
                                                 </p>
                                             </div>
+<<<<<<< Updated upstream
 
+=======
+                
+>>>>>>> Stashed changes
                                             <!-- Action button (View product) -->
                                             <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
                                                 <a href="{{ route('product.details', $product->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
@@ -144,8 +163,19 @@
                         </div>
                     </div>
                 </div>
+<<<<<<< Updated upstream
                 <!-- End Featured Products Section -->
             </div>
         </div>
     </div>
+=======
+                
+                
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+>>>>>>> Stashed changes
 @endsection

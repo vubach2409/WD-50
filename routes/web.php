@@ -248,9 +248,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
 // Feedbacks
 Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
+<<<<<<< Updated upstream
     Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
     Route::patch('/feedbacks/{id}/toggle-hide', [AdminFeedbackController::class, 'toggleHide'])->name('feedbacks.toggleHide'); // Route cho toggleHide
 
+=======
+Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
+Route::patch('/feedbacks/{id}/toggle-hide', [AdminFeedbackController::class, 'toggleHide'])->name('feedbacks.toggleHide'); // Route cho toggleHide
+>>>>>>> Stashed changes
 //voucher
 Route::resource('vouchers', VoucherController::class);
 

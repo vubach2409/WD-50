@@ -41,6 +41,7 @@ class VoucherController extends Controller
                     if ($request->type === 'percent' && $value > 100) {
                         $fail('Giá trị phần trăm không được vượt quá 100%.');
                     }
+<<<<<<< Updated upstream
                     if (
                         $request->type === 'fixed' &&
                         isset($request->min_order_amount) &&
@@ -62,6 +63,17 @@ class VoucherController extends Controller
             'usage_limit.required' => 'Vui lòng nhập giới hạn sử dụng.',
             'starts_at.required' => 'Vui lòng chọn ngày bắt đầu.',
             'expires_at.required' => 'Vui lòng chọn ngày kết thúc.',
+=======
+                },
+            ],
+            'min_order_amount' => 'required|integer|min:0',
+            'usage_limit' => 'nullable|integer|min:1',
+            'starts_at' => 'nullable|date|after_or_equal:' . now()->toDateString() . '|before_or_equal:expires_at',
+            'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(),
+            'is_active' => 'boolean',
+        ], [
+            'code.required' => 'Vui lòng nhập mã giảm giá.',
+>>>>>>> Stashed changes
             'code.unique' => 'Mã giảm giá đã tồn tại.',
             'type.required' => 'Vui lòng chọn loại giảm giá.',
             'type.in' => 'Loại giảm giá không hợp lệ.',
@@ -69,12 +81,23 @@ class VoucherController extends Controller
             'value.numeric' => 'Giá trị giảm phải là số.',
             'value.min' => 'Giá trị giảm phải lớn hơn 0.',
             'min_order_amount.required' => 'Vui lòng nhập đơn hàng tối thiểu.',
+<<<<<<< Updated upstream
             'min_order_amount.integer' => 'Đơn hàng tối thiểu phải là số nguyên.',
             'usage_limit.integer' => 'Giới hạn sử dụng phải là số nguyên.',
             'usage_limit.min' => 'Giới hạn sử dụng phải lớn hơn 0.',
             'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',
             'expires_at.date' => 'Ngày hết hạn không hợp lệ.',
             'starts_at.before_or_equal' => 'Ngày bắt đầu phải sau hoặc bằng ngày hiện tại.',
+=======
+            'min_order_amount.integer' => 'Đơn hàng tối thiểu phải là số nguyên.', 
+            'usage_limit.integer' => 'Giới hạn sử dụng phải là số nguyên.',
+            'usage_limit.min' => 'Giới hạn sử dụng phải lớn hơn hoặc bằng 1.', 
+            'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',
+            'starts_at.after_or_equal' => 'Ngày bắt đầu phải từ ngày hiện tại trở đi.',
+            'starts_at.before_or_equal' => 'Ngày bắt đầu phải trước hoặc bằng ngày hết hạn.',
+            'expires_at.date' => 'Ngày hết hạn không hợp lệ.',
+            'expires_at.after_or_equal' => 'Ngày hết hạn phải lớn hơn hoặc bằng ngày hiện tại và sau hoặc bằng ngày bắt đầu.',
+>>>>>>> Stashed changes
         ]);
 
         $data = $request->all();
@@ -109,6 +132,7 @@ class VoucherController extends Controller
                     if ($request->type === 'percent' && $value > 100) {
                         $fail('Giá trị phần trăm không được vượt quá 100%.');
                     }
+<<<<<<< Updated upstream
                     if (
                         $request->type === 'fixed' &&
                         isset($request->min_order_amount) &&
@@ -130,12 +154,23 @@ class VoucherController extends Controller
             'usage_limit.required' => 'Vui lòng nhập giới hạn sử dụng.',
             'starts_at.required' => 'Vui lòng chọn ngày bắt đầu.',
             'expires_at.required' => 'Vui lòng chọn ngày kết thúc.',
+=======
+                },
+            ],
+            'min_order_amount' => 'required|integer|min:0',
+            'usage_limit' => 'nullable|integer|min:1',
+            'starts_at' => 'nullable|date|after_or_equal:' . now()->toDateString() . '|before_or_equal:expires_at',
+            'expires_at' => 'nullable|date|after_or_equal:' . now()->toDateString(),
+            'is_active' => 'boolean',
+        ], [
+>>>>>>> Stashed changes
             'code.required' => 'Vui lòng nhập mã giảm giá.',
             'code.unique' => 'Mã giảm giá đã tồn tại.',
             'type.required' => 'Vui lòng chọn loại giảm giá.',
             'type.in' => 'Loại giảm giá không hợp lệ.',
             'value.required' => 'Giá trị giảm là bắt buộc.',
             'value.numeric' => 'Giá trị giảm phải là số.',
+<<<<<<< Updated upstream
             'value.min' => 'Giá trị giảm phải lớn hơn 0.',
             'min_order_amount.required' => 'Vui lòng nhập đơn hàng tối thiểu.',
             'usage_limit.integer' => 'Giới hạn sử dụng phải là số nguyên.',
@@ -143,6 +178,18 @@ class VoucherController extends Controller
             'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',
             'expires_at.date' => 'Ngày hết hạn không hợp lệ.',
             'starts_at.before_or_equal' => 'Ngày bắt đầu phải sau hoặc bằng ngày hiện tại.',
+=======
+            'value.min' => 'Giá trị giảm phải lớn hơn hoặc bằng 1.', //sửa lại để nhất quán với store
+            'min_order_amount.required' => 'Vui lòng nhập đơn hàng tối thiểu.',
+            'min_order_amount.integer' => 'Đơn hàng tối thiểu phải là số nguyên.',
+            'usage_limit.integer' => 'Giới hạn sử dụng phải là số nguyên.',
+            'usage_limit.min' => 'Giới hạn sử dụng phải lớn hơn hoặc bằng 1.', //min bắt buộc phải bằng 1
+            'starts_at.date' => 'Ngày bắt đầu không hợp lệ.',
+            'starts_at.after_or_equal' => 'Ngày bắt đầu phải từ ngày hiện tại trở đi.',
+            'starts_at.before_or_equal' => 'Ngày bắt đầu phải trước hoặc bằng ngày hết hạn.',
+            'expires_at.date' => 'Ngày hết hạn không hợp lệ.',
+            'expires_at.after_or_equal' => 'Ngày hết hạn phải lớn hơn hoặc bằng ngày hiện tại và sau hoặc bằng ngày bắt đầu.',
+>>>>>>> Stashed changes
         ]);
 
         $data = $request->all();

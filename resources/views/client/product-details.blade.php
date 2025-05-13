@@ -67,6 +67,22 @@
                         @endif
                     </h4>
 
+<<<<<<< Updated upstream
+=======
+                    <h4>
+                        <strong class="product-price d-block text-danger" id="defaultPrice">
+                            <span id="salePrice">
+                                {{ number_format($product->price_sale, 0, ',', '.') }} đ
+                            </span>
+                            @if ($product->price_sale < $product->price)
+                                <span id="originalPrice" class="text-muted text-decoration-line-through ms-2">
+                                    {{ number_format($product->price, 0, ',', '.') }} đ
+                                </span>
+                            @endif
+                        </strong>
+                    </h4>
+                    
+>>>>>>> Stashed changes
                     <p>{{ $product->description }}</p>
                     <p><strong>SKU:</strong> <span id="variantSku">{{ $product->sku ?? 'Không có SKU' }}</span></p>
                     <p><strong>Kho:</strong> <span id="stockStatus">Chưa chọn</span></p>
@@ -76,15 +92,32 @@
                         <div class="row">
                             {{-- Màu --}}
                             <div class="col-md-6 mb-2">
+<<<<<<< Updated upstream
                                 <label class="form-label fw-semibold d-block">Chọn màu:</label>
                                 <div id="colorOptions" class="d-flex flex-wrap gap-2">
+=======
+                                <label class="form-label fw-semibold">Màu:</label>
+                                <select id="variantColor" class="form-select">
+>>>>>>> Stashed changes
                                     @foreach ($product->variants->unique('color_id') as $variant)
                                         <button type="button" class="btn color-swatch border rounded-circle p-0"
                                             data-color-id="{{ $variant->color_id }}"
                                             style="width: 36px; height: 36px; background-color: {{ $variant->color->code }};"
                                             title="{{ $variant->color->name }}"></button>
                                     @endforeach
+<<<<<<< Updated upstream
                                 </div>
+=======
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label fw-semibold">Kích thước:</label>
+                                <select id="variantSize" class="form-select">
+                                    @foreach ($product->variants->unique('size_id') as $variant)
+                                        <option value="{{ $variant->size_id }}">{{ $variant->size->name }}</option>
+                                    @endforeach
+                                </select>
+>>>>>>> Stashed changes
                             </div>
 
                             {{-- Size --}}
@@ -107,10 +140,15 @@
 
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Số lượng:</label>
+<<<<<<< Updated upstream
                             <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" disabled>
+=======
+                            <input type="number" class="form-control" id="quantity" name="quantity" value="1"
+                                min="1">
+>>>>>>> Stashed changes
                         </div>
 
-                        <button class="btn btn-primary w-100" type="submit" id="addToCartBtn" disabled>
+                        <button class="btn btn-primary w-100" type="submit" id="addToCartBtn">
                             <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
                         </button>
                     </form>
@@ -201,6 +239,7 @@
 @endsection
 
 @push('scripts')
+<<<<<<< Updated upstream
     <script>
         const variants = @json($product->variants);
         const stockBox = document.getElementById('stockStatus');
@@ -244,12 +283,66 @@
                 sizeSelect.disabled = true;
             } else {
                 sizeSelect.disabled = false;
+=======
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+<script>
+    const variants = @json($product->variants);
+    const colorSelect = document.getElementById('variantColor');
+    const priceBox = document.getElementById('defaultPrice');
+    const skuBox = document.getElementById('variantSku');
+    const stockBox = document.getElementById('stockStatus');
+    const imageBox = document.getElementById('productImage');
+    const quantityInput = document.getElementById('quantity');
+    const variantIdInput = document.getElementById('variant_id');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    const sizeSelect = document.getElementById('variantSize');
+    const hasVariants = variants.length > 0;
+    const allOutOfStock = hasVariants && variants.every(v => v.stock == 0);
+
+    if (!hasVariants || allOutOfStock) {
+        stockBox.textContent = 'Hết hàng';
+        quantityInput.value = 0;
+        quantityInput.disabled = true;
+        addToCartBtn.disabled = true;
+    }
+
+    function updateVariantInfo() {
+    const colorId = colorSelect.value;
+    const sizeId = sizeSelect.value;
+    const selected = variants.find(v => String(v.color_id) === colorId && String(v.size_id) === sizeId);
+
+    const salePrice = document.getElementById('salePrice');
+    const originalPrice = document.getElementById('originalPrice');
+
+    if (selected) {
+        // Giá sale luôn hiển thị đỏ
+        salePrice.textContent = Number(selected.price).toLocaleString('vi-VN') + ' đ';
+
+        // Nếu có giá gốc và giá gốc > giá sale thì hiển thị
+        if (selected.price_original && selected.price_original > selected.price) {
+            if (!originalPrice) {
+                // Nếu chưa có span gốc thì thêm vào
+                const span = document.createElement('span');
+                span.id = 'originalPrice';
+                span.className = 'text-muted text-decoration-line-through ms-2';
+                span.textContent = Number(selected.price_original).toLocaleString('vi-VN') + ' đ';
+                salePrice.parentNode.appendChild(span);
+            } else {
+                originalPrice.textContent = Number(selected.price_original).toLocaleString('vi-VN') + ' đ';
+                originalPrice.style.display = 'inline';
+            }
+        } else {
+            // Nếu không có giá gốc, ẩn đi
+            if (originalPrice) {
+                originalPrice.style.display = 'none';
+>>>>>>> Stashed changes
             }
             sizeSelect.addEventListener('change', () => {
                 updateVariantInfo(colorId, sizeSelect.value);
             });
         }
 
+<<<<<<< Updated upstream
         function updateVariantInfo(colorId, sizeId) {
             const selected = variants.find(v => v.color_id == colorId && v.size_id == sizeId);
 
@@ -300,11 +393,65 @@
                 document.querySelectorAll('.rating-stars .bi').forEach(s => {
                     s.classList.toggle('bi-star-fill', s.dataset.value <= rating);
                     s.classList.toggle('bi-star', s.dataset.value > rating);
+=======
+        skuBox.textContent = selected.sku ?? 'Không có SKU';
+        stockBox.textContent = selected.stock > 0 ? `Còn hàng (${selected.stock})` : 'Hết hàng';
+        imageBox.src = selected.image ? '/storage/' + selected.image : imageBox.src;
+        quantityInput.max = selected.stock;
+        quantityInput.disabled = selected.stock === 0;
+        quantityInput.value = selected.stock > 0 ? 1 : 0;
+        addToCartBtn.disabled = selected.stock === 0;
+        variantIdInput.value = selected.id;
+    } else {
+        // Nếu chưa chọn biến thể hợp lệ
+        salePrice.textContent = '{{ number_format($product->price_sale, 0, ',', '.') }} đ';
+        if (originalPrice) {
+            originalPrice.textContent = '{{ number_format($product->price, 0, ',', '.') }} đ';
+            originalPrice.style.display = '{{ $product->price_sale < $product->price ? "inline" : "none" }}';
+        }
+
+        skuBox.textContent = '{{ $product->sku ?? 'Không có SKU' }}';
+        stockBox.textContent = 'Chưa chọn';
+        imageBox.src = '{{ asset('storage/' . $product->image) }}';
+        quantityInput.value = 0;
+        quantityInput.disabled = true;
+        addToCartBtn.disabled = true;
+    }
+}
+
+
+    // Chỉ giữ lại 2 event listener này:
+    colorSelect.addEventListener('change', updateVariantInfo);
+    sizeSelect.addEventListener('change', updateVariantInfo);
+    
+    updateVariantInfo();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.rating-stars i');
+        const input = document.getElementById('starRating');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.getAttribute('data-value');
+                input.value = rating;
+
+                // Highlight sao
+                stars.forEach(s => {
+                    if (s.getAttribute('data-value') <= rating) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill');
+                    } else {
+                        s.classList.remove('bi-star-fill');
+                        s.classList.add('bi-star');
+                    }
+>>>>>>> Stashed changes
                 });
             });
         });
-    </script>
+    });
+</script>
 @endpush
+<<<<<<< Updated upstream
 <style>
     #productImage {
     width: 100%;
@@ -319,3 +466,6 @@
     border-radius: 5px black;
 }
 </style>
+=======
+
+>>>>>>> Stashed changes

@@ -23,12 +23,16 @@ class ColorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:colors,name',
+<<<<<<< Updated upstream
             'code' => 'required|string|max:7|unique:colors,code', // validate code
 
+=======
+>>>>>>> Stashed changes
         ], [
             'name.required' => 'Vui lòng nhập tên màu.',
             'name.unique' => 'Tên màu đã tồn tại.',
             'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
+<<<<<<< Updated upstream
 
             'code.required' => 'Vui lòng nhập mã màu.',
             'code.unique' => 'Mã màu đã tồn tại.',
@@ -36,6 +40,11 @@ class ColorController extends Controller
         ]);
 
         Color::create($request->only('name', 'code')); // lưu cả name và code
+=======
+        ]);
+
+        Color::create($request->only('name'));
+>>>>>>> Stashed changes
         return redirect()->route('admin.colors.index')->with('success', 'Thêm màu thành công!');
     }
 
@@ -48,12 +57,16 @@ class ColorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:colors,name,' . $color->id,
+<<<<<<< Updated upstream
             'code' => 'required|string|max:7|unique:colors,code,' . $color->id,
 
+=======
+>>>>>>> Stashed changes
         ], [
             'name.required' => 'Vui lòng nhập tên màu.',
             'name.unique' => 'Tên màu đã tồn tại.',
             'name.max' => 'Tên màu không được vượt quá 255 ký tự.',
+<<<<<<< Updated upstream
             'code.required' => 'Vui lòng nhập mã màu.',
             'code.unique' => 'Mã màu đã tồn tại.',
             'code.max' => 'Mã màu không hợp lệ.',
@@ -61,6 +74,11 @@ class ColorController extends Controller
 
         $color->update($request->only('name', 'code'));
 
+=======
+        ]);
+
+        $color->update($request->only('name'));
+>>>>>>> Stashed changes
         return redirect()->route('admin.colors.index')->with('success', 'Cập nhật màu thành công!');
     }
 

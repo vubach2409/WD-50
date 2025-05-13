@@ -178,13 +178,20 @@
                         <li>Giải pháp tối ưu không gian sống</li>
                         <li>Đảm bảo sự hài lòng của khách hàng</li>
                     </ul>
+<<<<<<< Updated upstream
                     <p><a href="{{ route('products') }}" class="btn">Khám phá ngay</a></p>
+=======
+                    <p><a href="{{ route('products') }}" class="btn">Khám phá</a></p>
+>>>>>>> Stashed changes
                 </div>
             </div>
         </div>
     </div>
     <!-- End We Help Section -->
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     <div class="popular-product">
         <div class="container">
             <div class="row justify-content-center">
@@ -194,13 +201,19 @@
                             <!-- Product image -->
                             <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
                                 <div class="product-image position-relative">
+<<<<<<< Updated upstream
                                     <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
                                         alt="{{ $product->name }}">
 
+=======
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid" alt="{{ $product->name }}">
+    
+>>>>>>> Stashed changes
                                     <!-- Labels for "New" and "Sale" -->
                                     @if ($product->is_new)
                                         <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
                                     @elseif($product->price_sale < $product->price)
+<<<<<<< Updated upstream
                                         <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
                                     @endif
                                 </div>
@@ -219,17 +232,43 @@
                                             class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ - </span>
                                         @if ($product->price_sale < $product->price)
                                             <span class="text-danger fw-bold">
+=======
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Giảm giá</span>
+                                    @endif
+                                </div>
+    
+                                <!-- Product info -->
+                                <div class="product-info p-3">
+                                    <!-- Product name -->
+                                    <h5 class="product-title text-dark mb-1" style="font-size: 1rem; background-color: transparent;">
+                                        {{ $product->name }}
+                                    </h5>
+    
+                                    <!-- Product price -->
+                                    <p class="product-price mb-2" style="background-color: transparent;">
+                                        <span class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
+                                        @if ($product->price_sale < $product->price)
+                                            <span class="text-muted text-decoration-line-through ms-2">
+>>>>>>> Stashed changes
                                                 {{ number_format($product->price, 0, ',', '.') }}đ
                                             </span>
                                         @endif
                                     </p>
                                 </div>
+<<<<<<< Updated upstream
 
                                 <!-- Action button (View product) -->
                                 <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
                                     <a href="{{ route('product.details', $product->id) }}"
                                         class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
                                         <i class="bi bi-eye me-1"></i> Xem chi tiết
+=======
+    
+                                <!-- Action button (View product) -->
+                                <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
+                                    <a href="{{ route('product.details', $product->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
+                                        <i class="bi bi-eye me-1"></i> Xem thêm
+>>>>>>> Stashed changes
                                     </a>
                                 </div>
                             </a>
@@ -239,5 +278,11 @@
             </div>
         </div>
     </div>
+<<<<<<< Updated upstream
 
 @endsection
+=======
+    
+
+@endsection
+>>>>>>> Stashed changes
