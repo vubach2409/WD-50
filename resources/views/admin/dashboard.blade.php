@@ -19,7 +19,7 @@
                             <div class="col-md-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5>Total Products</h5>
+                                        <h5>Tổng sản phẩm</h5>
                                         <p>{{ number_format($totalProducts) }}</p>
                                     </div>
                                 </div>
@@ -29,7 +29,7 @@
                             <div class="col-md-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5>Total Orders</h5>
+                                        <h5>Tổng đơn hàng</h5>
                                         <p>{{ number_format($totalOrders) }}</p>
                                     </div>
                                 </div>
@@ -39,7 +39,7 @@
                             <div class="col-md-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5>Total Revenue</h5>
+                                        <h5>Tổng doanh thu</h5>
                                         <p>{{ number_format($totalRevenue, 0, ',', '.') }} ₫</p>
                                     </div>
                                 </div>
@@ -49,54 +49,104 @@
                             <div class="col-md-3">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5>New Products</h5>
+                                        <h5>Sản phẩm mới </h5>
                                         <p>{{ number_format($newProducts) }}</p>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Biểu đồ doanh thu theo ngày -->
+                            <h3>Doanh thu theo ngày</h3>
+                            <canvas id="revenueChart" height="150"></canvas>
                         </div>
+                    </thead>
 
-
-            </div>
-            </thead>
-            <tbody>
-                <!-- Biểu đồ doanh thu theo ngày -->
-                <h3>Doanh thu theo ngày</h3>
-                <canvas id="revenueChart" height="150"></canvas>
                 </table>
-        </div>
-    </div>
-    </div>
+                <div class="mt-5">
+                    <h3 class="mb-4">Top 10 sản phẩm bán chạy</h3>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        const revenueChart = new Chart(ctx, {
-            type: 'line', // Biểu đồ đường
-            data: {
-                labels: @json($labels), // Các nhãn là ngày
-                datasets: [{
-                    label: 'Doanh thu theo ngày (VNĐ)',
-                    data: @json($revenues), // Dữ liệu doanh thu theo từng ngày
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Màu nền dưới đường
-                    borderColor: 'rgba(75, 192, 192, 1)', // Màu đường
-                    borderWidth: 2, // Độ dày của đường
-                    fill: true, // Tô màu phía dưới đường
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString('vi-VN') + ' ₫'; // Hiển thị doanh thu với dấu phẩy
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Số lượng bán</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($topProducts as $index => $product)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $product->product_name }}</td>
+                                    <td>{{ $product->total_sold }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                    <canvas id="bestSellingChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: @json($labels),
+                    datasets: [{
+                        label: 'Doanh thu theo ngày (VNĐ)',
+                        data: @json($revenues),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('vi-VN') + ' ₫';
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
-    </script>
-@endsection
+            });
+        </script>
+
+        <script>
+            const bestSellingCtx = document.getElementById('bestSellingChart').getContext('2d');
+            const bestSellingChart = new Chart(bestSellingCtx, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($topProducts->pluck('product_name')) !!},
+                    datasets: [{
+                        label: 'Số lượng bán',
+                        data: {!! json_encode($topProducts->pluck('total_sold')) !!},
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    @endsection

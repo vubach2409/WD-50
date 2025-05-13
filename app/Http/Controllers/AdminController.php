@@ -44,6 +44,15 @@ class AdminController extends Controller
                 $revenues[] = 0;
             }
         }
+        $topProducts = DB::table('order_details')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->where('orders.status', 'completed')
+            ->select('products.name as product_name', DB::raw('SUM(order_details.quantity) as total_sold'))
+            ->groupBy('order_details.product_id', 'products.name')
+            ->orderByDesc('total_sold')
+            ->limit(10)
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalProducts',
@@ -51,7 +60,8 @@ class AdminController extends Controller
             'totalRevenue',
             'newProducts',
             'revenues',
-            'labels'
+            'labels',
+            'topProducts'
         ));
     }
 }
