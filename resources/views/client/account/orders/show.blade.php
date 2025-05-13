@@ -27,10 +27,26 @@
 
                                 @if ($order->payment)
                                     <p><strong>Trạng thái thanh toán:</strong>
-                                        <span
-                                            class="badge bg-{{ $order->payment->status === 'completed' ? 'success' : ($order->payment->status === 'pending' ? 'warning' : 'danger') }}">
-                                            {{ ucfirst($order->payment->status) }}
+                                        @php
+                                            $status = $order->payment->status;
+                                            $isVNPay = $order->payment->payment_method === 'vnpay';
+                                            $badgeClass = match ($status) {
+                                                'completed' => 'success',
+                                                'pending' => 'warning',
+                                                'failed' => $isVNPay ? 'warning' : 'danger',
+                                                default => 'secondary',
+                                            };
+                                            $statusText =
+                                                $isVNPay && $status === 'failed'
+                                                    ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
+                                                    : ucfirst($status);
+                                        @endphp
+
+                                        <span class="badge bg-{{ $badgeClass }}">
+                                            {{ $statusText }}
                                         </span>
+
+
                                     </p>
                                     <p><strong>Phương thức thanh toán:</strong>
                                         {{ ucfirst($order->payment->payment_method) }}</p>
@@ -88,7 +104,7 @@
                                                     <div>
                                                         <h6 class="mb-0">{{ $item->product_name }}</h6>
                                                         <small class="text-muted">
-                                                            Biến thể: 
+                                                            Biến thể:
                                                             {{ $item->variant_name ?? 'Không có' }}
                                                             @if ($item->color_name)
                                                                 - {{ $item->color_name }}
