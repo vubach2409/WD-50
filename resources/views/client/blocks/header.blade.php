@@ -70,7 +70,6 @@
             <p class="text-center m-0">Giỏ hàng đang trống.</p>
         </div>
     `;
-
                         const toggle = document.getElementById('mini-cart-toggle');
                         const dropdown = document.getElementById('mini-cart-dropdown');
                         toggle.addEventListener('click', () => {
