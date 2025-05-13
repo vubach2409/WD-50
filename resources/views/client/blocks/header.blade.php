@@ -41,6 +41,7 @@
                     <li class="nav-item dropdown position-relative" id="mini-cart-container">
 
                         <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
+
                             <img src="{{ asset('clients/images/cart.svg') }}">
                             <span id="mini-cart-count"
                                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -84,22 +85,25 @@
                 .then(data => {
                     let itemsHTML = '';
                     data.items.forEach(item => {
+                        let imageUrl = item.variant && item.variant.image ?
+                            '/storage/' + item.variant.image :
+                            '/storage/' + item.product.image;
+
                         itemsHTML += `
-    <div class="d-flex mb-2">
-        <img src="/storage/${item.image}" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-        <div class="flex-grow-1">
-            <div class="small fw-semibold">${item.name}</div>
-            <div class="text-muted small">${item.quantity} × ${item.price.toLocaleString()}₫</div>
-        </div>
-    </div>
-`;
+                    <div class="d-flex mb-2">
+                        <img src="/storage/${item.variant?.image || item.product.image}"" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                        <div class="flex-grow-1">
+                            <div class="small fw-semibold">${item.name}</div>
+                            <div class="text-muted small">${item.quantity} × ${item.price.toLocaleString()}₫</div>
+                        </div>
+                    </div>
+                `;
                     });
 
                     document.getElementById('mini-cart-items').innerHTML = itemsHTML;
                     document.getElementById('mini-cart-count').innerText = data.total_quantity;
                     document.getElementById('mini-cart-total').innerText = data.total_price.toLocaleString() + '₫';
                 });
-
         }
 
         document.addEventListener('DOMContentLoaded', function() {
