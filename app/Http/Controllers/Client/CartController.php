@@ -237,5 +237,29 @@ public function listAvailableVouchers()
 
     return view('client.voucher-list', compact('vouchers'));
 }
+public function miniCart()
+{
+    $cartItems = Carts::with(['product', 'variant'])
+        ->where('user_id', auth()->id())
+        ->get();
+
+    $items = $cartItems->map(function ($item) {
+        return [
+            'name' => $item->product->name,
+            'price' => $item->variant ? $item->variant->price : 0,
+            'quantity' => $item->quantity,
+            'image' => $item->product->image, // giả sử cột ảnh trong bảng products
+        ];
+    });
+
+    $total_price = $items->sum(fn($i) => $i['price'] * $i['quantity']);
+    $total_quantity = $items->sum('quantity');
+
+    return response()->json([
+        'items' => $items,
+        'total_price' => $total_price,
+        'total_quantity' => $total_quantity,
+    ]);
+}
 
 }
