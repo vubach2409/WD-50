@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 use App\Models\Product;
 use App\Models\Voucher;
 use App\Models\Category;
@@ -156,9 +157,9 @@ Route::post('/chat/send', function (Request $request) {
     $event_message = '';
 
     $voucher = Voucher::where('starts_at', '<=', now())
-                      ->where('expires_at', '>=', now())
-                      ->where('is_active', true)
-                      ->first();
+        ->where('expires_at', '>=', now())
+        ->where('is_active', true)
+        ->first();
 
     if ($voucher) {
         // Nếu có voucher, hiển thị thông báo mã giảm giá
@@ -190,8 +191,8 @@ Route::post('/chat/send', function (Request $request) {
             <div class="product mb-2 p-2 border rounded bg-light">
             <img src="' . asset('storage/' . $product->image) . '" alt="Ảnh" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
                 <a href="' . $link . '" class="text-decoration-none fw-bold text-primary" target="_blank">'
-                    . e($product->name) . 
-                '</a>
+            . e($product->name) .
+            '</a>
                 <div>Giá: ';
 
         // Hiển thị giá sản phẩm
@@ -217,10 +218,10 @@ Route::post('/chat/send', function (Request $request) {
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
-    
+
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'index']);
-    
+
     Route::resource('categories', CategoryController::class);
 
     Route::resource('brands', BrandController::class);
@@ -234,30 +235,30 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::get('products/detail/{id}', [ProductController::class, 'show'])->name('products.detail');
 
     Route::resource('colors', ColorController::class);
-//show hoá đơn
+    //show hoá đơn
     Route::get('/invoice/{orderId}', [HistoryPaymentController::class, 'show'])->name('invoice.show');
-// tải hoá đơn
+    // tải hoá đơn
     Route::get('/invoice/download/{orderId}', [HistoryPaymentController::class, 'downloadPDF'])->name('invoice.download');
-//lịch sử mua hàng và giao dịch
+    //lịch sử mua hàng và giao dịch
     Route::get('/payment/history', [HistoryPaymentController::class, 'index'])->name('payment.history');
     Route::get('/history/detail/{id}', [HistoryPaymentController::class, 'history_detail'])->name('history.detail');
-// Show và cập nhật trạng thái thanh toán
+    // Show và cập nhật trạng thái thanh toán
     Route::get('/payment/show', [AdminPaymentController::class, 'showOrderPayments'])->name('payment.show');
     Route::put('/admin/order/{orderId}/update-payment-status', [AdminPaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
-// Route để lọc đơn hàng theo mã giao dịch
-Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
-// Feedbacks
-Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
+    // Route để lọc đơn hàng theo mã giao dịch
+    Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
+    // Feedbacks
+    Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedbacks.index');
     Route::delete('/feedbacks/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedbacks.destroy');
     Route::patch('/feedbacks/{id}/toggle-hide', [AdminFeedbackController::class, 'toggleHide'])->name('feedbacks.toggleHide'); // Route cho toggleHide
 
-//voucher
-Route::resource('vouchers', VoucherController::class);
+    //voucher
+    Route::resource('vouchers', VoucherController::class);
 
 
-Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
-Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
-Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
+    Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
+    Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 
 
     Route::resource('sizes', SizeController::class);
@@ -272,24 +273,24 @@ Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->na
         Route::get('/', [ProductVariantController::class, 'index'])->name('product_variants.index');
         Route::get('/create', [ProductVariantController::class, 'create'])->name('product_variants.create');
         Route::post('/', [ProductVariantController::class, 'store'])->name('product_variants.store');
-        
+
         Route::get('/{variant}/edit', [ProductVariantController::class, 'edit'])->name('product_variants.edit');
         Route::put('/{variant}', [ProductVariantController::class, 'update'])->name('product_variants.update');
         Route::delete('/{variant}', [ProductVariantController::class, 'destroy'])->name('product_variants.destroy');
-    
+
         Route::get('/trash', [ProductVariantController::class, 'trash'])->name('product_variants.trash');
         Route::post('/{variant}/restore', [ProductVariantController::class, 'restore'])->name('product_variants.restore');
         Route::delete('/{variant}/force-delete', [ProductVariantController::class, 'forceDelete'])->name('product_variants.forceDelete');
-    
+
         Route::get('/{variant}', [ProductVariantController::class, 'show'])->name('product_variants.show');
     });
-    
-     // Route danh sách tất cả sản phẩm có biến thể
-     Route::get('/product-variants', [ProductVariantController::class, 'productsWithVariants'])
-     ->name('product_variants.list');
-     // Route tìm kiếm sản phẩm có biến thể
+
+    // Route danh sách tất cả sản phẩm có biến thể
+    Route::get('/product-variants', [ProductVariantController::class, 'productsWithVariants'])
+        ->name('product_variants.list');
+    // Route tìm kiếm sản phẩm có biến thể
     Route::get('/product-variants/search', [ProductVariantController::class, 'search'])
-    ->name('product_variants.search');
+        ->name('product_variants.search');
 });
 
 
@@ -304,10 +305,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-
     Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
+    Route::get('/mini-cart', [CartController::class, 'miniCart'])->name('mini.cart');
 });
+
 
 // Thanh toán cod
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
@@ -332,6 +334,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('account.orders.show');
     Route::put('/account/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('account.orders.cancel');
 });
-?>
-
-
