@@ -47,8 +47,7 @@ class ProductDetailController extends Controller
         Feedbacks::create([
             'user_id' => auth()->id(),
             'product_id' => $product->id,
-            'order_id' => null, // Nếu muốn kiểm tra đơn hàng thì xử lý sau
-            'star' => $request->star,
+            'order_id' => null,
             'content' => $request->content,
         ]);
 

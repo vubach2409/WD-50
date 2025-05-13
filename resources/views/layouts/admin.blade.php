@@ -67,13 +67,9 @@
     <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
-    <!-- Custom scripts for all pages -->
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
 
     <!-- Thêm vào phần <head> của layout -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @yield('scripts')
 
 </body>
 

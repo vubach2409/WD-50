@@ -404,7 +404,7 @@ class PaymentController extends Controller
                             'variant_sku' => $variantSku,
                             'color_name' => $colorName,
                             'size_name' => $sizeName,
-                            'variant_image' => $variantImage, // 👈 Vẫn là cột variant_image
+                            'variant_image' => $variantImage, 
                             'price' => $price,
                             'quantity' => $item->quantity,
                         ]);
