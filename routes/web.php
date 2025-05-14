@@ -208,13 +208,6 @@ Route::post('/chat/send', function (Request $request) {
 
 
 
-
-
-
-
-
-
-
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
     
@@ -254,8 +247,9 @@ Route::get('/feedbacks', [AdminFeedbackController::class, 'index'])->name('feedb
 //voucher
 Route::resource('vouchers', VoucherController::class);
 
-
+// route đơn hàng trong admin
 Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
+Route::get('/order/index', [AdminOrderController::class, 'index'])->name('orders.index');
 Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
 Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 

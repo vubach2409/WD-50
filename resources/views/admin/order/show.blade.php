@@ -10,7 +10,6 @@
                 </h4>
             </div>
             <div class="card-body">
-                <!-- Thông tin khách hàng -->
                 <h5 class="card-title">- Thông tin khách hàng</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
@@ -26,6 +25,9 @@
                         <strong>Địa chỉ:</strong> {{ $order->consignee_address }}, {{ $order->subdistrict }},
                         {{ $order->city }}
                     </li>
+                     <li class="list-group-item">
+                        <strong>Hình thức thanh toán:</strong> {{ $order->payment_method }}
+                    </li>
                     <li class="list-group-item">
                         <strong>Mã giao dịch:</strong> {{ $order->transaction_id }}
                     </li>
@@ -33,13 +35,14 @@
 
                 <hr>
 
-                <!-- Chi tiết sản phẩm -->
                 <h5 class="card-title">- Chi tiết sản phẩm</h5>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Ảnh sản phẩm</th>
+                            <th>Ảnh</th>
                             <th>Sản phẩm</th>
+                            <th>Biến thể</th>
+                            <th>SKU</th>
                             <th>Số lượng</th>
                             <th>Đơn giá</th>
                             <th>Tổng tiền</th>
@@ -49,14 +52,18 @@
                         @foreach ($order->items as $item)
                             <tr>
                                 <td class="text-center">
-                                    @if ($item->product->image)
-                                        <img src="{{ asset('storage/' . $item->product->image) }}"
-                                            alt="{{ $item->product->name }}" width="100">
+                                    @if ($item->variant_image)
+                                        <img src="{{ asset('storage/' . $item->variant_image) }}"
+                                            alt="{{ $item->product_name }}" width="100">
                                     @else
                                         <span>Không có ảnh</span>
                                     @endif
                                 </td>
-                                <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->product_name }}</td>
+                                <td>
+                                    {{ $item->color_name ?? 'Không màu' }} / {{ $item->size_name ?? 'Không size' }}
+                                </td>
+                                 <td>{{ $item->variant_sku ?? 'Không có' }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
                                 <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
@@ -67,14 +74,13 @@
 
                 <hr>
 
-                <!-- Thông tin thanh toán -->
                 <h5 class="card-title">- Thông tin thanh toán</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
                         <strong>Trạng thái:</strong> {{ ucfirst($order->payment->status) }}
                     </li>
                     <li class="list-group-item">
-                        <strong>Vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }} VND
+                        <strong>Phí Vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }} VND
                     </li>
                     @if ($order->voucher_code && $order->discount_amount > 0)
                         <li class="list-group-item">
@@ -89,8 +95,8 @@
                 </ul>
 
                 <center>
-                    <a href="{{ route('admin.orders.show') }}" class="btn btn-secondary mt-3">Quay lại danh sách đơn
-                        hàng</a>
+                    <a href="{{ route('admin.orders.show') }}" class="btn btn-secondary mt-3">
+                        Quay lại danh sách đơn hàng</a>
                 </center>
             </div>
         </div>
