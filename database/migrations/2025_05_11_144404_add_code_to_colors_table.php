@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::table('products', function (Blueprint $table) {
-        $table->integer('stock')->default(0);
+    Schema::table('colors', function (Blueprint $table) {
+        $table->string('code')->unique();
     });
 }
 
 public function down()
 {
-    Schema::table('products', function (Blueprint $table) {
-        $table->dropColumn('stock');
+    Schema::table('colors', function (Blueprint $table) {
+        $table->dropColumn('code');
     });
 }
-
 };

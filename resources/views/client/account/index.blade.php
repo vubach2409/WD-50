@@ -50,7 +50,6 @@
                                 @enderror
                             </div>
 
-
                             <hr class="my-4">
 
                             <h5 class="mb-3">Change Password</h5>
@@ -86,3 +85,4 @@
         </div>
     </div>
 @endsection
+

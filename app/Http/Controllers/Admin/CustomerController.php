@@ -13,6 +13,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
+
         $users = User::whereIn('role', ['user', 'admin', 'nhanvien'])->get();
         return view('admin.users.index', compact('users'));
     }
@@ -49,7 +50,6 @@ class CustomerController extends Controller
 
         return view('admin.users.show', compact('user'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -110,9 +110,6 @@ public function update(Request $request, string $id)
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User đã được xóa.');
     }
-
-
-
 }
 
 

@@ -68,12 +68,10 @@
                         <tr>
                             <th>STT</th>
                             <th class="text-left">Tên sản phẩm</th>
-                            <th>Giá max</th>
-                            <th>Giá min</th>
+                            <th>Khoảng giá</th>
                             <th>Danh mục</th>
                             <th>Thương hiệu</th>
                             <th>Ảnh</th>
-                            <th>Kho</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -87,8 +85,7 @@
                                         {{ $product->name }}
                                     </a>
                                 </td>
-                                <td class="align-middle">{{ number_format($product->price) }} đ</td>
-                                <td class="align-middle">{{ number_format($product->price_sale) }} đ</td>
+                                <td class="align-middle">{{ number_format($product->price_sale) }} đ - {{ number_format($product->price) }} đ</td>
                                 <td class="align-middle">{{ $product->category->name }}</td>
                                 <td class="align-middle">{{ $product->brand->name }}</td>
                                 <td class="align-middle">
@@ -99,17 +96,7 @@
                                         <span class="text-muted">Không có ảnh</span>
                                     @endif
                                 </td>
-                                <td class="align-middle">{{ $product->stock }}</td>
                                 <td class="align-middle">
-                                    <a href="{{ route('admin.products.edit', $product->id) }}"
-                                        class="btn btn-warning">Sửa</a>
-                                    <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('Bạn có chắc chắn?')">Xóa</button>
-                                    </form>
                                     <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-info">Chi tiết</a>
                                 </td>
                             </tr>

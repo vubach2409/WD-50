@@ -34,4 +34,9 @@ class ProductVariant extends Model
         static::saved(fn($variant) => $variant->product?->updateStock());
         static::deleted(fn($variant) => $variant->product?->updateStock());
     }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
 }

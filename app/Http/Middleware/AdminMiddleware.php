@@ -13,7 +13,6 @@ class AdminMiddleware
        if (Auth::check() && in_array(Auth::user()->role, ['admin', 'nhanvien'])) {
         return $next($request);
     }
-
         return redirect('/')->with('error', 'Bạn không có quyền truy cập trang Admin.');
     }
 }

@@ -116,10 +116,9 @@
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+
                     Danh sách tài khoản
                 </a>
-               
-
             </div>
         </div>
     </li>

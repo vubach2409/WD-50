@@ -107,22 +107,10 @@ public function addToCart(Request $request)
    public function update(Request $request, $id)
    {
        $cartItem = Carts::findOrFail($id);
-   
-       $quantity = (int) $request->input('quantity');
-   
-       if ($quantity < 1) {
-           return redirect()->back()->with('error', 'Số lượng phải lớn hơn 0.');
-       }
-   
-       // Kiểm tra tồn kho biến thể
-       if ($quantity > $cartItem->variant->stock) {
-           return redirect()->back()->with('error', 'Số lượng vượt quá tồn kho hiện có.');
-       }
-   
-       $cartItem->quantity = $quantity;
+       $cartItem->quantity = $request->input('quantity');
        $cartItem->save();
    
-       return redirect()->back()->with('success', 'Cập nhật số lượng thành công.');
+       return response()->json(['message' => 'Cập nhật thành công']);
    }
    
    
@@ -248,6 +236,43 @@ public function listAvailableVouchers()
         ->get();
 
     return view('client.voucher-list', compact('vouchers'));
+}
+public function miniCart()
+{
+    if (Auth::check()) {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('user_id', Auth::id())
+            ->get();
+    } else {
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where('session_id', Session::getId())
+            ->get();
+    }
+
+    $items = [];
+    $total_quantity = 0;
+    $total_price = 0;
+
+    foreach ($cartItems as $item) {
+        $items[] = [
+            'name' => $item->product->name,
+            'quantity' => $item->quantity,
+            'price' => $item->variant ? $item->variant->price : $item->product->price,
+            'product' => [
+                'image' => $item->product->image,
+            ],
+            'variant' => $item->variant ? ['image' => $item->variant->image] : null,
+        ];
+
+        $total_quantity += $item->quantity;
+        $total_price += $item->quantity * ($item->variant ? $item->variant->price : $item->product->price);
+    }
+
+    return response()->json([
+        'items' => $items,
+        'total_quantity' => $total_quantity,
+        'total_price' => $total_price,
+    ]);
 }
 
 }

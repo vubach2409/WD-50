@@ -49,8 +49,6 @@ class OrderController extends Controller
                 ->with('error', 'Không thể cập nhật trạng thái của đơn hàng đã giao!');
         }
 
-
-
         // Kiểm tra xem trạng thái có hợp lệ không
         $request->validate([
             'status' => 'required|in:pending,shipping,completed,cancelled'
@@ -67,12 +65,9 @@ class OrderController extends Controller
             return redirect()->route('admin.orders.show', ['order' => $order->id])->with('error', 'Chỉ được phép chuyển từ đang giao sang đã giao');
         }
 
-
-
         // Nếu không phải trạng thái pending thì không cho cập nhật (đã xử lý ở trên)
         $order->status = $newStatus;
         $order->save();
-
 
         $payment = $order->payment; // Lấy thông tin thanh toán liên quan đến đơn hàng
         // Kiểm tra nếu trạng thái đơn hàng là 'completed'

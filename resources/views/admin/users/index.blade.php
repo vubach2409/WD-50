@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
+
     <h2 class="text-primary">Danh sách tài khoản</h2>
 
     @if (session('success'))

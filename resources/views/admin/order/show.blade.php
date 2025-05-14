@@ -63,7 +63,7 @@
                                 <td>
                                     {{ $item->color_name ?? 'Không màu' }} / {{ $item->size_name ?? 'Không size' }}
                                 </td>
-                                 <td>{{ $item->variant_sku ?? 'Không có' }}</td>
+                                <td>{{ $item->variant_sku ?? 'Không có' }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
                                 <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
