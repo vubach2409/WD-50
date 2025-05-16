@@ -64,34 +64,51 @@
                             </div>
                         </div>
 
-                        <form>
+                        @if (session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
+                        <form method="POST" action="{{ route('contact.submit') }}">
+                            @csrf
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="text-black" for="fname">First name</label>
-                                        <input type="text" class="form-control" id="fname">
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name">First name</label>
+                                    <input type="text" name="first_name" id="first_name" class="form-control"
+                                        value="{{ old('first_name') }}">
+                                    @error('first_name')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label class="text-black" for="lname">Last name</label>
-                                        <input type="text" class="form-control" id="lname">
-                                    </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name">Last name</label>
+                                    <input type="text" name="last_name" id="last_name" class="form-control"
+                                        value="{{ old('last_name') }}">
+                                    @error('last_name')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="text-black" for="email">Email address</label>
-                                <input type="email" class="form-control" id="email">
                             </div>
 
-                            <div class="form-group mb-5">
-                                <label class="text-black" for="message">Message</label>
-                                <textarea name="" class="form-control" id="message" cols="30" rows="5"></textarea>
+                            <div class="mb-3">
+                                <label for="email">Email address</label>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    value="{{ old('email') }}">
+                                @error('email')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-primary-hover-outline">Send Message</button>
+                            <div class="mb-3">
+                                <label for="message">Message</label>
+                                <textarea name="message" id="message" rows="5" class="form-control">{{ old('message') }}</textarea>
+                                @error('message')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>
-
                     </div>
 
                 </div>
