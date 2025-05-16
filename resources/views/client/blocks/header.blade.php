@@ -39,88 +39,96 @@
                         @endauth
                     </li>
                     <li class="nav-item dropdown position-relative" id="mini-cart-container">
-
-                        <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
-
-                            <img src="{{ asset('clients/images/cart.svg') }}">
-                            <span id="mini-cart-count"
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                0
-                            </span>
-                        </a>
-
-                        <!-- Mini Cart Dropdown -->
-                        <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
-                            style="min-width: 240px; max-width: 300px; display: none; left: 50%; transform: translateX(-50%);">
-                            <div id="mini-cart-items" class="overflow-auto" style="max-height: 200px;"></div>
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <small class="fw-semibold">Tổng:</small>
-                                <small id="mini-cart-total" class="text-danger fw-bold">0₫</small>
-                            </div>
-                            <div class="mt-2 d-flex justify-content-between">
-                                <a href="{{ route('cart.show') }}"
-                                    class="btn btn-outline-primary btn-xs w-50 me-1">Xem</a>
-                                <a href="{{ route('checkout') }}" class="btn btn-primary btn-xs w-50 ms-1">Thanh
-                                    toán</a>
-                            </div>
+                        <!-- Mini cart sẽ được load bằng JavaScript -->
+                    </li>
 
 
 
-                        </div>
-                        <style>
-                            .btn-xs {
-                                font-size: 0.7rem;
-                                padding: 2px 6px;
-                                line-height: 1;
-                            }
-                        </style>
 
 
     </nav>
 
     <script>
         function loadMiniCart() {
-            fetch('{{ route('mini.cart') }}')
-                .then(res => res.json())
+            fetch('/mini-cart')
+                .then(response => response.json())
                 .then(data => {
+                    const container = document.querySelector('#mini-cart-container');
+                    container.innerHTML = '';
+
+                    if (data.empty) {
+                        container.innerHTML = `
+                        <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
+            <img src="{{ asset('clients/images/cart.svg') }}">
+            <span id="mini-cart-count"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                0
+            </span>
+        </a>
+        <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
+            style="min-width: 240px; max-width: 300px; display: none; left: 50%; transform: translateX(-50%);">
+            <p class="text-center m-0">Giỏ hàng đang trống.</p>
+        </div>
+    `;
+                        const toggle = document.getElementById('mini-cart-toggle');
+                        const dropdown = document.getElementById('mini-cart-dropdown');
+                        toggle.addEventListener('click', () => {
+                            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                        });
+
+                        return;
+                    }
+
                     let itemsHTML = '';
                     data.items.forEach(item => {
-                        let imageUrl = item.variant && item.variant.image ?
-                            '/storage/' + item.variant.image :
-                            '/storage/' + item.product.image;
-
+                        const image = item.variant?.image || item.product.image;
                         itemsHTML += `
-                    <div class="d-flex mb-2">
-                        <img src="/storage/${item.variant?.image || item.product.image}"" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-                        <div class="flex-grow-1">
-                            <div class="small fw-semibold">${item.name}</div>
-                            <div class="text-muted small">${item.quantity} × ${item.price.toLocaleString()}₫</div>
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="/storage/${image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
+                            <div>
+                                <div class="fw-bold">${item.name}</div>
+                                <div>Số lượng: ${item.quantity}</div>
+                                <div>Giá: ${item.price.toLocaleString()} đ</div>
+                            </div>
+                        </div>
+                    `;
+                    });
+
+                    container.innerHTML = `
+                    <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
+                        <img src="{{ asset('clients/images/cart.svg') }}">
+                        <span id="mini-cart-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            ${data.total_quantity}
+                        </span>
+                    </a>
+                    <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
+                        style="min-width: 240px; max-width: 300px; display: none; left: 50%; transform: translateX(-50%);">
+                        <div id="mini-cart-items" class="overflow-auto" style="max-height: 200px;">
+                            ${itemsHTML}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="fw-semibold">Tổng:</small>
+                            <small id="mini-cart-total" class="text-danger fw-bold">
+                                ${data.total_price.toLocaleString()}₫
+                            </small>
+                        </div>
+                        <div class="mt-2 d-flex justify-content-between">
+                            <a href="{{ route('cart.show') }}" class="btn btn-outline-primary btn-xs w-50 me-1">Xem</a>
+                            <a href="{{ route('checkout') }}" class="btn btn-primary btn-xs w-50 ms-1">Thanh toán</a>
                         </div>
                     </div>
                 `;
-                    });
 
-                    document.getElementById('mini-cart-items').innerHTML = itemsHTML;
-                    document.getElementById('mini-cart-count').innerText = data.total_quantity;
-                    document.getElementById('mini-cart-total').innerText = data.total_price.toLocaleString() + '₫';
+                    // Toggle dropdown
+                    const toggle = document.getElementById('mini-cart-toggle');
+                    const dropdown = document.getElementById('mini-cart-dropdown');
+                    toggle.addEventListener('click', () => {
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
                 });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadMiniCart();
-
-            const toggle = document.getElementById('mini-cart-toggle');
-            const dropdown = document.getElementById('mini-cart-dropdown');
-
-            toggle.addEventListener('click', function() {
-                dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display ===
-                    '') ? 'block' : 'none';
-            });
-
-            document.addEventListener('click', function(e) {
-                if (!document.getElementById('mini-cart-container').contains(e.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-        });
+        // Load khi trang ready
+        document.addEventListener('DOMContentLoaded', loadMiniCart);
     </script>

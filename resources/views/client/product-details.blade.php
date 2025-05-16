@@ -7,13 +7,15 @@
         <div class="container">
             {{-- Thông báo --}}
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" role="alert" style="z-index: 9999;">
+                <div class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+                    role="alert" style="z-index: 9999;">
                     {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow" role="alert" style="z-index: 9999;">
+                <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+                    role="alert" style="z-index: 9999;">
                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -25,22 +27,26 @@
                         <div class="carousel-inner">
                             {{-- Ảnh chính --}}
                             <div class="carousel-item active">
-                                <img src="{{ asset('storage/' . $product->image) }}" class="d-block w-100" alt="{{ $product->name }}">
+                                <img src="{{ asset('storage/' . $product->image) }}" class="d-block w-100"
+                                    alt="{{ $product->name }}">
                             </div>
                             {{-- Ảnh biến thể --}}
                             @foreach ($product->variants as $variant)
                                 @if ($variant->image)
                                     <div class="carousel-item">
-                                        <img src="{{ asset('storage/' . $variant->image) }}" class="d-block w-100" alt="Ảnh biến thể">
+                                        <img src="{{ asset('storage/' . $variant->image) }}" class="d-block w-100"
+                                            alt="Ảnh biến thể">
                                     </div>
                                 @endif
                             @endforeach
                         </div>
                         {{-- Nút điều hướng trái/phải --}}
-                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                            data-bs-slide="prev">
                             <span class="carousel-control-prev-icon"></span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                            data-bs-slide="next">
                             <span class="carousel-control-next-icon"></span>
                         </button>
                     </div>
@@ -54,16 +60,19 @@
                     <div class="mb-2 text-warning fs-5">
                         @php $rating = $product->average_rating ?? 0; @endphp
                         @for ($i = 1; $i <= 5; $i++)
-                            <i class="bi {{ $i <= floor($rating) ? 'bi-star-fill' : ($i - $rating <= 0.5 ? 'bi-star-half' : 'bi-star') }}"></i>
+                            <i
+                                class="bi {{ $i <= floor($rating) ? 'bi-star-fill' : ($i - $rating <= 0.5 ? 'bi-star-half' : 'bi-star') }}"></i>
                         @endfor
                         <small class="text-muted ms-2">({{ $product->reviews_count }} đánh giá)</small>
                     </div>
 
                     {{-- Giá --}}
                     <h4>
-                        <strong class="product-price text-danger variant-price fs-4">{{ number_format($product->price_sale, 0, ',', '.') }}đ</strong>
+                        <strong
+                            class="product-price text-danger variant-price fs-4">{{ number_format($product->price_sale, 0, ',', '.') }}đ</strong>
                         @if ($product->price_sale < $product->price)
-                            <span class="text-muted text-decoration-line-through ms-2">{{ number_format($product->price, 0, ',', '.') }}đ</span>
+                            <span
+                                class="text-muted text-decoration-line-through ms-2">{{ number_format($product->price, 0, ',', '.') }}đ</span>
                         @endif
                     </h4>
 
@@ -107,7 +116,8 @@
 
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Số lượng:</label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" disabled>
+                            <input type="number" class="form-control" id="quantity" name="quantity" value="1"
+                                min="1" disabled>
                         </div>
 
                         <button class="btn btn-primary w-100" type="submit" id="addToCartBtn" disabled>
@@ -147,7 +157,8 @@
                         <button type="submit" class="btn btn-outline-primary">Gửi đánh giá</button>
                     </form>
                 @else
-                    <div class="alert alert-warning">Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để bình luận.</div>
+                    <div class="alert alert-warning">Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để bình luận.
+                    </div>
                 @endauth
 
                 <div class="border rounded p-3">
@@ -179,7 +190,8 @@
                         <div class="col-6 col-md-3">
                             <a href="{{ route('product.details', $item->id) }}" class="text-decoration-none">
                                 <div class="card border-0 h-100 shadow-sm">
-                                    <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                                    <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top"
+                                        style="height: 180px; object-fit: cover;">
                                     <div class="card-body p-2">
                                         <h6 class="card-title text-truncate">{{ $item->name }}</h6>
                                         <p class="card-text text-danger fw-semibold mb-0">
@@ -214,7 +226,8 @@
         // Click chọn màu
         document.querySelectorAll('.color-swatch').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('border-primary', 'border-2'));
+                document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('border-primary',
+                    'border-2'));
                 btn.classList.add('border-primary', 'border-2');
                 colorSelected = true;
                 renderSizesByColor(btn.dataset.colorId);
@@ -236,10 +249,10 @@
             });
 
             uniqueSizes.forEach(size => {
-                sizeSelect.innerHTML += `<option value="${size.id}">${size.name} cm</option>`;
+                sizeSelect.innerHTML += `<option value="${size.id}">${size.name}</option>`;
             });
             sizeSelect.disabled = false;
-            
+
             if (!colorSelected) {
                 sizeSelect.disabled = true;
             } else {
@@ -307,15 +320,15 @@
 @endpush
 <style>
     #productImage {
-    width: 100%;
-    height: 500px; 
-}
+        width: 100%;
+        height: 500px;
+    }
 
-.out-of-stock {
-    color: red;
-    font-weight: bold;
-    background-color: #ffcccc;
-    padding: 50px;
-    border-radius: 5px black;
-}
+    .out-of-stock {
+        color: red;
+        font-weight: bold;
+        background-color: #ffcccc;
+        padding: 50px;
+        border-radius: 5px black;
+    }
 </style>
