@@ -174,14 +174,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 
     Route::resource('sizes', SizeController::class);
 
+
     Route::get('/users', [CustomerController::class, 'index'])->name('users.index');
+    // Hiển thị form thêm người dùng
+    Route::get('/users/create', [CustomerController::class, 'create'])->name('users.create');
+
+    // Xử lý lưu người dùng mới
+    Route::post('/users', [CustomerController::class, 'store'])->name('users.store');
+    
     Route::get('/users/{id}', [CustomerController::class, 'show'])->name('users.show');
     Route::delete('/users/{id}', [CustomerController::class, 'destroy'])->name('users.destroy');
 
-Route::get('admin/users/{id}/edit', [CustomerController::class, 'edit'])->name('users.edit');
+    Route::get('admin/users/{id}/edit', [CustomerController::class, 'edit'])->name('users.edit');
 
-// Route xử lý cập nhật thông tin người dùng
-Route::put('admin/users/{id}', [CustomerController::class, 'update'])->name('users.update');
+    // Route xử lý cập nhật thông tin người dùng
+    Route::put('admin/users/{id}', [CustomerController::class, 'update'])->name('users.update');
 
 
     // Routes cho biến thể sản phẩm
@@ -220,7 +227,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'showCart'])->name('cart.show');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-    
+
     Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
@@ -251,9 +258,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('account.orders.show');
     Route::put('/account/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('account.orders.cancel');
 });
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/account/notifications/mark-all-read', function () {
         auth()->user()->unreadNotifications->markAsRead();
         return back();
     })->name('account.notifications.markAllRead');
 });
+
