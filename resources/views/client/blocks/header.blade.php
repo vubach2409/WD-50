@@ -27,48 +27,20 @@
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
                 </ul> --}}
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-
-                <li>
-                    @auth
-                        <a class="nav-link" href="{{ route('account') }}">
-                            <img src="{{ asset('clients/images/user.svg') }}">
-                        </a>
-                    @else
-                        <a class="nav-link" href="{{ route('login') }}">
-                            <img src="{{ asset('clients/images/user.svg') }}">
-                        </a>
-                    @endauth
-                </li>
-
-                <li class="nav-item dropdown position-relative" id="mini-cart-container">
-                    <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
-                        <img src="{{ asset('clients/images/cart.svg') }}">
-                        <span id="mini-cart-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
-                    </a>
-
-                    <!-- Mini Cart Dropdown -->
-                    <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
-                        style="min-width: 240px; max-width: 300px; display: none; left: 50%; transform: translateX(-50%); position: absolute;">
-                        <div id="mini-cart-items" class="overflow-auto" style="max-height: 200px;"></div>
-
-                        <!-- Tổng tiền & Nút Xem / Thanh toán -->
-                        <div id="mini-cart-footer" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <small class="fw-semibold">Tổng:</small>
-                                <small id="mini-cart-total" class="text-danger fw-bold">0₫</small>
-                            </div>
-                            <div class="mt-2 d-flex justify-content-between">
-                                <a href="{{ route('cart.show') }}"
-                                    class="btn btn-outline-primary btn-xs w-50 me-1">Xem</a>
-                                <a href="{{ route('checkout') }}" class="btn btn-primary btn-xs w-50 ms-1">Thanh
-                                    toán</a>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+                    <li>
+                        @auth
+                            <a class="nav-link" href="{{ route('account') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @else
+                            <a class="nav-link" href="{{ route('login') }}">
+                                <img src="{{ asset('clients/images/user.svg') }}">
+                            </a>
+                        @endauth
+                    </li>
+                    <li class="nav-item dropdown position-relative" id="mini-cart-container">
+                        <!-- Mini cart sẽ được load bằng JavaScript -->
+                    </li>
                 <!-- Icon thông báo -->
                 <li class="nav-item dropdown">
                     <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
@@ -130,65 +102,87 @@
 </nav>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.getElementById("mini-cart-toggle");
-        const dropdown = document.getElementById("mini-cart-dropdown");
-        const footer = document.getElementById("mini-cart-footer");
-
-        toggleBtn.addEventListener("click", function () {
-            const isVisible = dropdown.style.display === "block";
-            dropdown.style.display = isVisible ? "none" : "block";
-            if (!isVisible) {
-                loadMiniCart();
-            }
-        });
-
-        document.addEventListener("click", function (event) {
-            if (!dropdown.contains(event.target) && !toggleBtn.contains(event.target)) {
-                dropdown.style.display = "none";
-            }
-        });
-
-        window.loadMiniCart = function () {
-            fetch('{{ route('mini.cart') }}')
-                .then(res => res.json())
+        function loadMiniCart() {
+            fetch('/mini-cart')
+                .then(response => response.json())
                 .then(data => {
-                    const itemsContainer = document.getElementById('mini-cart-items');
-                    const countEl = document.getElementById('mini-cart-count');
-                    const totalEl = document.getElementById('mini-cart-total');
+                    const container = document.querySelector('#mini-cart-container');
+                    container.innerHTML = '';
 
-                    if (!data.items || data.items.length === 0) {
-                        itemsContainer.innerHTML = `
-                            <div class="text-center text-muted py-3">Giỏ hàng của bạn đang trống.</div>
-                        `;
-                        countEl.innerText = 0;
-                        totalEl.innerText = '0₫';
-                        footer.style.display = 'none';
+                    if (data.empty) {
+                        container.innerHTML = `
+                        <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
+            <img src="{{ asset('clients/images/cart.svg') }}">
+            <span id="mini-cart-count"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                0
+            </span>
+        </a>
+        <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
+            style="min-width: 240px; max-width: 300px; display: none; left: 50%; transform: translateX(-50%);">
+            <p class="text-center m-0">Giỏ hàng đang trống.</p>
+        </div>
+    `;
+
+                        const toggle = document.getElementById('mini-cart-toggle');
+                        const dropdown = document.getElementById('mini-cart-dropdown');
+                        toggle.addEventListener('click', () => {
+                            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                        });
+
                         return;
                     }
 
                     let itemsHTML = '';
                     data.items.forEach(item => {
-                        const imageUrl = item.variant?.image ?
-                            '/storage/' + item.variant.image :
-                            '/storage/' + item.product.image;
-
+                        const image = item.variant?.image || item.product.image;
                         itemsHTML += `
-                            <div class="d-flex mb-2">
-                                <img src="${imageUrl}" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-                                <div class="flex-grow-1">
-                                    <div class="small fw-semibold">${item.name}</div>
-                                    <div class="text-muted small">${item.quantity} × ${item.price.toLocaleString()}₫</div>
-                                </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="/storage/${image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
+                            <div>
+                                <div class="fw-bold">${item.name}</div>
+                                <div>Số lượng: ${item.quantity}</div>
+                                <div>Giá: ${item.price.toLocaleString()} đ</div>
                             </div>
-                        `;
+                        </div>
+                    `;
                     });
 
-                    itemsContainer.innerHTML = itemsHTML;
-                    countEl.innerText = data.total_quantity;
-                    totalEl.innerText = data.total_price.toLocaleString() + '₫';
-                    footer.style.display = 'block';
+                    container.innerHTML = `
+                    <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
+                        <img src="{{ asset('clients/images/cart.svg') }}">
+                        <span id="mini-cart-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            ${data.total_quantity}
+                        </span>
+                    </a>
+                    <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
+                        style="min-width: 240px; max-width: 300px; display: none; left: 50%; transform: translateX(-50%);">
+                        <div id="mini-cart-items" class="overflow-auto" style="max-height: 200px;">
+                            ${itemsHTML}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="fw-semibold">Tổng:</small>
+                            <small id="mini-cart-total" class="text-danger fw-bold">
+                                ${data.total_price.toLocaleString()}₫
+                            </small>
+                        </div>
+                        <div class="mt-2 d-flex justify-content-between">
+                            <a href="{{ route('cart.show') }}" class="btn btn-outline-primary btn-xs w-50 me-1">Xem</a>
+                            <a href="{{ route('checkout') }}" class="btn btn-primary btn-xs w-50 ms-1">Thanh toán</a>
+                        </div>
+                    </div>
+                `;
+
+                    // Toggle dropdown
+                    const toggle = document.getElementById('mini-cart-toggle');
+                    const dropdown = document.getElementById('mini-cart-dropdown');
+                    toggle.addEventListener('click', () => {
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
                 });
-        };
-    });
-</script>
+        }
+
+        // Load khi trang ready
+        document.addEventListener('DOMContentLoaded', loadMiniCart);
+    </script>
