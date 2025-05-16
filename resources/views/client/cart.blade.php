@@ -53,8 +53,11 @@
                                             <td>{{ $item->product->name }}</td>
                                             <td>
                                                 @if ($item->variant)
-                                                    {{ $item->variant->color->name ?? '' }} -
-                                                    {{ $item->variant->size->name ?? '' }}
+                                                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                                        <span style="display:inline-block; width:20px; height:20px; border-radius:50%; 
+                                                                    background-color:{{ $item->variant->color->code }}; border:1px solid #ccc;"></span>
+                                                        <span> - {{ $item->variant->size->name ?? '' }}</span>
+                                                    </div>
                                                 @else
                                                     Không có biến thể
                                                 @endif
