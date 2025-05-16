@@ -28,32 +28,39 @@
                                 @if ($order->payment)
                                     <p><strong>Trạng thái thanh toán:</strong>
                                         @php
+                                            $refundStatus = $order->payment->refund_status;
                                             $status = $order->payment->status;
                                             $isVNPay = $order->payment->payment_method === 'vnpay';
-                                            $badgeClass = match ($status) {
-                                                'completed' => 'success',
-                                                'pending' => 'warning',
-                                                'failed' => $isVNPay ? 'warning' : 'danger',
-                                                default => 'secondary',
-                                            };
-                                            $statusText =
-                                                $isVNPay && $status === 'failed'
-                                                    ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
-                                                    : ucfirst($status);
+
+                                            if ($refundStatus === 'refunded') {
+                                                $badgeClass = 'secondary';
+                                                $statusText = 'Đã hoàn tiền';
+                                            } else {
+                                                $badgeClass = match ($status) {
+                                                    'completed' => 'success',
+                                                    'pending' => 'warning',
+                                                    'cancelled_pending_refund' => $isVNPay ? 'warning' : 'danger',
+                                                    default => 'secondary',
+                                                };
+                                                $statusText =
+                                                    $isVNPay && $status === 'cancelled_pending_refund'
+                                                        ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
+                                                        : ucfirst($status);
+                                            }
                                         @endphp
 
                                         <span class="badge bg-{{ $badgeClass }}">
                                             {{ $statusText }}
                                         </span>
-
-
                                     </p>
-                                    <p><strong>Phương thức thanh toán:</strong>
-                                        {{ ucfirst($order->payment->payment_method) }}</p>
-                                    @if ($order->payment->transaction_id)
-                                        <p><strong>Mã giao dịch:</strong> {{ $order->payment->transaction_id }}</p>
-                                    @endif
                                 @endif
+
+                                <p><strong>Phương thức thanh toán:</strong>
+                                    {{ ucfirst($order->payment->payment_method) }}</p>
+                                @if ($order->payment->transaction_id)
+                                    <p><strong>Mã giao dịch:</strong> {{ $order->payment->transaction_id }}</p>
+                                @endif
+
                             </div>
 
                             <div class="col-md-6">

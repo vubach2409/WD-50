@@ -77,7 +77,21 @@
                 <h5 class="card-title">- Thông tin thanh toán</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <strong>Trạng thái:</strong> {{ ucfirst($order->payment->status) }}
+                        <strong>Trạng thái thanh toán:</strong>
+                        @if ($order->payment->refund_status === 'refunded')
+                            <span class="badge bg-success">Đã hoàn tiền</span>
+                        @elseif ($order->payment->status === 'success')
+                            <span class="badge bg-success">Thành công</span>
+                        @elseif ($order->payment->status === 'pending')
+                            <span class="badge bg-warning">Đang chờ</span>
+                        @elseif ($order->payment->status === 'failed')
+                            <span class="badge bg-warning">Thất bại</span>
+                        @elseif ($order->payment->status === 'cancelled_pending_refund')
+                            <span class="badge bg-warning">Đang chờ hoàn tiền</span>
+                        @else
+                            <span class="badge bg-danger">Thất bại</span>
+                        @endif
+
                     </li>
                     <li class="list-group-item">
                         <strong>Vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }} VND

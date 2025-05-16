@@ -26,19 +26,23 @@
     </div>
 
     <!-- Quản lý sản phẩm -->
-    <li class="nav-item {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.product_variants.*') ? 'active' : '' }}">
+    <li
+        class="nav-item {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.product_variants.*') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-box"></i>
             <span>Quản lý sản phẩm</span>
         </a>
-        <div id="collapseTwo" class="collapse {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.product_variants.*') ? 'show' : '' }}" 
+        <div id="collapseTwo"
+            class="collapse {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.product_variants.*') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
+                    href="{{ route('admin.products.index') }}">
                     Sản phẩm
                 </a>
-                <a class="collapse-item {{ request()->routeIs('admin.product_variants.*') ? 'active' : '' }}" href="{{ route('admin.product_variants.list') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.product_variants.*') ? 'active' : '' }}"
+                    href="{{ route('admin.product_variants.list') }}">
                     Biến thể
                 </a>
             </div>
@@ -46,19 +50,23 @@
     </li>
 
     <!-- Quản lý thuộc tính -->
-    <li class="nav-item {{ request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'active' : '' }}">
+    <li
+        class="nav-item {{ request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVari"
             aria-expanded="true" aria-controls="collapseVari">
             <i class="fas fa-palette"></i>
             <span>Quản lý thuộc tính</span>
         </a>
-        <div id="collapseVari" class="collapse {{ request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'show' : '' }}"
+        <div id="collapseVari"
+            class="collapse {{ request()->routeIs('admin.colors.*') || request()->routeIs('admin.sizes.*') ? 'show' : '' }}"
             aria-labelledby="headingVari" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.colors.*') ? 'active' : '' }}" href="{{ route('admin.colors.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.colors.*') ? 'active' : '' }}"
+                    href="{{ route('admin.colors.index') }}">
                     Màu sắc
                 </a>
-                <a class="collapse-item {{ request()->routeIs('admin.sizes.*') ? 'active' : '' }}" href="{{ route('admin.sizes.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.sizes.*') ? 'active' : '' }}"
+                    href="{{ route('admin.sizes.index') }}">
                     Kích thước
                 </a>
             </div>
@@ -75,10 +83,12 @@
         <div id="collapseCategory" class="collapse {{ request()->routeIs('admin.categories.*') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"
+                    href="{{ route('admin.categories.index') }}">
                     Danh sách danh mục
                 </a>
-                <a class="collapse-item {{ request()->routeIs('admin.categories.create') ? 'active' : '' }}" href="{{ route('admin.categories.create') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.categories.create') ? 'active' : '' }}"
+                    href="{{ route('admin.categories.create') }}">
                     Thêm danh mục
                 </a>
             </div>
@@ -95,10 +105,12 @@
         <div id="collapseBrand" class="collapse {{ request()->routeIs('admin.brands.*') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.brands.index') ? 'active' : '' }}" href="{{ route('admin.brands.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.brands.index') ? 'active' : '' }}"
+                    href="{{ route('admin.brands.index') }}">
                     Danh sách thương hiệu
                 </a>
-                <a class="collapse-item {{ request()->routeIs('admin.brands.create') ? 'active' : '' }}" href="{{ route('admin.brands.create') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.brands.create') ? 'active' : '' }}"
+                    href="{{ route('admin.brands.create') }}">
                     Thêm thương hiệu
                 </a>
             </div>
@@ -106,16 +118,19 @@
     </li>
 
     <!-- Quản lý người dùng -->
-    <li class="nav-item {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.payment.history') ? 'active' : '' }}">
+    <li
+        class="nav-item {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.payment.history') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour"
             aria-expanded="true" aria-controls="collapseFour">
             <i class="fas fa-fw fa-users"></i>
             <span>Quản lý tài khoản</span>
         </a>
-        <div id="collapseFour" class="collapse {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.payment.history') ? 'show' : '' }}"
+        <div id="collapseFour"
+            class="collapse {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.payment.history') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                    href="{{ route('admin.users.index') }}">
 
                     Danh sách tài khoản
                 </a>
@@ -124,16 +139,17 @@
     </li>
 
     <!-- Quản lý thanh toán -->
-    <li class="nav-item {{ request()->routeIs('admin.payment.show') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs('admin.orders.cancelled') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSeven"
             aria-expanded="true" aria-controls="collapseSeven">
             <i class="fas fa-fw fa-credit-card"></i>
             <span>Quản lý Thanh Toán</span>
         </a>
-        <div id="collapseSeven" class="collapse {{ request()->routeIs('admin.payment.show') ? 'show' : '' }}"
+        <div id="collapseSeven" class="collapse {{ request()->routeIs('admin.orders.cancelled') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.payment.show') ? 'active' : '' }}" href="{{ route('admin.payment.show') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.orders.cancelled') ? 'active' : '' }}"
+                    href="{{ route('admin.orders.cancelled') }}">
                     Trạng thái thanh toán
                 </a>
             </div>
@@ -150,7 +166,8 @@
         <div id="collapseEight" class="collapse {{ request()->routeIs('admin.orders.show') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.orders.show') ? 'active' : '' }}" href="{{ route('admin.orders.show') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.orders.show') ? 'active' : '' }}"
+                    href="{{ route('admin.orders.show') }}">
                     Trạng thái đơn hàng
                 </a>
             </div>
@@ -167,7 +184,8 @@
         <div id="collapseNice" class="collapse {{ request()->routeIs('admin.feedbacks.*') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.feedbacks.*') ? 'active' : '' }}" href="{{ route('admin.feedbacks.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.feedbacks.*') ? 'active' : '' }}"
+                    href="{{ route('admin.feedbacks.index') }}">
                     Danh sách
                 </a>
             </div>
@@ -184,7 +202,8 @@
         <div id="collapseTen" class="collapse {{ request()->routeIs('admin.vouchers.*') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}" href="{{ route('admin.vouchers.index') }}">
+                <a class="collapse-item {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}"
+                    href="{{ route('admin.vouchers.index') }}">
                     Danh sách
                 </a>
             </div>
@@ -201,6 +220,7 @@
 </ul>
 <style>
     .navbar {
-    font-family: 'Arial', sans-serif; /* Ví dụ: đổi sang Arial */
-}
+        font-family: 'Arial', sans-serif;
+        /* Ví dụ: đổi sang Arial */
+    }
 </style>

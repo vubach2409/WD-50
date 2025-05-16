@@ -70,10 +70,34 @@ class OrderController extends Controller
 
             //Nếu có thanh toán cập nhật trạng thái thành 'cancelled'
 
-            if ($payment){
+           if ($payment) {
+    if ($payment->payment_method === 'cod') {
+        switch ($order->status) {
+            case 'completed':
+                $payment->status = 'success';
+                break;
+            case 'cancelled':
                 $payment->status = 'failed';
-                $payment->save();
-            }
+                break;
+            default:
+                $payment->status = 'pending';
+                break;
+        }
+    } elseif ($payment->payment_method === 'vnpay') {
+        if ($order->status === 'cancelled') {
+            // Trạng thái riêng cho VNPAY khi đơn bị hủy
+            $payment->status = 'cancelled_pending_refund';
+        } elseif ($order->status === 'completed') {
+            $payment->status = 'success';
+        } else {
+            $payment->status = 'pending';
+        }
+    }
+
+    $payment->save();
+}
+
+
 
             // Quản lý số lượng tồn kho
             foreach ($order->items as $orderItem) {

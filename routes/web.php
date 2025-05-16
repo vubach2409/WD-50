@@ -123,6 +123,7 @@ Route::get('/vouchers', [CartController::class, 'listAvailableVouchers'])->name(
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
+    
 
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'index']);
@@ -148,7 +149,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
     Route::get('/payment/history', [HistoryPaymentController::class, 'index'])->name('payment.history');
     Route::get('/history/detail/{id}', [HistoryPaymentController::class, 'history_detail'])->name('history.detail');
     // Show và cập nhật trạng thái thanh toán
-    Route::get('/payment/show', [AdminPaymentController::class, 'showOrderPayments'])->name('payment.show');
+    // Route::get('/payment/show', [AdminPaymentController::class, 'showOrderPayments'])->name('payment.show');
     Route::put('/admin/order/{orderId}/update-payment-status', [AdminPaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
     // Route để lọc đơn hàng theo mã giao dịch
     Route::get('/admin/orders/filter', [AdminPaymentController::class, 'filterOrders'])->name('orders.filter');
@@ -159,6 +160,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 
     //voucher
     Route::resource('vouchers', VoucherController::class);
+    Route::post('/orders/{id}/refund', [AdminOrderController::class, 'refund'])->name('orders.refund');
+    Route::get('/orders/cancelled', [AdminOrderController::class, 'cancelledOrders'])->name('orders.cancelled');
+
+
 
 
     Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
@@ -244,4 +249,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/account/orders', [OrderController::class, 'showOrder'])->name('account.orders');
     Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('account.orders.show');
     Route::put('/account/orders/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('account.orders.cancel');
+});
+Route::middleware(['auth'])->group(function () {
+    Route::get('/account/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('account.notifications.markAllRead');
 });
