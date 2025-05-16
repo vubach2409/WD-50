@@ -105,6 +105,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
 Route::get('/services', [ServicesController::class, 'index'])->name('services');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 // Route::get('/userclient', [UserController::class, 'index'])->name('userclient');
