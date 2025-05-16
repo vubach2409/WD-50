@@ -82,16 +82,22 @@
                     let itemsHTML = '';
                     data.items.forEach(item => {
                         const image = item.variant?.image || item.product.image;
+                        const color = item.variant?.color?.name || 'Không có';
+                        const size = item.variant?.size?.name || 'Không có';
+
+
                         itemsHTML += `
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="/storage/${image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
-                            <div>
-                                <div class="fw-bold">${item.name}</div>
-                                <div>Số lượng: ${item.quantity}</div>
-                                <div>Giá: ${item.price.toLocaleString()} đ</div>
-                            </div>
-                        </div>
-                    `;
+        <div class="d-flex align-items-center mb-2">
+            <img src="/storage/${image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
+            <div>
+                <div class="fw-bold">${item.name}</div>
+                <div>Màu: ${color}</div>
+                <div>Kích thước: ${size}</div>
+                <div>Số lượng: ${item.quantity}</div>
+                <div>Giá: ${item.price.toLocaleString()} đ</div>
+            </div>
+        </div>
+    `;
                     });
 
                     container.innerHTML = `

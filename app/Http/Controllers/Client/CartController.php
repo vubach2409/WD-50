@@ -238,11 +238,11 @@ class CartController extends Controller
     public function miniCart()
     {
         if (Auth::check()) {
-            $cartItems = Carts::with(['product', 'variant'])
+            $cartItems = Carts::with(['product', 'variant.color', 'variant.size'])
                 ->where('user_id', Auth::id())
                 ->get();
         } else {
-            $cartItems = Carts::with(['product', 'variant'])
+            $cartItems = Carts::with(['product', 'variant.color', 'variant.size'])
                 ->where('session_id', Session::getId())
                 ->get();
         }
@@ -253,14 +253,24 @@ class CartController extends Controller
 
         foreach ($cartItems as $item) {
             $items[] = [
-                'name' => $item->product->name,
-                'quantity' => $item->quantity,
-                'price' => $item->variant ? $item->variant->price : $item->product->price,
-                'product' => [
-                    'image' => $item->product->image,
-                ],
-                'variant' => $item->variant ? ['image' => $item->variant->image] : null,
-            ];
+            'name' => $item->product->name,
+            'quantity' => $item->quantity,
+            'price' => $item->variant ? $item->variant->price : $item->product->price,
+            'product' => [
+                'image' => $item->product->image,
+            ],
+            'variant' => $item->variant ? [
+                'image' => $item->variant->image,
+                'color' => $item->variant->color ? [
+                    'id' => $item->variant->color->id,
+                    'name' => $item->variant->color->name,
+                ] : null,
+                'size' => $item->variant->size ? [
+                    'id' => $item->variant->size->id,
+                    'name' => $item->variant->size->name,
+                ] : null,
+            ] : null,
+        ];
 
             $total_quantity += $item->quantity;
             $total_price += $item->quantity * ($item->variant ? $item->variant->price : $item->product->price);
