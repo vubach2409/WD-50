@@ -19,12 +19,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-         View::composer('*', function ($view) {
-        if (Auth::check()) {
-            $view->with('unreadNotifications', Auth::user()->unreadNotifications);
-        }
+    public function boot()
+{
+    View::composer('*', function ($view) {
+        $user = Auth::user();
+        $unreadNotifications = $user ? $user->unreadNotifications : collect();
+        $view->with('unreadNotifications', $unreadNotifications);
     });
-    }
+}
 }
