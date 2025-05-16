@@ -21,6 +21,18 @@ class ContactController extends Controller
             'last_name'  => 'required|string|max:100',
             'email'      => 'required|email',
             'message'    => 'required|string|min:10',
+        ], [
+            'first_name.required' => 'Vui lòng nhập họ.',
+            'last_name.required'  => 'Vui lòng nhập tên.',
+            'email.required'      => 'Vui lòng nhập email.',
+            'email.email'         => 'Email không đúng định dạng.',
+            'message.required'    => 'Vui lòng nhập nội dung.',
+            'message.min'         => 'Nội dung phải có ít nhất :min ký tự.',
+        ], [
+            'first_name' => 'họ',
+            'last_name' => 'tên',
+            'email' => 'địa chỉ email',
+            'message' => 'nội dung',
         ]);
 
         $data = [
