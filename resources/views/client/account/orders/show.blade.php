@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', 'Order Details #' . $order->id)
+@section('title', 'Chi tiết đơn hàng #' . $order->id)
 
 @section('content')
     <div class="container py-5 mt-5 mb-5">
@@ -23,44 +23,34 @@
                             <div class="col-md-6">
                                 <h5 class="mb-3">Thông tin đơn hàng</h5>
                                 <p><strong>Ngày đặt:</strong> {{ $order->created_at->format('d/m/Y') }}</p>
-                                <p><strong>Trạng thái đơn hàng:</strong> {{ ucfirst($order->status) }}</p>
+                                <p><strong>Trạng thái đơn hàng:</strong> {{ $order->translated_status }}</p>
 
                                 @if ($order->payment)
                                     <p><strong>Trạng thái thanh toán:</strong>
                                         @php
-                                            $refundStatus = $order->payment->refund_status;
                                             $status = $order->payment->status;
                                             $isVNPay = $order->payment->payment_method === 'vnpay';
-
-                                            if ($refundStatus === 'refunded') {
-                                                $badgeClass = 'secondary';
-                                                $statusText = 'Đã hoàn tiền';
-                                            } else {
-                                                $badgeClass = match ($status) {
-                                                    'completed' => 'success',
-                                                    'pending' => 'warning',
-                                                    'cancelled_pending_refund' => $isVNPay ? 'warning' : 'danger',
-                                                    default => 'secondary',
-                                                };
-                                                $statusText =
-                                                    $isVNPay && $status === 'cancelled_pending_refund'
-                                                        ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
-                                                        : ucfirst($status);
-                                            }
+                                            $badgeClass = match ($status) {
+                                                'completed' => 'success',
+                                                'pending' => 'warning',
+                                                'failed' => $isVNPay ? 'warning' : 'danger',
+                                                default => 'secondary',
+                                            };
+                                            $statusText =
+                                                $isVNPay && $status === 'failed'
+                                                    ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
+                                                    : $order->translated_payment_status;
                                         @endphp
-
                                         <span class="badge bg-{{ $badgeClass }}">
                                             {{ $statusText }}
                                         </span>
                                     </p>
+                                    <p><strong>Phương thức thanh toán:</strong>
+                                        {{ ucfirst($order->payment->payment_method) }}</p>
+                                    @if ($order->payment->transaction_id)
+                                        <p><strong>Mã giao dịch:</strong> {{ $order->payment->transaction_id }}</p>
+                                    @endif
                                 @endif
-
-                                <p><strong>Phương thức thanh toán:</strong>
-                                    {{ ucfirst($order->payment->payment_method) }}</p>
-                                @if ($order->payment->transaction_id)
-                                    <p><strong>Mã giao dịch:</strong> {{ $order->payment->transaction_id }}</p>
-                                @endif
-
                             </div>
 
                             <div class="col-md-6">
@@ -153,7 +143,6 @@
                                         <td>{{ number_format($order->total, 0, ',', '.') }} VNĐ</td>
                                     </tr>
                                 </tfoot>
-
                             </table>
                         </div>
 

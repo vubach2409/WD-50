@@ -237,50 +237,43 @@ class CartController extends Controller
     }
     public function miniCart()
     {
-        if (Auth::check()) {
-            $cartItems = Carts::with(['product', 'variant.color', 'variant.size'])
-                ->where('user_id', Auth::id())
-                ->get();
-        } else {
-            $cartItems = Carts::with(['product', 'variant.color', 'variant.size'])
-                ->where('session_id', Session::getId())
-                ->get();
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where(function ($query) {
+                if (Auth::check()) {
+                    $query->where('user_id', Auth::id());
+                } else {
+                    $query->where('session_id', Session::getId());
+                }
+            })
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            return response()->json([
+                'empty' => true
+            ]);
         }
 
         $items = [];
-        $total_quantity = 0;
-        $total_price = 0;
 
         foreach ($cartItems as $item) {
             $items[] = [
-            'name' => $item->product->name,
-            'quantity' => $item->quantity,
-            'price' => $item->variant ? $item->variant->price : $item->product->price,
-            'product' => [
-                'image' => $item->product->image,
-            ],
-            'variant' => $item->variant ? [
-                'image' => $item->variant->image,
-                'color' => $item->variant->color ? [
-                    'id' => $item->variant->color->id,
-                    'name' => $item->variant->color->name,
-                ] : null,
-                'size' => $item->variant->size ? [
-                    'id' => $item->variant->size->id,
-                    'name' => $item->variant->size->name,
-                ] : null,
-            ] : null,
-        ];
-
-            $total_quantity += $item->quantity;
-            $total_price += $item->quantity * ($item->variant ? $item->variant->price : $item->product->price);
+                'name' => $item->product->name,
+                'quantity' => $item->quantity,
+                'price' => $item->variant ? $item->variant->price : $item->product->price,
+                'product' => [
+                    'image' => $item->product->image,
+                ],
+                'variant' => $item->variant ? ['image' => $item->variant->image] : null,
+            ];
         }
 
         return response()->json([
+            'empty' => false,
             'items' => $items,
-            'total_quantity' => $total_quantity,
-            'total_price' => $total_price,
-            'empty' => count($items) === 0,
+            'total_quantity' => $cartItems->sum('quantity'),
+            'total_price' => $cartItems->sum(function ($item) {
+                return ($item->variant ? $item->variant->price : $item->product->price) * $item->quantity;
+            }),
         ]);
     }
 }
