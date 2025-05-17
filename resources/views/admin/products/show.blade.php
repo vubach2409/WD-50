@@ -74,7 +74,18 @@
                                         <td>{{ $variant->sku }}</td>
                                         <td class="text-center"><img src="{{ asset('storage/' . $variant->image) }}"
                                                 alt="Ảnh biến thể" width="100" height="100" class="border"></td>
-                                        <td>{{ $variant->color->name }}</td>
+                                        <td>
+                                            @if ($variant->color)
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <div
+                                                        style="width: 40px; height: 40px; background-color: {{ $variant->color->code }}; border: 1px solid #ccc; border-radius: 4px;">
+                                                    </div>
+                                                    <small class="mt-1">{{ $variant->color->code }}</small>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Không có</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $variant->size->name }}</td>
                                         <td>{{ number_format($variant->price) }} đ</td>
                                         <td>{{ $variant->stock }}</td>

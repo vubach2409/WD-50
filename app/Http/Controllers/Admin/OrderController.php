@@ -14,11 +14,29 @@ use App\Notifications\OrderStatusUpdated;
 class OrderController extends Controller
 {
     // Hiển thị danh sách tất cả đơn hàng
-    public function index(){
-       $orders = Orders::with('user')->latest()->get();
+       public function index(Request $request)
+    {
+        // Lấy số lượng đơn hàng theo từng trạng thái
+        $orderCounts = [
+            'all' => Orders::count(), // Thêm đếm tất cả đơn hàng
+            'pending' => Orders::where('status', 'pending')->count(),
+            'shipping' => Orders::where('status', 'shipping')->count(),
+            'completed' => Orders::where('status', 'completed')->count(),
+            'cancelled' => Orders::where('status', 'cancelled')->count(),
+        ];
 
-        return view('admin.order.index', compact('orders'));
+        // Xác định trạng thái đơn hàng để hiển thị
+        $status = $request->get('status', 'all'); // Mặc định là 'all' nếu không có tham số
+
+        // Lấy các đơn hàng dựa trên trạng thái được chọn
+        $orders = ($status == 'all')
+            ? Orders::with('user')->get() // Lấy tất cả nếu status là 'all'
+            : Orders::where('status', $status)->with('user')->get();
+
+        // Truyền cả số lượng đơn hàng và danh sách đơn hàng vào view
+        return view('admin.order.index', compact('orders', 'orderCounts'));
     }
+
 
     // Cập nhật trạng thái đơn hàng và xử lý liên quan đến thanh toán và stock
     public function update(Request $request, Orders $order)
@@ -209,34 +227,6 @@ public function cancelledOrders(Request $request)
 
     return view('admin.payment.index', compact('orders'));
 }
-   public function getOrderStatusName($status)
-    {
-        switch ($status) {
-            case 'pending':
-                return 'Chờ xử lý';
-            case 'shipping':
-                return 'Đang giao hàng';
-            case 'completed':
-                return 'Đã giao hàng';
-            case 'cancelled':
-                return 'Đã hủy';
-            default:
-                return 'Không xác định';
-        }
-    }
 
-    public function getPaymentStatusName($status)
-    {
-        switch ($status) {
-            case 'pending':
-                return 'Chờ thanh toán';
-            case 'success':
-                return 'Đã thanh toán';
-            case 'failed':
-                return 'Thất bại';
-            default:
-                return 'Không xác định';
-        }
-    }
+
 }
-

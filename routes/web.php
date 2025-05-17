@@ -121,6 +121,91 @@ Route::post('/orders/{order}/feedback', [OrderController::class, 'submitFeedback
 Route::post('/cart/apply-voucher', [CartController::class, 'applyVoucher'])->name('cart.apply-voucher');
 Route::post('/cart/remove-voucher', [CartController::class, 'removeVoucher'])->name('cart.remove-voucher');
 Route::get('/vouchers', [CartController::class, 'listAvailableVouchers'])->name('cart.voucher-list');
+Route::post('/chat/send', function (Request $request) {
+    $message = $request->input('message');
+    $lower = Str::lower($message);
+
+    // Kiểm tra từ khóa loại sản phẩm (danh mục)
+    $type = '';
+    if (Str::contains($lower, 'ghế')) $type = 'ghế';
+    elseif (Str::contains($lower, 'bàn')) $type = 'bàn';
+    elseif (Str::contains($lower, 'phụ kiện')) $type = 'phụ kiện';
+
+    // Kiểm tra giá
+    preg_match('/(\d+)[\s\.,]*k|(\d+)[\s\.,]*triệu/i', $lower, $matches);
+    $price = 0;
+    if (isset($matches[1])) $price = (int)$matches[1] * 1000;
+    elseif (isset($matches[2])) $price = (int)$matches[2] * 1000000;
+
+    // Lấy category_id từ bảng categories
+    $category = Category::where('name', 'like', '%' . $type . '%')->first();
+
+    if (!$category) {
+        return response()->json(['reply' => '<div class="text-muted">Xin lỗi, chúng tôi không tìm thấy danh mục phù hợp.</div>']);
+    }
+
+    // Truy vấn sản phẩm theo danh mục
+    $query = Product::query();
+    $query->where('category_id', $category->id);
+
+    if ($price > 0) {
+        $query->where('price_sale', '<=', $price);
+    }
+
+    $products = $query->take(3)->get();
+
+    // Kiểm tra mã giảm giá còn hiệu lực
+    $event_message = '';
+
+    $voucher = Voucher::where('starts_at', '<=', now())
+                      ->where('expires_at', '>=', now())
+                      ->where('is_active', true)
+                      ->first();
+
+    if ($voucher) {
+        // Nếu có voucher, hiển thị thông báo mã giảm giá
+        $event_message = '<div class="alert alert-info mb-2">Thông báo: Bạn có thể sử dụng mã giảm giá <strong>' . $voucher->code . '</strong> ';
+        if ($voucher->type == 'percent') {
+            $event_message .= 'giảm ' . $voucher->value . '% cho đơn hàng.';
+        } else {
+            $event_message .= 'giảm ' . number_format($voucher->value, 0, ',', '.') . 'đ cho đơn hàng.';
+        }
+
+        if ($voucher->min_order_amount) {
+            $event_message .= ' Đơn hàng tối thiểu ' . number_format($voucher->min_order_amount, 0, ',', '.') . 'đ.';
+        }
+        $event_message .= ' Bạn muốn sử dụng không?</div>';
+    }
+
+    // Nếu không tìm thấy sản phẩm
+    if ($products->isEmpty()) {
+        return response()->json(['reply' => $event_message . '<div class="text-muted">Không tìm thấy sản phẩm phù hợp.</div>']);
+    }
+
+    // Xây dựng phản hồi với thông tin sản phẩm
+    $response = $event_message;
+    $response .= '<div class="chat-products">';
+    $response .= '<div class="mb-2 fw-semibold text-success">Đây là sản phẩm thích hợp nhất với yêu cầu của bạn:</div>';
+    foreach ($products as $product) {
+        $link = route('product.details', $product->id);
+        $response .= '
+            <div class="product mb-2 p-2 border rounded bg-light">
+            <img src="' . asset('storage/' . $product->image) . '" alt="Ảnh" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                <a href="' . $link . '" class="text-decoration-none fw-bold text-primary" target="_blank">'
+                    . e($product->name) . 
+                '</a>
+                <div>Giá: ';
+
+        // Hiển thị giá sản phẩm
+        $response .= '<span class="text-danger fw-semibold">' . number_format($product->price_sale, 0, ',', '.') . 'đ</span>';
+
+        $response .= '</div>
+            </div>';
+    }
+    $response .= '</div>';
+
+    return response()->json(['reply' => $response]);
+})->name('chat.send');
 
 // Nhóm route cho admin với prefix '/admin', middleware 'auth' và 'admin'
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'admin.'], function () {
@@ -166,8 +251,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'], 'as' => 'a
 
 
 
-
+    // route đơn hàng trong admin
     Route::get('/order/show', [AdminOrderController::class, 'index'])->name('orders.show');
+    Route::get('/order/index', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/detail/{id}', [AdminOrderController::class, 'show'])->name('orders.detail');
     Route::put('/admin/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 

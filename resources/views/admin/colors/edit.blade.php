@@ -12,18 +12,10 @@
             <table class="table table-bordered">
                 <tbody>
                     <tr>
-                        <th style="width: 20%;">Tên màu</th>
+                        <th style="width: 20%;">Chọn màu</th>
                         <td>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
-                                placeholder="Nhập tên màu" value="{{ old('name', $color->name) }}" >
-                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Mã màu #...</th>
-                        <td>
-                            <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" 
-                                placeholder="Nhập mã màu" value="{{ old('code', $color->code) }}">
+                            <input type="color" name="code" class="form-control form-control-color @error('code') is-invalid @enderror"
+                                value="{{ old('code', $color->code) }}">
                             @error('code') <small class="text-danger">{{ $message }}</small> @enderror
                         </td>
                     </tr>
@@ -36,5 +28,6 @@
             <a href="{{ route('admin.colors.index') }}" class="btn btn-secondary">Hủy</a>
         </div>
     </form>
+
 </div>
 @endsection
