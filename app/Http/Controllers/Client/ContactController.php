@@ -41,7 +41,7 @@ class ContactController extends Controller
             'message' => $request->message,
         ];
 
-        Mail::to('vinhnnph17909@fpt.edu.vn')->send(new ContactNotification($data));
+        Mail::to('kienttph47966@fpt.edu.vn')->send(new ContactNotification($data));
 
         return redirect()->route('contact')->with('success', 'Cảm ơn bạn đã liên hệ với chúng tôi!');
     }

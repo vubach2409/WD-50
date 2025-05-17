@@ -9,12 +9,14 @@ use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 use App\Notifications\RefundProcessed;
+use App\Notifications\OrderStatusUpdated;
 
 class OrderController extends Controller
 {
     // Hiển thị danh sách tất cả đơn hàng
     public function index(){
-        $orders = Orders::with('user')->get();
+       $orders = Orders::with('user')->latest()->get();
+
         return view('admin.order.index', compact('orders'));
     }
 
@@ -105,6 +107,8 @@ if ($payment) {
             } 
         }
     }
+     $user = $order->user; // giả sử đơn hàng có quan hệ belongsTo với user
+    $user->notify(new OrderStatusUpdated($order));
 
     return redirect()->route('admin.orders.show', ['order' => $order->id])
         ->with('success', 'Trạng thái đơn hàng đã được cập nhật!');

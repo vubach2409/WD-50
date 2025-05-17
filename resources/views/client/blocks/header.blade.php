@@ -74,7 +74,8 @@
                     <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-bell fa-lg"></i>
-                        @if ($unreadNotifications->count() > 0)
+
+                        @if (!empty($unreadNotifications) && $unreadNotifications->count() > 0)
                             <span
                                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ $unreadNotifications->count() }}
@@ -84,7 +85,8 @@
 
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="notificationDropdown"
                         style="min-width: 300px; max-height: 300px; overflow-y: auto;">
-                        @if ($unreadNotifications->isEmpty())
+
+                        @if (empty($unreadNotifications) || $unreadNotifications->isEmpty())
                             <li class="dropdown-item text-center text-muted py-3">
                                 <i class="fas fa-check-circle me-1 text-success"></i> Không có thông báo mới
                             </li>
@@ -113,6 +115,7 @@
                         @endif
                     </ul>
                 </li>
+
 
 
             </ul>
