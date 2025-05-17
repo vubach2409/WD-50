@@ -23,27 +23,25 @@
                             <div class="col-md-6">
                                 <h5 class="mb-3">Thông tin đơn hàng</h5>
                                 <p><strong>Ngày đặt:</strong> {{ $order->created_at->format('d/m/Y') }}</p>
-                                <p><strong>Trạng thái đơn hàng:</strong> {{ $order->translated_status }}</p>
-
+                                <p><strong>Trạng thái đơn hàng:</strong> <span
+                                        class="badge {{ $order->status == 'pending' ? 'bg-warning' : ($order->status == 'shipping' ? 'bg-info' : ($order->status == 'completed' ? 'bg-success' : 'bg-danger')) }}">
+                                        {{ app('App\Http\Controllers\Admin\OrderController')->getOrderStatusName($order->status) }}
+                                    </span></p>
                                 @if ($order->payment)
                                     <p><strong>Trạng thái thanh toán:</strong>
-                                        @php
-                                            $status = $order->payment->status;
-                                            $isVNPay = $order->payment->payment_method === 'vnpay';
-                                            $badgeClass = match ($status) {
-                                                'completed' => 'success',
-                                                'pending' => 'warning',
-                                                'failed' => $isVNPay ? 'warning' : 'danger',
-                                                default => 'secondary',
-                                            };
-                                            $statusText =
-                                                $isVNPay && $status === 'failed'
-                                                    ? 'Đã huỷ - Chờ hoàn tiền VNPAY'
-                                                    : $order->translated_payment_status;
-                                        @endphp
-                                        <span class="badge bg-{{ $badgeClass }}">
-                                            {{ $statusText }}
-                                        </span>
+                                        @if ($order->payment->refund_status === 'refunded')
+                                            <span class="badge bg-success">Đã hoàn tiền</span>
+                                        @elseif ($order->payment->status === 'success')
+                                            <span class="badge bg-success">Thành công</span>
+                                        @elseif ($order->payment->status === 'pending')
+                                            <span class="badge bg-warning">Chưa thanh toán</span>
+                                        @elseif ($order->payment->status === 'failed')
+                                            <span class="badge bg-warning">Thất bại</span>
+                                        @elseif ($order->payment->status === 'cancelled_pending_refund')
+                                            <span class="badge bg-warning">Đã huỷ - Chờ hoàn tiền VNpay</span>
+                                        @else
+                                            <span class="badge bg-danger">Thất bại</span>
+                                        @endif
                                     </p>
                                     <p><strong>Phương thức thanh toán:</strong>
                                         {{ ucfirst($order->payment->payment_method) }}</p>

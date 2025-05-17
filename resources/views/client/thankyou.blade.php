@@ -28,7 +28,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    <p><a href="{{ route('products') }}" class="btn btn-sm btn-outline-black">Quay về cửa hàng</a></p>
+                    <p><a href="{{ route('account.orders') }}" class="btn btn-sm btn-outline-black">Xem đơn hàng</a></p>
                 </div>
             </div>
 

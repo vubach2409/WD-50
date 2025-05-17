@@ -90,7 +90,7 @@
                         @elseif ($order->payment->status === 'success')
                             <span class="badge bg-success">Thành công</span>
                         @elseif ($order->payment->status === 'pending')
-                            <span class="badge bg-warning">Đang chờ</span>
+                            <span class="badge bg-warning">Chưa thanh toán</span>
                         @elseif ($order->payment->status === 'failed')
                             <span class="badge bg-warning">Thất bại</span>
                         @elseif ($order->payment->status === 'cancelled_pending_refund')

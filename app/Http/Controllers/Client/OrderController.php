@@ -16,83 +16,28 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    private function translateOrderStatus($status)
-{
-    return match ($status) {
-        'pending' => 'Chờ xác nhận',
-        'shipping' => 'Đang giao hàng',
-        'completed' => 'Đã giao',
-        'cancelled' => 'Đã hủy',
-        default => ucfirst($status),
-    };
-}
-
-private function translatePaymentStatus($status)
-{
-    return match ($status) {
-        'pending' => 'Chưa thanh toán',
-        'success' => 'Đã thanh toán',
-        'failed' => 'Thanh toán thất bại',
-        default => ucfirst($status),
-    };
-}
-
-    // public function index()
-    // {
-    //     // $user = Auth::user();
-    //     // $orders = Orders::where('user_id', $user->id)->latest()->get();
-    //     // $transactions = Transaction::where('user_id', $user->id)->latest()->get();
-    //     // return view('client.account.index',compact('user','orders','transactions'));
-    //     $orders = Orders::where('user_id', auth()->id())
-    //     ->orderBy('created_at', 'desc')
-    //     ->paginate(10);
-
-    // return view('client.account.orders.index', compact('orders'));
-    // }
-    // public function show(Orders $order)
-    // {
-    //     // Check if the order belongs to the authenticated user
-    //     if ($order->user_id !== auth()->id()) {
-    //         abort(403);
-    //     }
-
-    //     $order->load(['items.product','items.variant', 'payment','ship', 'items.variant.color', 'items.variant.size']);
-    //     return view('client.account.orders.show', compact('order'));
-    // }
     public function index()
-{
-    $orders = Orders::where('user_id', auth()->id())
+    {
+        // $user = Auth::user();
+        // $orders = Orders::where('user_id', $user->id)->latest()->get();
+        // $transactions = Transaction::where('user_id', $user->id)->latest()->get();
+        // return view('client.account.index',compact('user','orders','transactions'));
+        $orders = Orders::where('user_id', auth()->id())
         ->orderBy('created_at', 'desc')
         ->paginate(10);
 
-    // Ánh xạ trạng thái sang tiếng Việt
-    foreach ($orders as $order) {
-        $order->translated_status = $this->translateOrderStatus($order->status);
-        if ($order->payment) {
-            $order->translated_payment_status = $this->translatePaymentStatus($order->payment->status);
-        } else { 
-            $order->translated_payment_status = 'Không có thông tin thanh toán';
-        }
-    }
-
     return view('client.account.orders.index', compact('orders'));
-}
-public function show(Orders $order)
-{
-    if ($order->user_id !== auth()->id()) {
-        abort(403);
     }
+    public function show(Orders $order)
+    {
+        // Check if the order belongs to the authenticated user
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
 
-    $order->load(['items.product','items.variant', 'payment','ship', 'items.variant.color', 'items.variant.size']);
-
-    $order->translated_status = $this->translateOrderStatus($order->status);
-    $order->translated_payment_status = $order->payment
-        ? $this->translatePaymentStatus($order->payment->status)
-        : 'Không có thông tin thanh toán';
-
-    return view('client.account.orders.show', compact('order'));
-}
-
+        $order->load(['items.product','items.variant', 'payment','ship', 'items.variant.color', 'items.variant.size']);
+        return view('client.account.orders.show', compact('order'));
+    }
     
     public function showOrder()
     {
@@ -125,10 +70,34 @@ public function show(Orders $order)
 
             //Nếu có thanh toán cập nhật trạng thái thành 'cancelled'
 
-            if ($payment){
+           if ($payment) {
+    if ($payment->payment_method === 'cod') {
+        switch ($order->status) {
+            case 'completed':
+                $payment->status = 'success';
+                break;
+            case 'cancelled':
                 $payment->status = 'failed';
-                $payment->save();
-            }
+                break;
+            default:
+                $payment->status = 'pending';
+                break;
+        }
+    } elseif ($payment->payment_method === 'vnpay') {
+        if ($order->status === 'cancelled') {
+            // Trạng thái riêng cho VNPAY khi đơn bị hủy
+            $payment->status = 'cancelled_pending_refund';
+        } elseif ($order->status === 'completed') {
+            $payment->status = 'success';
+        } else {
+            $payment->status = 'pending';
+        }
+    }
+
+    $payment->save();
+}
+
+
 
             // Quản lý số lượng tồn kho
             foreach ($order->items as $orderItem) {
@@ -203,4 +172,34 @@ public function submitFeedback(Request $request, Orders $order)
 
     return redirect()->route('account.orders')->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
 }
+function getOrderStatusName($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return 'Chờ xử lý';
+            case 'shipping':
+                return 'Đang giao hàng';
+            case 'completed':
+                return 'Đã giao hàng';
+            case 'cancelled':
+                return 'Đã hủy';
+            default:
+                return 'Không xác định';
+        }
+    }
+
+    public function getPaymentStatusName($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return 'Chờ thanh toán';
+            case 'success':
+                return 'Đã thanh toán';
+            case 'failed':
+                return 'Thất bại';
+            default:
+                return 'Không xác định';
+        }
+    }
 }
+

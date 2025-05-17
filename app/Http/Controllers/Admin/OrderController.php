@@ -100,8 +100,6 @@ if ($payment) {
             $payment->status = 'cancelled_pending_refund';
         } elseif ($order->status === 'completed') {
             $payment->status = 'success';
-        } else {
-            $payment->status = 'pending';
         }
     }
 
@@ -228,5 +226,34 @@ public function cancelledOrders(Request $request)
     return view('admin.payment.index', compact('orders'));
 }
 
+ function getOrderStatusName($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return 'Chờ xử lý';
+            case 'shipping':
+                return 'Đang giao hàng';
+            case 'completed':
+                return 'Đã giao hàng';
+            case 'cancelled':
+                return 'Đã hủy';
+            default:
+                return 'Không xác định';
+        }
+    }
 
+    public function getPaymentStatusName($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return 'Chờ thanh toán';
+            case 'success':
+                return 'Đã thanh toán';
+            case 'failed':
+                return 'Thất bại';
+            default:
+                return 'Không xác định';
+        }
+    }
 }
+

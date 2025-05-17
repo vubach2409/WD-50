@@ -101,7 +101,7 @@
                                                             <td>{{ $order->created_at->format('d/m/Y') }}</td>
                                                             <td><a href="{{ route('account.orders.show', $order) }}"
                                                                     class="badge bg-warning text-decoration-none">
-                                                                    View Details
+                                                                    Xem chi tiết
                                                                 </a>
                                                                 @if ($order->status == 'pending')
                                                                     <form
