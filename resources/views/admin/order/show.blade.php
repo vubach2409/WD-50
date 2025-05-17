@@ -10,6 +10,10 @@
                 </h4>
             </div>
             <div class="card-body">
+<<<<<<< HEAD
+=======
+                <!-- Thông tin khách hàng -->
+>>>>>>> 79fb5c3d0be2550588d03f7a92928941e7967f02
                 <h5 class="card-title">- Thông tin khách hàng</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
@@ -32,6 +36,7 @@
 
                 <hr>
 
+<<<<<<< HEAD
                 <h5 class="card-title">- Chi tiết sản phẩm</h5>
                 <div class="table-responsive">
                     <table class="table table-bordered">
@@ -86,6 +91,67 @@
                         <span class="badge {{ $order->payment->status == 'success' ? 'bg-success' : ($order->payment->status == 'pending' ? 'bg-warning' : 'bg-danger') }}">
                             {{ app('App\Http\Controllers\Admin\OrderController')->getPaymentStatusName($order->payment->status) }}
                         </span>
+=======
+                <!-- Chi tiết sản phẩm -->
+                <h5 class="card-title">- Chi tiết sản phẩm</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Sản phẩm</th>
+                            <th>Biến thể</th>
+                            <th>SKU</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($order->items as $item)
+                            <tr>
+                                <td class="text-center">
+                                    @if ($item->variant_image)
+                                        <img src="{{ asset('storage/' . $item->variant_image) }}"
+                                            alt="{{ $item->product_name }}" width="100">
+                                    @else
+                                        <span>Không có ảnh</span>
+                                    @endif
+                                </td>
+                                <td>{{ $item->product_name }}</td>
+                                <td>
+                                    {{ $item->color_name ?? 'Không màu' }} / {{ $item->size_name ?? 'Không size' }}
+                                </td>
+                                <td>{{ $item->variant_sku ?? 'Không có' }}</td>
+                                <td>{{ $item->quantity }}</td>
+                                <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
+                                <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <hr>
+
+                <!-- Thông tin thanh toán -->
+                <h5 class="card-title">- Thông tin thanh toán</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Trạng thái thanh toán:</strong>
+                        @if ($order->payment->refund_status === 'refunded')
+                            <span class="badge bg-success">Đã hoàn tiền</span>
+                        @elseif ($order->payment->status === 'success')
+                            <span class="badge bg-success">Thành công</span>
+                        @elseif ($order->payment->status === 'pending')
+                            <span class="badge bg-warning">Đang chờ</span>
+                        @elseif ($order->payment->status === 'failed')
+                            <span class="badge bg-warning">Thất bại</span>
+                        @elseif ($order->payment->status === 'cancelled_pending_refund')
+                            <span class="badge bg-warning">Đang chờ hoàn tiền</span>
+                        @else
+                            <span class="badge bg-danger">Thất bại</span>
+                        @endif
+
+>>>>>>> 79fb5c3d0be2550588d03f7a92928941e7967f02
                     </li>
                     <li class="list-group-item">
                         <strong>Vận chuyển:</strong> {{ number_format($order->shipping_fee, 0, ',', '.') }} VND
