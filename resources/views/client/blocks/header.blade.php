@@ -27,20 +27,20 @@
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
                 </ul> --}}
             <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                    <li>
-                        @auth
-                            <a class="nav-link" href="{{ route('account') }}">
-                                <img src="{{ asset('clients/images/user.svg') }}">
-                            </a>
-                        @else
-                            <a class="nav-link" href="{{ route('login') }}">
-                                <img src="{{ asset('clients/images/user.svg') }}">
-                            </a>
-                        @endauth
-                    </li>
-                    <li class="nav-item dropdown position-relative" id="mini-cart-container">
-                        <!-- Mini cart sẽ được load bằng JavaScript -->
-                    </li>
+                <li>
+                    @auth
+                        <a class="nav-link" href="{{ route('account') }}">
+                            <img src="{{ asset('clients/images/user.svg') }}">
+                        </a>
+                    @else
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <img src="{{ asset('clients/images/user.svg') }}">
+                        </a>
+                    @endauth
+                </li>
+                <li class="nav-item dropdown position-relative" id="mini-cart-container">
+                    <!-- Mini cart sẽ được load bằng JavaScript -->
+                </li>
                 <!-- Icon thông báo -->
                 <li class="nav-item dropdown">
                     <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
@@ -55,37 +55,47 @@
                         @endif
                     </a>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="notificationDropdown"
-                        style="min-width: 300px; max-height: 300px; overflow-y: auto;">
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-0"
+                        aria-labelledby="notificationDropdown"
+                        style="min-width: 320px; max-height: 350px; overflow-y: auto;">
+
+                        <li class="p-3 border-bottom bg-light fw-semibold text-dark">
+                            <i class="fas fa-bell me-2 text-warning"></i> Thông báo mới
+                        </li>
 
                         @if (empty($unreadNotifications) || $unreadNotifications->isEmpty())
-                            <li class="dropdown-item text-center text-muted py-3">
+                            <li class="dropdown-item text-center text-muted py-4">
                                 <i class="fas fa-check-circle me-1 text-success"></i> Không có thông báo mới
                             </li>
                         @else
                             @foreach ($unreadNotifications as $notification)
-                                <li class="dropdown-item border-bottom small">
+                                <li class="dropdown-item px-3 py-2">
                                     <a href="{{ route('account.orders.show', $notification->data['order_id'] ?? '#') }}"
-                                        class="text-dark text-decoration-none d-flex align-items-start">
-                                        <i class="fas fa-receipt text-primary me-2 mt-1"></i>
+                                        class="d-flex align-items-start text-decoration-none text-dark">
+                                        <div class="me-3 mt-1">
+                                            <i class="fas fa-receipt text-primary"></i>
+                                        </div>
                                         <div class="flex-grow-1">
-                                            {{ $notification->data['message'] ?? 'Bạn có thông báo mới' }}
-                                            <br>
+                                            <div class="fw-semibold">
+                                                {{ $notification->data['message'] ?? 'Bạn có thông báo mới' }}</div>
                                             <small
                                                 class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                                         </div>
                                     </a>
                                 </li>
                             @endforeach
+
                             <li>
                                 <hr class="dropdown-divider m-0">
                             </li>
-                            <li class="dropdown-item text-center py-2">
+
+                            <li class="text-center py-2 bg-light">
                                 <a href="{{ route('account.notifications.markAllRead') }}"
-                                    class="btn btn-sm btn-outline-secondary">Đánh dấu tất cả là đã đọc</a>
+                                    class="btn btn-sm btn-outline-primary">Đánh dấu tất cả là đã đọc</a>
                             </li>
                         @endif
                     </ul>
+
                 </li>
 
 
@@ -105,15 +115,15 @@
 </nav>
 
 <script>
-        function loadMiniCart() {
-            fetch('/mini-cart')
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.querySelector('#mini-cart-container');
-                    container.innerHTML = '';
+    function loadMiniCart() {
+        fetch('/mini-cart')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.querySelector('#mini-cart-container');
+                container.innerHTML = '';
 
-                    if (data.empty) {
-                        container.innerHTML = `
+                if (data.empty) {
+                    container.innerHTML = `
                         <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
             <img src="{{ asset('clients/images/cart.svg') }}">
             <span id="mini-cart-count"
@@ -127,19 +137,19 @@
         </div>
     `;
 
-                        const toggle = document.getElementById('mini-cart-toggle');
-                        const dropdown = document.getElementById('mini-cart-dropdown');
-                        toggle.addEventListener('click', () => {
-                            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                        });
+                    const toggle = document.getElementById('mini-cart-toggle');
+                    const dropdown = document.getElementById('mini-cart-dropdown');
+                    toggle.addEventListener('click', () => {
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
 
-                        return;
-                    }
+                    return;
+                }
 
-                    let itemsHTML = '';
-                    data.items.forEach(item => {
-                        const image = item.variant?.image || item.product.image;
-                        itemsHTML += `
+                let itemsHTML = '';
+                data.items.forEach(item => {
+                    const image = item.variant?.image || item.product.image;
+                    itemsHTML += `
                         <div class="d-flex align-items-center mb-2">
                             <img src="/storage/${image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
                             <div>
@@ -149,9 +159,9 @@
                             </div>
                         </div>
                     `;
-                    });
+                });
 
-                    container.innerHTML = `
+                container.innerHTML = `
                     <a class="nav-link" href="javascript:void(0)" id="mini-cart-toggle">
                         <img src="{{ asset('clients/images/cart.svg') }}">
                         <span id="mini-cart-count"
@@ -177,15 +187,15 @@
                     </div>
                 `;
 
-                    // Toggle dropdown
-                    const toggle = document.getElementById('mini-cart-toggle');
-                    const dropdown = document.getElementById('mini-cart-dropdown');
-                    toggle.addEventListener('click', () => {
-                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                    });
+                // Toggle dropdown
+                const toggle = document.getElementById('mini-cart-toggle');
+                const dropdown = document.getElementById('mini-cart-dropdown');
+                toggle.addEventListener('click', () => {
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
                 });
-        }
+            });
+    }
 
-        // Load khi trang ready
-        document.addEventListener('DOMContentLoaded', loadMiniCart);
-    </script>
+    // Load khi trang ready
+    document.addEventListener('DOMContentLoaded', loadMiniCart);
+</script>
