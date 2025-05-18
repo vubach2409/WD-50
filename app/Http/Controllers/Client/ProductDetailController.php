@@ -49,6 +49,8 @@ class ProductDetailController extends Controller
             'product_id' => $product->id,
             'order_id' => null,
             'content' => $request->content,
+            'star' => $request->star,
+
         ]);
 
         return back()->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
