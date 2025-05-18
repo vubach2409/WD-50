@@ -26,22 +26,6 @@
                     <li><a class="nav-link" href="{{ route('cart.show') }}"><img
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
                 </ul> --}}
-            <<<<<<< HEAD <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                <li>
-                    @auth
-                        <a class="nav-link" href="{{ route('account') }}">
-                            <img src="{{ asset('clients/images/user.svg') }}">
-                        </a>
-                    @else
-                        <a class="nav-link" href="{{ route('login') }}">
-                            <img src="{{ asset('clients/images/user.svg') }}">
-                        </a>
-                    @endauth
-                </li>
-                <li class="nav-item dropdown position-relative" id="mini-cart-container">
-                    <!-- Mini cart sẽ được load bằng JavaScript -->
-                </li>
-                =======
                 <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5 d-flex align-items-center">
                     <li class="nav-item me-3">
                         @auth
@@ -61,7 +45,6 @@
                         <!-- Mini cart sẽ được load bằng JavaScript -->
                     </li>
 
-                    >>>>>>> 6cd11b3e0659e2ea4e0c50d9bb9a5d3b2a818bd3
                     <!-- Icon thông báo -->
                     <li class="nav-item dropdown position-relative">
                         <a class="nav-link position-relative p-0" href="#" id="notificationDropdown"
