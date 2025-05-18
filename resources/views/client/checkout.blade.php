@@ -110,7 +110,8 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title mb-4">Tóm tắt đơn hàng</h3>
-                        <div class="order-items mb-4">
+                        <div class="order-items mb-4" style="max-height: 300px; overflow-y: auto;">
+
                             @php $subTotal = 0; @endphp
                             @foreach ($cartItems as $item)
                                 @php
@@ -122,28 +123,25 @@
                                     $sizeName = $variant->size->name ?? '';
                                     $subTotal += $item->quantity * $price;
                                 @endphp
-                                <div class="d-flex align-items-center mb-3">
+                                <div class="d-flex align-items-start mb-3">
                                     <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}"
-                                        class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1 d-flex align-items-center gap-2">
-                                            {{ $product->name }}
-                                            <span style="width: 16px; height: 16px; background-color: {{ $colorCode }};
-                                                        display: inline-block; border: 1px solid #ccc; border-radius: 4px;">
-                                            </span>
-                                            <span class=""> - {{ $sizeName }}</span>
-                                        </h6>
-                                        <small class="text-muted">Số lượng: {{ $item->quantity }}</small>
-                                        <div class="">
-                                            <small class="text-muted">
-                                                {{ number_format($item->quantity * $price, 0, ',', '.') }} VNĐ
-                                            </small>
+                                        class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div class="flex-grow-1 small">
+                                        <div class="fw-semibold fs-6">{{ $product->name }}</div>
+
+                                        <div class="text-muted">
+                                            Màu: <span
+                                                style="display:inline-block;width:12px;height:12px;background-color:{{ $colorCode }};border:1px solid #ccc;margin-right:4px;border-radius:3px;"></span>
+                                            | Size: {{ $sizeName }} | SL: {{ $item->quantity }}
+                                        </div>
+                                        <div class="text-end fw-bold text-dark">
+                                            Giá: {{ number_format($item->quantity * $price, 0, ',', '.') }} đ
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
-
                         </div>
+
 
                         @php
                             $voucher = session('voucher');
