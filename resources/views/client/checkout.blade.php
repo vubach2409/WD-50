@@ -127,14 +127,14 @@
                                     <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}"
                                         class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                     <div class="flex-grow-1 small">
-                                        <div class="fw-semibold fs-6">{{ $product->name }}</div>
-
+                                        <div class="fw-bold text-muted fs-6">{{ $product->name }}</div>
                                         <div class="text-muted">
-                                            Màu: <span
-                                                style="display:inline-block;width:12px;height:12px;background-color:{{ $colorCode }};border:1px solid #ccc;margin-right:4px;border-radius:3px;"></span>
+                                            Màu:
+                                            <span style="display: inline-block; width: 20px; height: 20px; background-color: {{ $colorCode }};
+                                                        border: 1px solid #ccc; border-radius: 4px; margin: 0 4px; vertical-align: top;"></span>
                                             | Size: {{ $sizeName }} | SL: {{ $item->quantity }}
                                         </div>
-                                        <div class="text-end fw-bold text-dark">
+                                        <div class="fw-bold text-muted">
                                             Giá: {{ number_format($item->quantity * $price, 0, ',', '.') }} đ
                                         </div>
                                     </div>
