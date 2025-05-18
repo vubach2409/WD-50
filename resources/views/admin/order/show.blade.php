@@ -42,7 +42,7 @@
 
                 <h5 class="card-title">- Chi tiết sản phẩm</h5>
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered text-center">
                         <thead>
                             <tr>
                                 <th>Ảnh</th>
@@ -57,7 +57,7 @@
                         <tbody>
                             @foreach ($order->items as $item)
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="">
                                         @if ($item->variant_image)
                                             <img src="{{ asset('storage/' . $item->variant_image) }}"
                                                 alt="{{ $item->product_name }}" width="100">
@@ -65,14 +65,25 @@
                                             <span>Không có ảnh</span>
                                         @endif
                                     </td>
-                                    <td>{{ $item->product_name }}</td>
-                                    <td>
-                                        {{ $item->color_name ?? 'Không màu' }} / {{ $item->size_name ?? 'Không size' }}
+                                    <td class="align-middle">{{ $item->product_name }}</td>
+                                    <td class="align-middle">
+                                        <span style="display: inline-flex; align-items: center; gap: 6px;">
+                                            <span style="
+                                                display: inline-block;
+                                                width: 20px;
+                                                height: 20px;
+                                                background-color: {{ $item->color_code }};
+                                                border: 1px solid #ccc;
+                                                border-radius: 4px;
+                                            "></span>
+                                            <span>- {{ $item->size_name ?? 'Không size' }}</span>
+                                        </span>
+                                                                            
                                     </td>
-                                    <td>{{ $item->variant_sku ?? 'Không có' }}</td>
-                                    <td>{{ $item->quantity }}</td>
-                                    <td>{{ number_format($item->price, 0, ',', '.') }} VND</td>
-                                    <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
+                                    <td class="align-middle">{{ $item->variant_sku ?? 'Không có' }}</td>
+                                    <td class="align-middle">{{ $item->quantity }}</td>
+                                    <td class="align-middle">{{ number_format($item->price, 0, ',', '.') }} VND</td>
+                                    <td class="align-middle">{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VND</td>
                                 </tr>
                             @endforeach
                         </tbody>

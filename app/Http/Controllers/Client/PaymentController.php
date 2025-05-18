@@ -100,7 +100,7 @@ class PaymentController extends Controller
                             $productName = $item->product ? $item->product->name : 'N/A'; 
                             $variantName = $variant ? $variant->variation_name : null;
                             $variantSku = $variant ? $variant->sku : null;
-                            $colorName = $variant && $variant->color ? $variant->color->name : null;
+                            $colorName = $variant && $variant->color ? $variant->color->code : null;
                             $sizeName = $variant && $variant->size ? $variant->size->name : null;
                         
                             $originalImage = $variant ? $variant->image : null;
@@ -384,7 +384,7 @@ class PaymentController extends Controller
                         $productName = $item->product ? $item->product->name : 'N/A'; 
                         $variantName = $variant ? $variant->variation_name : null;
                         $variantSku = $variant ? $variant->sku : null;
-                        $colorName = $variant && $variant->color ? $variant->color->name : null;
+                        $colorName = $variant && $variant->color ? $variant->color->code : null;
                         $sizeName = $variant && $variant->size ? $variant->size->name : null;
                         $originalImage = $variant ? $variant->image : null;
                         $variantImage = null;

@@ -118,21 +118,23 @@
                                     $product = $item->product;
                                     $price = $variant->price;
                                     $image = $variant->image;
-                                    $variantLabel = $variant
-                                        ? $variant->color->name . ' / ' . $variant->size->name
-                                        : '';
+                                    $colorCode = $variant->color->code ?? '#000';
+                                    $sizeName = $variant->size->name ?? '';
                                     $subTotal += $item->quantity * $price;
                                 @endphp
                                 <div class="d-flex align-items-center mb-3">
                                     <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}"
                                         class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0">{{ $product->name }} @if ($variant)
-                                                - {{ $variantLabel }}
-                                            @endif
+                                        <h6 class="mb-1 d-flex align-items-center gap-2">
+                                            {{ $product->name }}
+                                            <span style="width: 16px; height: 16px; background-color: {{ $colorCode }};
+                                                        display: inline-block; border: 1px solid #ccc; border-radius: 4px;">
+                                            </span>
+                                            <span class=""> - {{ $sizeName }}</span>
                                         </h6>
                                         <small class="text-muted">Số lượng: {{ $item->quantity }}</small>
-                                        <div class="text-end">
+                                        <div class="">
                                             <small class="text-muted">
                                                 {{ number_format($item->quantity * $price, 0, ',', '.') }} VNĐ
                                             </small>
@@ -140,6 +142,7 @@
                                     </div>
                                 </div>
                             @endforeach
+
                         </div>
 
                         @php

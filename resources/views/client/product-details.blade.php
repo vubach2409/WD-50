@@ -262,12 +262,6 @@
             updateVariantInfo(colorId, sizeSelect.value);
         });
 
-        stockBox.textContent = 'Chưa chọn';
-        skuBox.textContent = 'Không có SKU';
-        variantIdInput.value = '';
-        quantityInput.disabled = true;
-        addToCartBtn.disabled = true;
-        priceBox.textContent = Number(@json($product->price)).toLocaleString('vi-VN') + 'đ';
     }
 
     function updateVariantInfo(colorId, sizeId) {
@@ -306,6 +300,7 @@
                 addToCartBtn.disabled = true;
             }
         } else {
+            priceBox.textContent = Number(@json($product->price_sale)).toLocaleString('vi-VN') + 'đ';
             skuBox.textContent = 'Không có SKU';
             stockBox.textContent = 'Chưa chọn';
             variantIdInput.value = '';

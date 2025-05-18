@@ -52,7 +52,6 @@
                                             <div
                                                 style="width: 40px; height: 40px; background-color: {{ $variant->color->code }}; border: 1px solid #ccc; border-radius: 4px;">
                                             </div>
-                                            <small class="mt-1">{{ $variant->color->code }}</small>
                                         </div>
                                     @else
                                         <span class="text-muted">Không có</span>

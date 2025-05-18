@@ -74,7 +74,7 @@
                             <th>Kích thước</th>
                             <td>
                                 <select name="size_id" class="form-control">
-                                    <option value="">Không có</option>
+                                    <option value="">-- Chọn kích thước --</option>
                                     @foreach ($sizes as $size)
                                         <option value="{{ $size->id }}"
                                             {{ old('size_id') == $size->id ? 'selected' : '' }}>

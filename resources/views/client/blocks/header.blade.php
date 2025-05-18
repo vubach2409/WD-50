@@ -26,7 +26,7 @@
                     <li><a class="nav-link" href="{{ route('cart.show') }}"><img
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
                 </ul> --}}
-            <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+            <<<<<<< HEAD <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                 <li>
                     @auth
                         <a class="nav-link" href="{{ route('account') }}">
@@ -41,74 +41,99 @@
                 <li class="nav-item dropdown position-relative" id="mini-cart-container">
                     <!-- Mini cart sẽ được load bằng JavaScript -->
                 </li>
-                <!-- Icon thông báo -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-bell fa-lg"></i>
-
-                        @if (!empty($unreadNotifications) && $unreadNotifications->count() > 0)
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {{ $unreadNotifications->count() }}
-                            </span>
-                        @endif
-                    </a>
-
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-0"
-                        aria-labelledby="notificationDropdown"
-                        style="min-width: 320px; max-height: 350px; overflow-y: auto;">
-
-                        <li class="p-3 border-bottom bg-light fw-semibold text-dark">
-                            <i class="fas fa-bell me-2 text-warning"></i> Thông báo mới
-                        </li>
-
-                        @if (empty($unreadNotifications) || $unreadNotifications->isEmpty())
-                            <li class="dropdown-item text-center text-muted py-4">
-                                <i class="fas fa-check-circle me-1 text-success"></i> Không có thông báo mới
-                            </li>
+                =======
+                <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5 d-flex align-items-center">
+                    <li class="nav-item me-3">
+                        @auth
+                            <a class="nav-link p-0" href="{{ route('account') }}" title="Tài khoản">
+                                <img src="{{ asset('clients/images/user.svg') }}" alt="User Icon"
+                                    style="width:24px; height:24px;">
+                            </a>
                         @else
-                            @foreach ($unreadNotifications as $notification)
-                                <li class="dropdown-item px-3 py-2">
-                                    <a href="{{ route('account.orders.show', $notification->data['order_id'] ?? '#') }}"
-                                        class="d-flex align-items-start text-decoration-none text-dark">
-                                        <div class="me-3 mt-1">
-                                            <i class="fas fa-receipt text-primary"></i>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <div class="fw-semibold">
-                                                {{ $notification->data['message'] ?? 'Bạn có thông báo mới' }}</div>
-                                            <small
-                                                class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
-                                        </div>
-                                    </a>
+                            <a class="nav-link p-0" href="{{ route('login') }}" title="Đăng nhập">
+                                <img src="{{ asset('clients/images/user.svg') }}" alt="User Icon"
+                                    style="width:24px; height:24px;">
+                            </a>
+                        @endauth
+                    </li>
+
+                    <li class="nav-item dropdown position-relative me-3" id="mini-cart-container">
+                        <!-- Mini cart sẽ được load bằng JavaScript -->
+                    </li>
+
+                    >>>>>>> 6cd11b3e0659e2ea4e0c50d9bb9a5d3b2a818bd3
+                    <!-- Icon thông báo -->
+                    <li class="nav-item dropdown position-relative">
+                        <a class="nav-link position-relative p-0" href="#" id="notificationDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo">
+                            <i class="fas fa-bell fa-lg"></i>
+
+                            @if (!empty($unreadNotifications) && $unreadNotifications->count() > 0)
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.65rem; min-width: 18px; height: 18px; line-height: 18px;">
+                                    {{ $unreadNotifications->count() }}
+                                </span>
+                            @endif
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-0"
+                            aria-labelledby="notificationDropdown"
+                            style="min-width: 320px; max-height: 350px; overflow-y: auto;">
+
+                            <li class="p-3 border-bottom bg-light fw-semibold text-dark">
+                                <i class="fas fa-bell me-2 text-warning"></i> Thông báo mới
+                            </li>
+
+                            @if (empty($unreadNotifications) || $unreadNotifications->isEmpty())
+                                <li class="dropdown-item text-center text-muted py-4">
+                                    <i class="fas fa-check-circle me-1 text-success"></i> Không có thông báo mới
                                 </li>
-                            @endforeach
+                            @else
+                                @foreach ($unreadNotifications as $notification)
+                                    <li class="dropdown-item px-3 py-2">
+                                        <a href="{{ route('account.orders.show', $notification->data['order_id'] ?? '#') }}"
+                                            class="d-flex align-items-start text-decoration-none text-dark">
+                                            <div class="me-3 mt-1">
+                                                <i class="fas fa-receipt text-primary"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold">
+                                                    {{ $notification->data['message'] ?? 'Bạn có thông báo mới' }}
+                                                </div>
+                                                <small
+                                                    class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
 
-                            <li>
-                                <hr class="dropdown-divider m-0">
-                            </li>
+                                                {{ $notification->data['message'] ?? 'Bạn có thông báo mới' }}
+                                                <br>
+                                                <small
+                                                    class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                            </div>
+                                        </a>
+                                    </li>
+                                @endforeach
 
-                            <li class="text-center py-2 bg-light">
-                                <a href="{{ route('account.notifications.markAllRead') }}"
-                                    class="btn btn-sm btn-outline-primary">Đánh dấu tất cả là đã đọc</a>
-                            </li>
-                        @endif
-                    </ul>
+                                <li>
+                                    <hr class="dropdown-divider m-0">
+                                </li>
 
-                </li>
+                                <li class="text-center py-2 bg-light">
+                                    <a href="{{ route('account.notifications.markAllRead') }}"
+                                        class="btn btn-sm btn-outline-primary">Đánh dấu tất cả là đã đọc</a>
+                                </li>
+                            @endif
+                        </ul>
 
+                    </li>
+                </ul>
 
-
-            </ul>
-
-            <style>
-                .btn-xs {
-                    font-size: 0.7rem;
-                    padding: 2px 6px;
-                    line-height: 1;
-                }
-            </style>
+                <style>
+                    .btn-xs {
+                        font-size: 0.7rem;
+                        padding: 2px 6px;
+                        line-height: 1;
+                    }
+                </style>
 
 
 
