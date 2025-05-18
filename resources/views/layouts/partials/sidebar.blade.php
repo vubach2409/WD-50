@@ -143,14 +143,14 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSeven"
             aria-expanded="true" aria-controls="collapseSeven">
             <i class="fas fa-fw fa-credit-card"></i>
-            <span>Quản lý Thanh Toán</span>
+            <span>Quản lý Hoàn Tiền</span>
         </a>
         <div id="collapseSeven" class="collapse {{ request()->routeIs('admin.orders.cancelled') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('admin.orders.cancelled') ? 'active' : '' }}"
                     href="{{ route('admin.orders.cancelled') }}">
-                    Trạng thái thanh toán
+                    Trạng thái hoàn tiền
                 </a>
             </div>
         </div>
