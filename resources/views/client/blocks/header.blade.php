@@ -39,17 +39,18 @@
 
                 <!-- Notifications -->
                 <li class="nav-item dropdown position-relative">
-                    <a class="nav-link p-0 position-relative" href="#" id="notificationDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo">
+                    <a class="nav-link p-0 position-relative me-3" href="#" id="notificationDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo" with="24"
+                        height="24">
                         <i class="fas fa-bell fa-lg"></i>
                         @if (!empty($unreadNotifications) && $unreadNotifications->count() > 0)
                             <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                style="font-size: 0.65rem; min-width: 18px; height: 18px; line-height: 18px;">
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ $unreadNotifications->count() }}
                             </span>
                         @endif
                     </a>
+
 
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-0"
                         aria-labelledby="notificationDropdown"
