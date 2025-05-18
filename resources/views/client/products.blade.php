@@ -107,12 +107,15 @@
                                         <div class="product-info p-3">
                                             <h5 class="product-title text-dark mb-1" style="font-size: 1rem;">
                                                 {{ $product->name }}</h5>
-                                            <p class="product-price mb-2">
+                                            <p class="product-price mb-2" style="background-color: transparent;">
                                                 <span
-                                                    class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ</span>
+                                                    class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ
+                                                    -
+                                                </span>
                                                 @if ($product->price_sale < $product->price)
-                                                    <span
-                                                        class="text-muted text-decoration-line-through ms-2">{{ number_format($product->price, 0, ',', '.') }}đ</span>
+                                                    <span class="text-danger fw-bold">
+                                                        {{ number_format($product->price, 0, ',', '.') }}đ
+                                                    </span>
                                                 @endif
                                             </p>
                                         </div>
