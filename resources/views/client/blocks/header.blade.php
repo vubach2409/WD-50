@@ -26,30 +26,33 @@
                     <li><a class="nav-link" href="{{ route('cart.show') }}"><img
                                 src="{{ asset('clients/images/cart.svg') }}"></a></li>
                 </ul> --}}
-            <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                    <li>
-                        @auth
-                            <a class="nav-link" href="{{ route('account') }}">
-                                <img src="{{ asset('clients/images/user.svg') }}">
-                            </a>
-                        @else
-                            <a class="nav-link" href="{{ route('login') }}">
-                                <img src="{{ asset('clients/images/user.svg') }}">
-                            </a>
-                        @endauth
-                    </li>
-                    <li class="nav-item dropdown position-relative" id="mini-cart-container">
-                        <!-- Mini cart sẽ được load bằng JavaScript -->
-                    </li>
+            <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5 d-flex align-items-center">
+                <li class="nav-item me-3">
+                    @auth
+                        <a class="nav-link p-0" href="{{ route('account') }}" title="Tài khoản">
+                            <img src="{{ asset('clients/images/user.svg') }}" alt="User Icon" style="width:24px; height:24px;">
+                        </a>
+                    @else
+                        <a class="nav-link p-0" href="{{ route('login') }}" title="Đăng nhập">
+                            <img src="{{ asset('clients/images/user.svg') }}" alt="User Icon" style="width:24px; height:24px;">
+                        </a>
+                    @endauth
+                </li>
+
+                <li class="nav-item dropdown position-relative me-3" id="mini-cart-container">
+                    <!-- Mini cart sẽ được load bằng JavaScript -->
+                </li>
+
                 <!-- Icon thông báo -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item dropdown position-relative">
+                    <a class="nav-link position-relative p-0" href="#" id="notificationDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo">
                         <i class="fas fa-bell fa-lg"></i>
 
                         @if (!empty($unreadNotifications) && $unreadNotifications->count() > 0)
                             <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.65rem; min-width: 18px; height: 18px; line-height: 18px;">
                                 {{ $unreadNotifications->count() }}
                             </span>
                         @endif
@@ -71,8 +74,7 @@
                                         <div class="flex-grow-1">
                                             {{ $notification->data['message'] ?? 'Bạn có thông báo mới' }}
                                             <br>
-                                            <small
-                                                class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                            <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                                         </div>
                                     </a>
                                 </li>
@@ -87,9 +89,6 @@
                         @endif
                     </ul>
                 </li>
-
-
-
             </ul>
 
             <style>
