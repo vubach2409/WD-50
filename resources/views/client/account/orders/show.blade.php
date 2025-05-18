@@ -102,7 +102,7 @@
                                                             Biến thể:
                                                             {{ $item->variant_name ?? 'Không có' }}
                                                             @if ($item->color_name)
-                                                                - <span style="display:inline-block; width:16px; height:16px; background-color: {{ $item->color_code }}; border:1px solid #ccc; border-radius:4px; vertical-align:middle;"></span>
+                                                                - <span style="display:inline-block; width:16px; height:16px; background-color: {{ $item->color_name }}; border:1px solid #ccc; border-radius:4px; vertical-align:middle;"></span>
                                                             @endif
                                                             @if ($item->size_name)
                                                                 - {{ $item->size_name }}
