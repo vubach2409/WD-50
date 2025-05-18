@@ -72,7 +72,7 @@
                                                 display: inline-block;
                                                 width: 20px;
                                                 height: 20px;
-                                                background-color: {{ $item->color_code }};
+                                                background-color: {{ $item->color_name }};
                                                 border: 1px solid #ccc;
                                                 border-radius: 4px;
                                             "></span>
