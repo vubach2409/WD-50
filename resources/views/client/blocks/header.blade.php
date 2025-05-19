@@ -178,26 +178,26 @@
 
                 const itemsHTML = data.items?.map(item => {
                 const image = item.variant?.image || item.product.image;
-                const colorName = item.variant?.color_name;
-                const sizeName = item.variant?.size_name;
+                const colorName = item.variant?.color_name || 'transparent';
+                const sizeName = item.variant?.size_name || 'Không có kích thước';
+                const variantName = item.variant?.variant_name || '';
+
                 return `
                     <div class="d-flex align-items-center cart-item">
                         <img src="/storage/${image}" alt="${item.name}" class="me-2">
                         <div>
                             <div class="mini-cart-name">${item.name}</div>
-                            
                             <div class="mini-cart-sub">
-                                Màu:
-                                <span style="display: inline-block; width: 16px; height: 16px; background-color:${colorName};
-                                border: 1px solid #ccc; border-radius: 10px; vertical-align: middle;"></span>
-                                | Size: ${sizeName} | SL: ${item.quantity}
+                                ${variantName ? `Phân loại: ${variantName} | ` : ''}
+                                <span style="display:inline-block; width:16px; height:16px; background-color:${colorName}; border:1px solid #ccc; border-radius:10px; vertical-align:middle;"></span>
+                                - ${sizeName}
                             </div>
-                            <div class="mini-cart-sub">Giá: ${item.price.toLocaleString()} ₫</div>
+                            <div class="mini-cart-sub">Số lượng: ${item.quantity}</div>
+                            <div class="mini-cart-sub">Giá: ${(item.price * item.quantity).toLocaleString()} ₫</div>
                         </div>
                     </div>
                 `;
             }).join('') || `<div class="mini-cart-empty text-center"><i class="fas fa-shopping-cart me-1"></i> Giỏ hàng đang trống</div>`;
-
 
                 const cartDropdownHTML = `
                     <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"

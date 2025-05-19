@@ -259,6 +259,7 @@ class CartController extends Controller
             $variantData = null;
             if ($item->variant) {
                 $variantData = $item->variant->toArray();
+                $variantData['variant_name'] = $item->variant->variation_name ?? null;
                 $variantData['color_name'] = $item->variant->color->code ?? null;
                 $variantData['size_name'] = $item->variant->size->name ?? null;
             }
