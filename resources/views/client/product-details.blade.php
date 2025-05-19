@@ -68,16 +68,21 @@
 
                     {{-- Giá --}}
                     <h4>
-                        <strong
-                            class="product-price text-danger variant-price fs-4">{{ number_format($product->price_sale, 0, ',', '.') }}đ</strong>
-                        @if ($product->price_sale < $product->price)
-                            <span
-                                class="text-muted text-decoration-line-through ms-2">{{ number_format($product->price, 0, ',', '.') }}đ</span>
-                        @endif
+                        <strong id="variantPrice" class="text-danger fw-bold"></strong>
+                        <span id="defaultPrice">
+                            <strong class="text-danger fw-bold">
+                                {{ number_format($product->price_sale, 0, ',', '.') }}đ -
+                            </strong>
+                            @if ($product->price_sale < $product->price)
+                                <span class="text-danger fw-bold">
+                                    {{ number_format($product->price, 0, ',', '.') }}đ
+                                </span>
+                            @endif
+                        </span>
                     </h4>
 
                     <p>{{ $product->description }}</p>
-                    <p><strong>SKU:</strong> <span id="variantSku">{{ $product->sku ?? 'Không có SKU' }}</span></p>
+                    <p><strong>SKU:</strong> <span id="variantSku">{{ $product->sku ?? 'Chưa chọn' }}</span></p>
                     <p><strong>Kho:</strong> <span id="stockStatus">Chưa chọn</span></p>
 
                     {{-- Chọn biến thể --}}
@@ -100,7 +105,7 @@
                             <div class="col-md-6 mb-2">
                                 <label class="form-label fw-semibold">Chọn size:</label>
                                 <select id="variantSize" class="form-select">
-                                    <option value="">-- Chọn size --</option>
+                                    <option value="" class="text-danger">Vui lòng chọn màu sắc trước!</option>
                                 </select>
                             </div>
                         </div>
@@ -222,10 +227,12 @@
     const priceBox = document.querySelector('.product-price');
     const skuBox = document.getElementById('variantSku');
     const imageBox = document.getElementById('productImage');
+    const variantPriceBox = document.getElementById('variantPrice');
+    const defaultPriceBox = document.getElementById('defaultPrice');
     let colorSelected = false;
 
     const sizeSelect = document.getElementById('variantSize');
-    sizeSelect.disabled = true; 
+    sizeSelect.disabled = true;
 
     document.querySelectorAll('.color-swatch').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -255,13 +262,12 @@
             </option>`;
         });
 
-        sizeSelect.disabled = false;  
-        sizeSelect.onchange = null; 
+        sizeSelect.disabled = false;
+        sizeSelect.onchange = null;
 
         sizeSelect.addEventListener('change', () => {
             updateVariantInfo(colorId, sizeSelect.value);
         });
-
     }
 
     function updateVariantInfo(colorId, sizeId) {
@@ -279,7 +285,10 @@
             skuBox.textContent = selected.sku ?? 'Không có SKU';
             stockBox.textContent = selected.stock > 0 ? `Còn ${selected.stock} sản phẩm` : 'Hết hàng';
             variantIdInput.value = selected.id;
-            priceBox.textContent = Number(selected.price_sale || selected.price).toLocaleString('vi-VN') + 'đ';
+            const variantPrice = Number(selected.price_sale || selected.price);
+            variantPriceBox.textContent = variantPrice.toLocaleString('vi-VN') + 'đ';
+            variantPriceBox.classList.remove('d-none');
+            defaultPriceBox.classList.add('d-none');
 
             if (selected.image) {
                 let carousel = document.querySelector('#productCarousel .carousel-inner');
@@ -301,11 +310,13 @@
             }
         } else {
             priceBox.textContent = Number(@json($product->price_sale)).toLocaleString('vi-VN') + 'đ';
-            skuBox.textContent = 'Không có SKU';
+            skuBox.textContent = 'Chưa chọn';
             stockBox.textContent = 'Chưa chọn';
             variantIdInput.value = '';
             quantityInput.disabled = true;
             addToCartBtn.disabled = true;
+            variantPriceBox.classList.add('d-none');
+            defaultPriceBox.classList.remove('d-none');
         }
     }
 
@@ -320,13 +331,11 @@
             const rating = this.getAttribute('data-value');
             document.getElementById('starRating').value = rating;
 
-            // Reset tất cả sao về icon bi-star
             document.querySelectorAll('.rating-stars i').forEach(s => {
                 s.classList.remove('bi-star-fill');
                 s.classList.add('bi-star');
             });
 
-            // Đổ đầy các sao tương ứng với rating
             for (let i = 0; i < rating; i++) {
                 document.querySelectorAll('.rating-stars i')[i].classList.remove('bi-star');
                 document.querySelectorAll('.rating-stars i')[i].classList.add('bi-star-fill');
