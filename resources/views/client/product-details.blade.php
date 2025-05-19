@@ -71,11 +71,11 @@
                         <strong id="variantPrice" class="text-danger fw-bold"></strong>
                         <span id="defaultPrice">
                             <strong class="text-danger fw-bold">
-                                {{ number_format($product->price_sale, 0, ',', '.') }}đ -
+                                {{ number_format($product->price_sale, 0, ',', '.') }} ₫ -
                             </strong>
                             @if ($product->price_sale < $product->price)
                                 <span class="text-danger fw-bold">
-                                    {{ number_format($product->price, 0, ',', '.') }}đ
+                                    {{ number_format($product->price, 0, ',', '.') }} ₫
                                 </span>
                             @endif
                         </span>
@@ -286,7 +286,7 @@
             stockBox.textContent = selected.stock > 0 ? `Còn ${selected.stock} sản phẩm` : 'Hết hàng';
             variantIdInput.value = selected.id;
             const variantPrice = Number(selected.price_sale || selected.price);
-            variantPriceBox.textContent = variantPrice.toLocaleString('vi-VN') + 'đ';
+            variantPriceBox.textContent = variantPrice.toLocaleString('vi-VN') + ' ₫';
             variantPriceBox.classList.remove('d-none');
             defaultPriceBox.classList.add('d-none');
 
@@ -309,7 +309,7 @@
                 addToCartBtn.disabled = true;
             }
         } else {
-            priceBox.textContent = Number(@json($product->price_sale)).toLocaleString('vi-VN') + 'đ';
+            priceBox.textContent = Number(@json($product->price_sale)).toLocaleString('vi-VN') + ' ₫';
             skuBox.textContent = 'Chưa chọn';
             stockBox.textContent = 'Chưa chọn';
             variantIdInput.value = '';

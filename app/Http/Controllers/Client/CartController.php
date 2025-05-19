@@ -237,7 +237,7 @@ class CartController extends Controller
     }
     public function miniCart()
     {
-        $cartItems = Carts::with(['product', 'variant'])
+        $cartItems = Carts::with(['product', 'variant.color', 'variant.size'])
             ->where(function ($query) {
                 if (Auth::check()) {
                     $query->where('user_id', Auth::id());
@@ -256,6 +256,13 @@ class CartController extends Controller
         $items = [];
 
         foreach ($cartItems as $item) {
+            $variantData = null;
+            if ($item->variant) {
+                $variantData = $item->variant->toArray();
+                $variantData['color_name'] = $item->variant->color->code ?? null;
+                $variantData['size_name'] = $item->variant->size->name ?? null;
+            }
+
             $items[] = [
                 'name' => $item->product->name,
                 'quantity' => $item->quantity,
@@ -263,7 +270,7 @@ class CartController extends Controller
                 'product' => [
                     'image' => $item->product->image,
                 ],
-                'variant' => $item->variant ? ['image' => $item->variant->image] : null,
+                'variant' => $variantData,
             ];
         }
 

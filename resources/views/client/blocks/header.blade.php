@@ -101,12 +101,61 @@
 
 <!-- Custom Styles -->
 <style>
+    #mini-cart-dropdown {
+        min-width: 360px !important;
+        max-width: 400px !important;
+        display: none;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 0.75rem;
+    }
+
+    #mini-cart-items {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    #mini-cart-items .cart-item {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    #mini-cart-items .cart-item:last-child {
+        border-bottom: none;
+    }
+
+    #mini-cart-items img {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+    }
+
+    .mini-cart-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .mini-cart-sub {
+        font-size: 0.75rem;
+        color: #777;
+    }
+
+    .mini-cart-empty {
+        font-size: 0.875rem;
+        color: #999;
+        padding: 1rem 0;
+    }
+
     .btn-xs {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-        line-height: 1;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        line-height: 1.2;
+        border-radius: 0.375rem;
     }
 </style>
+
 
 <!-- JS for Mini Cart -->
 <script>
@@ -128,19 +177,27 @@
                 `;
 
                 const itemsHTML = data.items?.map(item => {
-                    const image = item.variant?.image || item.product.image;
-                    return `
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="/storage/${image}" alt="${item.name}"
-                                style="width: 40px; height: 40px; object-fit: cover;" class="me-2 rounded">
-                            <div>
-                                <div class="fw-bold">${item.name}</div>
-                                <div>Số lượng: ${item.quantity}</div>
-                                <div>Giá: ${item.price.toLocaleString()} đ</div>
+                const image = item.variant?.image || item.product.image;
+                const colorName = item.variant?.color_name;
+                const sizeName = item.variant?.size_name;
+                return `
+                    <div class="d-flex align-items-center cart-item">
+                        <img src="/storage/${image}" alt="${item.name}" class="me-2">
+                        <div>
+                            <div class="mini-cart-name">${item.name}</div>
+                            
+                            <div class="mini-cart-sub">
+                                Màu:
+                                <span style="display: inline-block; width: 16px; height: 16px; background-color:${colorName};
+                                border: 1px solid #ccc; border-radius: 10px; vertical-align: middle;"></span>
+                                | Size: ${sizeName} | SL: ${item.quantity}
                             </div>
+                            <div class="mini-cart-sub">Giá: ${item.price.toLocaleString()} ₫</div>
                         </div>
-                    `;
-                }).join('') || `<p class="text-center m-0">Giỏ hàng đang trống.</p>`;
+                    </div>
+                `;
+            }).join('') || `<div class="mini-cart-empty text-center"><i class="fas fa-shopping-cart me-1"></i> Giỏ hàng đang trống</div>`;
+
 
                 const cartDropdownHTML = `
                     <div id="mini-cart-dropdown" class="dropdown-menu p-2 shadow"
@@ -152,7 +209,7 @@
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <small class="fw-semibold">Tổng:</small>
                             <small id="mini-cart-total" class="text-danger fw-bold">
-                                ${data.total_price.toLocaleString()}₫
+                                ${data.total_price.toLocaleString()} ₫
                             </small>
                         </div>
                         <div class="mt-2 d-flex justify-content-between">
