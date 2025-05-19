@@ -27,15 +27,13 @@
                         <div class="carousel-inner">
                             {{-- Ảnh chính --}}
                             <div class="carousel-item active">
-                                <img src="{{ asset('storage/' . $product->image) }}" class="d-block w-100"
-                                    alt="{{ $product->name }}">
+                                <img src="{{ asset('storage/' . $product->image) }}" class="d-block w-100 view-image" alt="{{ $product->name }}" style="cursor: zoom-in;">
                             </div>
                             {{-- Ảnh biến thể --}}
                             @foreach ($product->variants as $variant)
                                 @if ($variant->image)
                                     <div class="carousel-item">
-                                        <img src="{{ asset('storage/' . $variant->image) }}" class="d-block w-100"
-                                            alt="Ảnh biến thể">
+                                        <img src="{{ asset('storage/' . $variant->image) }}" class="d-block w-100 view-image" alt="Ảnh biến thể" style="cursor: zoom-in;">
                                     </div>
                                 @endif
                             @endforeach
@@ -215,6 +213,16 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+        <div class="modal-body p-0">
+            <img src="" id="modalImage" class="img-fluid w-100 rounded shadow">
+        </div>
+        </div>
+    </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -323,6 +331,15 @@
     document.querySelectorAll('.variant-thumbnail').forEach(img => {
         img.addEventListener('click', () => {
             imageBox.src = img.dataset.image;
+        });
+    });
+
+    document.querySelectorAll('.view-image').forEach(img => {
+        img.addEventListener('click', function () {
+            const modalImg = document.getElementById('modalImage');
+            modalImg.src = this.src;
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
         });
     });
 
