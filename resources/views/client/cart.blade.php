@@ -248,8 +248,9 @@
                         location.reload(); // Reload để cập nhật giá trị
                     },
                     error: function(xhr) {
-                        if (xhr.responseJSON && xhr.responseJSON.error) {
-                            alert(xhr.responseJSON.error);
+                        if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON
+                            .errors.quantity) {
+                            alert(xhr.responseJSON.errors.quantity[0]);
                         } else {
                             alert('Số lượng yêu cầu vượt quá hàng tồn kho. Số lượng tồn kho còn lại: ' +
                                 xhr.responseJSON.stock);
@@ -257,6 +258,7 @@
                     }
                 });
             });
+
         });
     </script>
 @endsection

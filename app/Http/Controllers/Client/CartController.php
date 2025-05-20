@@ -104,23 +104,24 @@ class CartController extends Controller
 
     // Cập nhật số lượng sản phẩm trong giỏ hàng
     public function update(Request $request, $id)
-{
-    $cartItem = Carts::find($id);
-    $quantity = $request->input('quantity');
-    $stock = $cartItem->variant->stock;
+    {
+        $cartItem = Carts::findOrFail($id);
+        $stock = $cartItem->variant->stock;
 
-    if ($quantity > $stock) {
-        return response()->json([
-            'error' => 'Số lượng yêu cầu vượt quá hàng tồn kho.',
-            'stock' => $stock
-        ], 400);
+        $validatedData = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1', 'max:' . $stock],
+        ], [
+            'quantity.required' => 'Vui lòng nhập số lượng.',
+            'quantity.integer' => 'Số lượng phải là một số nguyên.',
+            'quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
+            'quantity.max' => 'Số lượng yêu cầu vượt quá hàng tồn kho. Chỉ còn lại ' . $stock . ' sản phẩm.',
+        ]);
+
+        $cartItem->quantity = $validatedData['quantity'];
+        $cartItem->save();
+
+        return response()->json(['success' => 'Cập nhật giỏ hàng thành công.']);
     }
-
-    $cartItem->quantity = $quantity;
-    $cartItem->save();
-
-    return response()->json(['success' => 'Cập nhật giỏ hàng thành công.']);
-}
 
 
 
