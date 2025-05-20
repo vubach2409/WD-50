@@ -143,10 +143,10 @@
 
             {{-- Bình luận --}}
             <div class="mt-5">
-                <h4>Bình luận sản phẩm</h4>
+                <h4>Đánh giá sản phẩm</h4>
 
                 @auth
-                    <form action="{{ route('product.comment', $product->id) }}" method="POST" class="mb-4">
+                    {{-- <form action="{{ route('product.comment', $product->id) }}" method="POST" class="mb-4">
                         @csrf
                         <div class="mb-2">
                             <label class="form-label">Đánh giá của bạn:</label>
@@ -157,11 +157,11 @@
                             </div>
                             <input type="hidden" name="star" id="starRating" required>
 
-                            <label class="form-label">Viết bình luận:</label>
+                            <label class="form-label">Nội dung: </label>
                             <textarea name="content" class="form-control" rows="3" placeholder="Cảm nhận của bạn..." required></textarea>
                         </div>
                         <button type="submit" class="btn btn-outline-primary">Gửi đánh giá</button>
-                    </form>
+                    </form> --}}
                 @else
                     <div class="alert alert-warning">Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để bình luận.
                     </div>
