@@ -9,7 +9,8 @@
             <div class="col-lg-8">
                 <div class="subscription-form">
                     <h3 class="d-flex align-items-center">
-                        <span class="me-1"><img src="{{ asset('clients/images/envelope-outline.svg') }}" alt="Email Icon" class="img-fluid"></span>
+                        <span class="me-1"><img src="{{ asset('clients/images/envelope-outline.svg') }}"
+                                alt="Email Icon" class="img-fluid"></span>
                         <span>Đăng ký nhận bản tin</span>
                     </h3>
 
@@ -34,7 +35,8 @@
         <div class="row g-5 mb-5">
             <div class="col-lg-4">
                 <div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">PoLy.<span></span></a></div>
-                <p class="mb-4">Chúng tôi mang đến các sản phẩm nội thất cao cấp, thiết kế tinh tế, giúp không gian sống của bạn thêm phần sang trọng và thoải mái.</p>
+                <p class="mb-4">Chúng tôi mang đến các sản phẩm nội thất cao cấp, thiết kế tinh tế, giúp không gian
+                    sống của bạn thêm phần sang trọng và thoải mái.</p>
 
                 <ul class="list-unstyled custom-social">
                     <li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
@@ -85,7 +87,6 @@
                         </script>. Bảo lưu mọi quyền &mdash; Được thiết kế với tình yêu bởi <a
                             href="https://untree.co">Nội thất PoLy.co</a> Phân phối bởi <a
                             href="https://themewagon.com">PoLY</a>
-                        <!-- License information: https://untree.co/license/ -->
                     </p>
                 </div>
 
