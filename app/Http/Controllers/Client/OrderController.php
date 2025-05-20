@@ -128,30 +128,33 @@ class OrderController extends Controller
         }
     }
     // OrderController.php
-    public function feedbackForm(Orders $order)
-    {
-        if ($order->user_id !== auth()->id()) {
-            abort(403, 'Bạn không có quyền truy cập đơn hàng này.');
-        }
-    
-        if ($order->status !== 'completed') {
-            return redirect()->route('orders.index')->with('error', 'Chỉ có thể đánh giá đơn hàng đã giao.');
-        }
-    
-        // Kiểm tra đã đánh giá chưa
-        $hasRated = Feedbacks::where('order_id', $order->id)
-                            ->where('user_id', auth()->id())
-                            ->exists();
-    
-        if ($hasRated) {
-            return redirect()->route('orders.index')->with('error', 'Bạn đã đánh giá đơn hàng này rồi.');
-        }
-    
-        $products = $order->items()->with('product')->get();
-    
-        return view('client.feedback', compact('order', 'products'));
+   public function feedbackForm(Orders $order)
+{
+    if ($order->user_id !== auth()->id()) {
+        abort(403, 'Bạn không có quyền truy cập đơn hàng này.');
     }
-    
+
+    if ($order->status !== 'completed') {
+        return redirect()->route('orders.index')->with('error', 'Chỉ có thể đánh giá đơn hàng đã giao.');
+    }
+
+    // Kiểm tra đã đánh giá chưa
+    $hasRated = Feedbacks::where('order_id', $order->id)
+                        ->where('user_id', auth()->id())
+                        ->exists();
+
+    if ($hasRated) {
+        return redirect()->route('orders.index')->with('error', 'Bạn đã đánh giá đơn hàng này rồi.');
+    }
+
+    // Lấy items kèm product và variant
+    $items = $order->items()->with(['product', 'variant'])->get();
+
+    return view('client.feedback', [
+        'order' => $order,
+        'products' => $items,
+    ]);
+}
 
 public function submitFeedback(Request $request, Orders $order)
 {
@@ -159,11 +162,11 @@ public function submitFeedback(Request $request, Orders $order)
         abort(403);
     }
 
-    foreach ($request->feedbacks as $productId => $feedback) {
+    foreach ($request->feedbacks as $variantId => $feedback) {
         Feedbacks::updateOrCreate([
             'user_id' => auth()->id(),
             'order_id' => $order->id,
-            'product_id' => $productId,
+            'variation_id' => $variantId,
         ], [
             'star' => $feedback['star'],
             'content' => $feedback['content'],
@@ -172,6 +175,7 @@ public function submitFeedback(Request $request, Orders $order)
 
     return redirect()->route('account.orders')->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
 }
+
 function getOrderStatusName($status)
     {
         switch ($status) {

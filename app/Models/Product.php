@@ -45,9 +45,16 @@ class Product extends Model
     }
 
     public function feedbacks()
-{
-    return $this->hasMany(Feedbacks::class)->latest();
-}
+    {
+        return $this->hasManyThrough(
+            Feedbacks::class,
+            ProductVariant::class,
+            'product_id',   // Foreign key on ProductVariant table...
+            'variation_id', // Foreign key on Feedbacks table...
+            'id',           // Local key on Product table...
+            'id'            // Local key on ProductVariant table...
+        )->latest();
+    }
 public function updateStock()
     {
         $totalStock = $this->variants->sum('stock');
