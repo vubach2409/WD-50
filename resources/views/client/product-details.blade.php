@@ -107,26 +107,29 @@
                                 </select>
                             </div>
                         </div>
+                        @if (!Auth::check() || (Auth::check() && Auth::user()->role !== 'nhanvien'))
+                        {{-- Form giỏ hàng --}}
+                        <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="variant_id" id="variant_id">
+
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Số lượng:</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" value="1"
+                                    min="1" disabled>
+                            </div>
+
+                            <button class="btn btn-primary w-100" type="submit" id="addToCartBtn" disabled>
+                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+                            </button>
+                        </form>
+                        @endif
                     @else
                         <div class="alert alert-danger">Sản phẩm này hiện không còn hàng.</div>
                     @endif
 
-                    {{-- Form giỏ hàng --}}
-                    <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <input type="hidden" name="variant_id" id="variant_id">
-
-                        <div class="mb-3">
-                            <label for="quantity" class="form-label">Số lượng:</label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" value="1"
-                                min="1" disabled>
-                        </div>
-
-                        <button class="btn btn-primary w-100" type="submit" id="addToCartBtn" disabled>
-                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
-                        </button>
-                    </form>
+                    
                 </div>
             </div>
 
