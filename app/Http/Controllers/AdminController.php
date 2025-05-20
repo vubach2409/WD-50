@@ -13,45 +13,38 @@ class AdminController extends Controller
 {
     public function index()
     {
-        // Dữ liệu cho các card thống kê
+        // Các thống kê khác
         $totalProducts = Product::count();
         $totalOrders = Orders::count();
         $totalCustomers = User::where('role', '!=', 'admin')->count();
-
-        // Doanh thu tháng này (chỉ tính đơn hàng đã hoàn thành)
-        // Giả sử cột tổng tiền của đơn hàng là 'total' và trạng thái hoàn thành là 'completed'
         $totalRevenueThisMonth = Orders::where('status', 'completed')
-                                ->whereMonth('created_at', Carbon::now()->month)
-                                ->whereYear('created_at', Carbon::now()->year)
-                                ->sum('total'); 
-
-        // Sản phẩm mới trong 30 ngày gần nhất
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('total');
         $newProducts = Product::where('created_at', '>=', now()->subDays(30))->count();
 
-        // --- Dữ liệu cho Biểu đồ Doanh thu 7 ngày gần nhất ---
+        // Biểu đồ doanh thu 7 ngày gần nhất
         $revenueLast7DaysLabels = [];
         $revenueLast7DaysData = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = Carbon::today()->subDays($i);
             $revenueLast7DaysLabels[] = $date->format('d/m');
-            $revenue = Orders::where('status', 'completed') // Chỉ tính đơn hàng hoàn thành
-                              ->whereDate('created_at', $date)
-                              ->sum('total'); // Sử dụng cột 'total'
+            $revenue = Orders::where('status', 'completed')
+                ->whereDate('created_at', $date)
+                ->sum('total');
             $revenueLast7DaysData[] = $revenue;
         }
 
-        // --- Dữ liệu cho Biểu đồ Tỷ lệ Trạng thái Đơn hàng ---
-        // Các trạng thái từ OrderController: pending, shipping, completed, cancelled
+        // Biểu đồ tỷ lệ trạng thái đơn hàng
         $orderStatusCounts = Orders::select('status', DB::raw('count(*) as count'))
-                                    ->groupBy('status')
-                                    ->pluck('count', 'status')->all();
+            ->groupBy('status')
+            ->pluck('count', 'status')->all();
 
         $statusTranslations = [
             'pending' => 'Chờ xử lý',
             'shipping' => 'Đang giao',
             'completed' => 'Hoàn thành',
             'cancelled' => 'Đã hủy',
-            // Thêm các trạng thái khác nếu có
         ];
 
         $orderStatusLabels = [];
@@ -60,19 +53,33 @@ class AdminController extends Controller
             $orderStatusLabels[] = $statusTranslations[$status] ?? ucfirst($status);
             $orderStatusData[] = $count;
         }
-        // dd($totalRevenueThisMonth, $revenueLast7DaysData);
+
+        // ✅ Thống kê doanh thu của sản phẩm
+        $topRevenueProducts = DB::table('order_details')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->where('orders.status', 'completed')
+            ->whereNotNull('order_details.product_id')
+            ->select(
+                'order_details.product_id',
+                'order_details.product_name',
+                DB::raw('SUM(order_details.price * order_details.quantity) as total_revenue')
+            )
+            ->groupBy('order_details.product_id', 'order_details.product_name')
+            ->orderByDesc('total_revenue')
+            ->limit(10)
+            ->get();
 
         return view('admin.dashboard', compact(
-            'totalProducts', 
-            'totalOrders', 
-            'totalCustomers', 
-            'totalRevenueThisMonth', 
+            'totalProducts',
+            'totalOrders',
+            'totalCustomers',
+            'totalRevenueThisMonth',
             'newProducts',
             'revenueLast7DaysLabels',
             'revenueLast7DaysData',
             'orderStatusLabels',
-            'orderStatusData'
+            'orderStatusData',
+            'topRevenueProducts' // Thêm biến này vào view
         ));
     }
-
 }
