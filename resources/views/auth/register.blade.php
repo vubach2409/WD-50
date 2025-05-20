@@ -1,11 +1,5 @@
 @extends('layouts.app')
 
-@php
-    $confirmError = session('errors')?->get('password') 
-                    ? collect(session('errors')->get('password'))->first(fn($msg) => str_contains($msg, 'khớp'))
-                    : null;
-@endphp
-
 @section('content')
 <div class="register-container">
     <div class="card-header">{{ __('Đăng Ký') }}</div>
@@ -20,9 +14,9 @@
                    class="form-control @error('name') is-invalid @enderror"
                    name="name" value="{{ old('name') }}" autocomplete="name" autofocus>
             @error('name')
-                <span class="invalid-feedback" role="alert">
+                <div class="invalid-feedback d-block">
                     <strong>{{ $message }}</strong>
-                </span>
+                </div>
             @enderror
         </div>
 
@@ -33,9 +27,9 @@
                    class="form-control @error('email') is-invalid @enderror"
                    name="email" value="{{ old('email') }}" autocomplete="email">
             @error('email')
-                <span class="invalid-feedback" role="alert">
+                <div class="invalid-feedback d-block">
                     <strong>{{ $message }}</strong>
-                </span>
+                </div>
             @enderror
         </div>
 
@@ -49,9 +43,9 @@
                 <span class="toggle-password" data-target="password">👁️</span>
             </div>
             @error('password')
-                <span class="invalid-feedback" role="alert">
+                <div class="invalid-feedback d-block">
                     <strong>{{ $message }}</strong>
-                </span>
+                </div>
             @enderror
         </div>
 
@@ -60,15 +54,15 @@
             <label for="password-confirm">{{ __('Xác nhận mật khẩu') }}</label>
             <div class="password-wrapper">
                 <input id="password-confirm" type="password"
-                       class="form-control @if($confirmError) is-invalid @endif"
+                       class="form-control @error('password_confirmation') is-invalid @enderror"
                        name="password_confirmation" autocomplete="new-password">
                 <span class="toggle-password" data-target="password-confirm">👁️</span>
             </div>
-            @if ($confirmError)
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $confirmError }}</strong>
-                </span>
-            @endif
+            @error('password_confirmation')
+                <div class="invalid-feedback d-block">
+                    <strong>{{ $message }}</strong>
+                </div>
+            @enderror
         </div>
 
         {{-- Submit --}}
@@ -83,12 +77,11 @@
     </form>
 </div>
 
-{{-- Toggle --}}
+{{-- Toggle mật khẩu --}}
 <script>
     document.querySelectorAll('.toggle-password').forEach(icon => {
         icon.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target');
-            const input = document.getElementById(targetId);
+            const input = document.getElementById(this.dataset.target);
             if (input.type === 'password') {
                 input.type = 'text';
                 this.textContent = '🙈';
@@ -110,7 +103,6 @@ body {
     align-items: center;
     margin: 0;
 }
-
 .register-container {
     background: #fff;
     padding: 2.5rem;
@@ -119,12 +111,10 @@ body {
     width: 500px;
     animation: fadeIn 0.5s ease-in-out;
 }
-
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 .card-header {
     font-size: 1.5rem;
     font-weight: 600;
@@ -140,13 +130,11 @@ body {
     padding: 0.75rem;
     transition: border-color 0.3s ease;
 }
-
 .form-control:focus {
     border-color: #667eea;
     box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
     outline: none;
 }
-
 .btn-primary {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
@@ -157,34 +145,27 @@ body {
     width: 100%;
     transition: background 0.3s ease;
 }
-
 .btn-primary:hover {
     background: #764ba2;
 }
-
 .btn-link {
     color: #667eea;
     text-decoration: none;
     font-weight: 500;
 }
-
 .btn-link:hover {
     color: #764ba2;
 }
-
 .invalid-feedback {
     font-size: 0.85rem;
     color: #dc3545;
 }
-
 .password-wrapper {
     position: relative;
 }
-
 .password-wrapper .form-control {
     padding-right: 2.5rem;
 }
-
 .toggle-password {
     position: absolute;
     right: 10px;
