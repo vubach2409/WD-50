@@ -55,7 +55,7 @@
                 </h3>
                 @if ($variants->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered text-center">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -70,14 +70,24 @@
                             <tbody>
                                 @foreach ($variants as $index => $variant)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $variant->sku }}</td>
-                                        <td class="text-center"><img src="{{ asset('storage/' . $variant->image) }}"
+                                        <td class="align-middle">{{ $index + 1 }}</td>
+                                        <td class="align-middle">{{ $variant->sku }}</td>
+                                        <td class="align-middle"><img src="{{ asset('storage/' . $variant->image) }}"
                                                 alt="Ảnh biến thể" width="100" height="100" class="border"></td>
-                                        <td>{{ $variant->color->name }}</td>
-                                        <td>{{ $variant->size->name }}</td>
-                                        <td>{{ number_format($variant->price) }} đ</td>
-                                        <td>{{ $variant->stock }}</td>
+                                        <td class="align-middle">
+                                            @if ($variant->color)
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <div
+                                                        style="width: 40px; height: 40px; background-color: {{ $variant->color->code }}; border: 1px solid #ccc; border-radius: 4px;">
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Không có</span>
+                                            @endif
+                                        </td>
+                                        <td class="align-middle">{{ $variant->size->name }}</td>
+                                        <td class="align-middle">{{ number_format($variant->price) }} đ</td>
+                                        <td class="align-middle">{{ $variant->stock }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

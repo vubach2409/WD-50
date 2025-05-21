@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Feedbacks extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'product_id', 'order_id', 'star', 'content'];
+    protected $fillable = ['user_id', 'variation_id', 'order_id', 'star', 'content'];
 
     public function user()
     {
@@ -24,4 +24,9 @@ class Feedbacks extends Model
     {
         return $this->belongsTo(Orders::class);
     }
+    public function variation()
+{
+    return $this->belongsTo(ProductVariant::class, 'variation_id');
+}
+
 }

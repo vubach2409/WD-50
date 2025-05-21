@@ -20,7 +20,9 @@ class ProductDetailController extends Controller
             'feedbacks' => function ($query) {
                 $query->where('is_hidden', false)->latest();
             },
-            'feedbacks.user'
+            'feedbacks.user',
+             'feedbacks.variation.color', 
+        'feedbacks.variation.size'  
         ])->findOrFail($product->id);
         
         // Tính điểm trung bình và số lượng đánh giá
@@ -37,21 +39,5 @@ class ProductDetailController extends Controller
         return view('client.product-details', compact('product', 'relatedProducts'));        
     }
 
-    public function comment(Request $request, Product $product)
-    {
-        $request->validate([
-            'star' => 'required|integer|min:1|max:5',
-            'content' => 'required|string|max:1000',
-        ]);
-
-        Feedbacks::create([
-            'user_id' => auth()->id(),
-            'product_id' => $product->id,
-            'order_id' => null, // Nếu muốn kiểm tra đơn hàng thì xử lý sau
-            'star' => $request->star,
-            'content' => $request->content,
-        ]);
-
-        return back()->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
-    }
+  
 }

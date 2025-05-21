@@ -39,4 +39,11 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
+
+public function feedbacks()
+{
+    return $this->hasMany(Feedbacks::class, 'variation_id');
+}
+
+
 }

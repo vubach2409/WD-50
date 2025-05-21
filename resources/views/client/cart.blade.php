@@ -53,8 +53,13 @@
                                             <td>{{ $item->product->name }}</td>
                                             <td>
                                                 @if ($item->variant)
-                                                    {{ $item->variant->color->name ?? '' }} -
-                                                    {{ $item->variant->size->name ?? '' }}
+                                                    <div
+                                                        style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                                        <span
+                                                            style="display:inline-block; width:20px; height:20px; border-radius:50%; 
+                                                                    background-color:{{ $item->variant->color->code }}; border:1px solid #ccc;"></span>
+                                                        <span> - {{ $item->variant->size->name ?? '' }}</span>
+                                                    </div>
                                                 @else
                                                     Không có biến thể
                                                 @endif
@@ -72,16 +77,16 @@
 
                                             <td>{{ number_format($item->variant->price * $item->quantity) }}₫</td>
                                             {{-- <input type="number" name="quantity" value="{{ $item->quantity }}"
-                                                        min="1" max="{{ $item->variant->stock }}"
-                                                        class="form-control" style="width: 80px; display:inline-block;" />
-                                                    <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button> --}}
+                                                min="1" max="{{ $item->variant->stock }}" class="form-control"
+                                                style="width: 80px; display:inline-block;" />
+                                            <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button> --}}
 
                 </form>
                 </td>
                 {{-- <td>
-                                                {{ number_format($item->variant->price * $item->quantity, 0, ',', '.') }}
-                                                VNĐ
-                                            </td> --}}
+                    {{ number_format($item->variant->price * $item->quantity, 0, ',', '.') }}
+                    VNĐ
+                </td> --}}
                 <td>
                     <form action="{{ route('cart.remove', $item->id) }}" method="POST" style="display:inline;">
                         @csrf
@@ -213,7 +218,8 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a href="{{ route('checkout') }}" class="btn btn-black btn-lg py-3 btn-block">Thanh toán</a>
+                                    <a href="{{ route('checkout') }}" class="btn btn-black btn-lg py-3 btn-block">Thanh
+                                        toán</a>
                                 </div>
                             </div>
                         </div>
@@ -242,11 +248,17 @@
                         location.reload(); // Reload để cập nhật giá trị
                     },
                     error: function(xhr) {
-                        alert('Cập nhật thất bại');
+                        if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON
+                            .errors.quantity) {
+                            alert(xhr.responseJSON.errors.quantity[0]);
+                        } else {
+                            alert('Số lượng yêu cầu vượt quá hàng tồn kho. Số lượng tồn kho còn lại: ' +
+                                xhr.responseJSON.stock);
+                        }
                     }
                 });
             });
+
         });
     </script>
 @endsection
-

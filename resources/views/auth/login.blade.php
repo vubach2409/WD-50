@@ -9,14 +9,14 @@
                 {{ session('success') }}
             </div>
         @endif
-        
+
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div class="form-group">
                 <label for="email">{{ __('Email') }}</label>
                 <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email"
-                       value="{{ old('email') }}"  autocomplete="email" autofocus>
+                    value="{{ old('email') }}" autocomplete="email" autofocus>
                 @error('email')
                     <span class="invalid-feedback">
                         <strong>{{ $message }}</strong>
@@ -25,22 +25,22 @@
             </div>
 
             <div class="form-group">
-                <label for="password">{{ __('Password') }}</label>
+                <label for="password">{{ __('Mật khẩu') }}</label>
                 <div class="password-wrapper">
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                           name="password"  autocomplete="current-password">
+                        name="password" autocomplete="current-password">
                     <span class="toggle-password" onclick="togglePassword()">👁️</span>
                 </div>
                 @error('password')
-                    <span class="invalid-feedback">
+                    <div class="invalid-feedback d-block">
                         <strong>{{ $message }}</strong>
-                    </span>
+                    </div>
                 @enderror
             </div>
 
+
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="remember" id="remember"
-                       {{ old('remember') ? 'checked' : '' }}>
+                <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                 <label class="form-check-label" for="remember">
                     {{ __('Nhớ mật khẩu') }}
                 </label>

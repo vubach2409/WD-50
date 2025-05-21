@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id')->nullable();
             $table->string('transaction_id')->unique();
-            $table->decimal('amount', 15, 2);
+            $table->integer('amount');
             $table->string('payment_method')->default('vnpay');
             $table->string('status')->default('pending');
             $table->string('response_code')->nullable();

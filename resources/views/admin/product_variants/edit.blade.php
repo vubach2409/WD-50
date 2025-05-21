@@ -60,17 +60,20 @@
                         <tr>
                             <th>Màu sắc</th>
                             <td>
-                                <select name="color_id" class="form-control">
-                                    <option value="">Không có</option>
+                                <div class="d-flex flex-wrap gap-3">
                                     @foreach ($colors as $color)
-                                        <option value="{{ $color->id }}"
-                                            {{ old('color_id', $variant->color_id) == $color->id ? 'selected' : '' }}>
-                                            {{ $color->name }}
-                                        </option>
+                                        <label class="d-flex flex-column align-items-center" style="cursor: pointer;">
+                                            <input type="radio" name="color_id" value="{{ $color->id }}"
+                                                class="form-check-input mb-1"
+                                                {{ old('color_id', $variant->color_id ?? '') == $color->id ? 'checked' : '' }}>
+                                            <div
+                                                style="width: 40px; height: 40px; background-color: {{ $color->code }}; border: 1px solid #ccc; border-radius: 4px;">
+                                            </div>
+                                        </label>
                                     @endforeach
-                                </select>
+                                </div>
                                 @error('color_id')
-                                    <small class="text-danger">{{ $message }}</small>
+                                    <small class="text-danger d-block mt-2">{{ $message }}</small>
                                 @enderror
                             </td>
                         </tr>
@@ -78,7 +81,6 @@
                             <th>Kích thước</th>
                             <td>
                                 <select name="size_id" class="form-control">
-                                    <option value="">Không có</option>
                                     @foreach ($sizes as $size)
                                         <option value="{{ $size->id }}"
                                             {{ old('size_id', $variant->size_id) == $size->id ? 'selected' : '' }}>

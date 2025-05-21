@@ -23,7 +23,9 @@ class PaymentController extends Controller
     // Thanh toán
 
     public function PaymentOnline(Request $request){
-                if (isset($_POST['cod'])) {
+   
+        if (isset($_POST['cod'])) {
+        
                     // Xử lý thanh toán COD
                     $request->validate([
                         'consignee_address' => ['required', 'string', 'max:255'],
@@ -67,6 +69,7 @@ class PaymentController extends Controller
                     DB::beginTransaction();
                 
                     try {
+                       
                         $order = Orders::create([
                             'user_id' => $userId,
                             'total' => $finalTotal,
@@ -84,7 +87,7 @@ class PaymentController extends Controller
                             'voucher_code' => $voucher['code'] ?? null,
                             'discount_amount' => $discountAmount,
                         ]);
-                     
+                  
                         Payment::create([
                             'order_id' => $order->id,
                             'user_id' => $userId,
@@ -93,6 +96,7 @@ class PaymentController extends Controller
                             'status' => 'pending',
                             'transaction_id' => $order->transaction_id
                         ]);
+                        
                 
                         foreach ($cartItems as $item) {
                             $price = $item->variant->price;
@@ -100,7 +104,7 @@ class PaymentController extends Controller
                             $productName = $item->product ? $item->product->name : 'N/A'; 
                             $variantName = $variant ? $variant->variation_name : null;
                             $variantSku = $variant ? $variant->sku : null;
-                            $colorName = $variant && $variant->color ? $variant->color->name : null;
+                            $colorName = $variant && $variant->color ? $variant->color->code : null;
                             $sizeName = $variant && $variant->size ? $variant->size->name : null;
                         
                             $originalImage = $variant ? $variant->image : null;
@@ -111,6 +115,8 @@ class PaymentController extends Controller
                                 Storage::disk('public')->copy($originalImage, $newImageName);
                                 $variantImage = $newImageName;
                             }
+                          
+                       
                             OrderDetail::create([
                                 'order_id' => $order->id,
                                 'product_id' => $item->product_id,  
@@ -123,6 +129,7 @@ class PaymentController extends Controller
                                 'variant_image' => $variantImage, 
                                 'price' => $price,
                                 'quantity' => $item->quantity,
+                                
                             ]);
                 
                             // Trừ tồn kho biến thể hoặc sản phẩm
@@ -157,6 +164,7 @@ class PaymentController extends Controller
                 
                         return redirect()->route('thankyou')->with('success', 'Đặt hàng thành công, chúng tôi sẽ liên hệ với bạn sớm nhất!');
                     } catch (\Exception $e) {
+                
                         DB::rollBack();
                         return redirect()->route('thankyou')->with('error', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.');
                     }
@@ -379,13 +387,12 @@ class PaymentController extends Controller
             
                     // 8. Lưu từng sản phẩm vào OrderDetail + trừ kho
                     foreach ($cartItems as $item) {
-<<<<<<< Updated upstream
                         $price = $item->variant->price;
                         $variant = $item->variant; 
                         $productName = $item->product ? $item->product->name : 'N/A'; 
                         $variantName = $variant ? $variant->variation_name : null;
                         $variantSku = $variant ? $variant->sku : null;
-                        $colorName = $variant && $variant->color ? $variant->color->name : null;
+                        $colorName = $variant && $variant->color ? $variant->color->code : null;
                         $sizeName = $variant && $variant->size ? $variant->size->name : null;
                         $originalImage = $variant ? $variant->image : null;
                         $variantImage = null;
@@ -396,10 +403,6 @@ class PaymentController extends Controller
                             $variantImage = $newImageName;
                         }
                     
-=======
-                        // Lưu chi tiết đơn hàng
-                        $price = $item->variant->price;
->>>>>>> Stashed changes
                         OrderDetail::create([
                             'order_id' => $order->id,
                             'product_id' => $item->product_id,  
@@ -409,17 +412,10 @@ class PaymentController extends Controller
                             'variant_sku' => $variantSku,
                             'color_name' => $colorName,
                             'size_name' => $sizeName,
-                            'variant_image' => $variantImage, // 👈 Vẫn là cột variant_image
+                            'variant_image' => $variantImage, 
                             'price' => $price,
                             'quantity' => $item->quantity,
-<<<<<<< Updated upstream
                         ]);
-=======
-                            'price' => $price,
-                        ]);
-                        
-            
->>>>>>> Stashed changes
                         // Trừ tồn kho theo variant nếu có
                         if ($item->variant_id) {
                             $variant = ProductVariant::where('id', $item->variant_id)->lockForUpdate()->first();
