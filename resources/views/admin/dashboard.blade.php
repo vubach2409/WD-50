@@ -304,7 +304,7 @@
             }
 
             
-            // Biểu đồ Top 5 Sản Phẩm Bán Chạy Nhất
+            // Biểu đồ Top 5 Sản Phẩm Bán Chạy Nhất (Đã đổi sang Bar Chart)
 if (document.getElementById('bestSellingProductsStoreChart') && phpBestSellingProductLabels.length > 0 && phpBestSellingProductData.reduce((a, b) => a + b, 0) > 0) {
     const bestSellingCtx = document.getElementById('bestSellingProductsStoreChart').getContext('2d');
     new Chart(bestSellingCtx, {
@@ -330,7 +330,7 @@ if (document.getElementById('bestSellingProductsStoreChart') && phpBestSellingPr
                 ],
                 borderWidth: 1
             }]
-        },
+        },  
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -407,115 +407,7 @@ if (document.getElementById('leastSellingProductsChart') && leastSellingProductL
         }
     });
 }
-            // Biểu đồ Top 5 Sản Phẩm Bán Chạy Nhất
-            if (document.getElementById('bestSellingProductsStoreChart') && phpBestSellingProductLabels.length > 0 && phpBestSellingProductData.reduce((a, b) => a + b, 0) > 0) {
-                const bestSellingCtx = document.getElementById('bestSellingProductsStoreChart').getContext('2d');
-                new Chart(bestSellingCtx, {
-                    type: 'pie', // Loại biểu đồ là 'pie'
-                    data: {
-                        labels: phpBestSellingProductLabels,
-                        datasets: [{
-                            label: 'Số lượng bán', // This label might not be directly visible on pie chart but good for tooltips
-                            data: phpBestSellingProductData,
-                            backgroundColor: [ // Bạn có thể tùy chỉnh màu sắc
-                                'rgba(255, 99, 132, 0.7)',  // Đỏ
-                                'rgba(54, 162, 235, 0.7)', // Xanh dương
-                                'rgba(255, 206, 86, 0.7)', // Vàng
-                                'rgba(75, 192, 192, 0.7)', // Xanh lá
-                                'rgba(153, 102, 255, 0.7)',// Tím
-                                'rgba(255, 159, 64, 0.7)'  // Cam
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // Cho phép tùy chỉnh chiều cao
-                        plugins: {
-                            legend: {
-                                position: 'bottom', // Vị trí của chú giải (tên sản phẩm)
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed !== null) {
-                                            label += context.parsed + ' sản phẩm';
-                                        }
-                                        return label;
-                                    }
-                                }
-                            },
-                            title: {
-                                display: false, // Tiêu đề đã có ở card-header
-                            }
-                        }
-                    }
-                });
-            }
 
-            // Biểu đồ Top 5 Sản Phẩm Bán Ế Nhất
-            if (document.getElementById('leastSellingProductsChart') && leastSellingProductLabels.length > 0) {
-                const leastSellingCtx = document.getElementById('leastSellingProductsChart').getContext('2d');
-                new Chart(leastSellingCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: leastSellingProductLabels,
-                        datasets: [{
-                            label: 'Số lượng bán',
-                            data: leastSellingProductData,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.5)',
-                                'rgba(255, 159, 64, 0.5)',
-                                'rgba(255, 205, 86, 0.5)',
-                                'rgba(75, 192, 192, 0.5)',
-                                'rgba(54, 162, 235, 0.5)'
-                            ],
-                            borderColor: [
-                                'rgb(255, 99, 132)',
-                                'rgb(255, 159, 64)',
-                                'rgb(255, 205, 86)',
-                                'rgb(75, 192, 192)',
-                                'rgb(54, 162, 235)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { // Đảm bảo các bước là số nguyên nếu số lượng luôn là số nguyên
-                                    stepSize: Math.max(1, ...leastSellingProductData) > 5 ? undefined : 1, // Chỉ đặt stepSize=1 nếu max value nhỏ
-                                    precision: 0 // Không hiển thị số thập phân
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true, // Hiển thị chú giải 'Số lượng bán'
-                                position: 'top',
-                            },
-                            title: {
-                                display: false,
-                            }
-                        }
-                    }
-                });
-            }
             // Biểu đồ Tỷ lệ Trạng thái Đơn hàng
             if (document.getElementById('orderStatusChart') && orderStatusLabels.length > 0) {
                 const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
