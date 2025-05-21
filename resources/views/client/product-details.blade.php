@@ -208,23 +208,48 @@
 
 
                 {{-- Sản phẩm liên quan --}}
-                <div class="mt-5">
-                    <h4>Sản phẩm liên quan</h4>
-                    <div class="row g-3">
-                        @forelse ($relatedProducts as $item)
-                            <div class="col-6 col-md-3">
-                                <a href="{{ route('product.details', $item->id) }}" class="text-decoration-none">
-                                    <div class="card border-0 h-100 shadow-sm">
-                                        <img src="{{ asset('storage/' . $item->image) }}" class="card-img-top"
-                                            style="height: 180px; object-fit: cover;">
-                                        <div class="card-body p-2">
-                                            <h6 class="card-title text-truncate">{{ $item->name }}</h6>
-                                            <p class="card-text text-danger fw-semibold mb-0">
-                                                {{ number_format($item->price_sale ?? $item->price, 0, ',', '.') }}đ
+                <div class="mt-5 popular-product">
+                    <h4 class="mb-4 text-center">Sản phẩm liên quan</h4>
+                    <div class="row justify-content-center">
+                        @forelse ($relatedProducts as $product)
+                                        <div class="col-6 col-md-3">
+                                <div class="product-item position-relative overflow-hidden">
+                                    <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
+                                        <div class="product-image position-relative">
+                                            <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
+                                                alt="{{ $product->name }}">
+
+                                            @if ($product->is_new)
+                                                <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
+                                            @elseif($product->price_sale < $product->price)
+                                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
+                                            @endif
+                                        </div>
+
+                                        <div class="product-info p-3">
+                                            <h5 class="product-title text-dark mb-1" style="font-size: 1rem;">
+                                                {{ $product->name }}
+                                            </h5>
+                                            <p class="product-price mb-2">
+                                                <span class="text-danger fw-bold">
+                                                    {{ number_format($product->price_sale ?? $product->price, 0, ',', '.') }}đ -
+                                                </span>
+                                                @if ($product->price_sale && $product->price_sale < $product->price)
+                                                    <span class="text-danger fw-bold">
+                                                        {{ number_format($product->price, 0, ',', '.') }}đ
+                                                    </span>
+                                                @endif
                                             </p>
                                         </div>
-                                    </div>
-                                </a>
+
+                                        <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
+                                            <a href="{{ route('product.details', $product->id) }}"
+                                                class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
+                                                <i class="bi bi-eye me-1"></i> Xem chi tiết
+                                            </a>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         @empty
                             <div class="col-12">
