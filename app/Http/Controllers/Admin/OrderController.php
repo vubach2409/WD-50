@@ -108,21 +108,21 @@ if ($payment) {
 
 
 
-    if ($order->status == 'completed') {
-        foreach ($order->items as $orderItem) {
-            if ($orderItem->variant_id) {
-                // Nếu đơn hàng là từ biến thể sản phẩm
-                $variant = ProductVariant::withTrashed()->find($orderItem->variant_id);
-                if ($variant) {
-                    // Trừ stock của biến thể
-                    $variant->stock -= $orderItem->quantity;
-                    $variant->save();
+    // if ($order->status == 'completed') {
+    //     foreach ($order->items as $orderItem) {
+    //         if ($orderItem->variant_id) {
+    //             // Nếu đơn hàng là từ biến thể sản phẩm
+    //             $variant = ProductVariant::withTrashed()->find($orderItem->variant_id);
+    //             if ($variant) {
+    //                 // Trừ stock của biến thể
+    //                 $variant->stock -= $orderItem->quantity;
+    //                 $variant->save();
 
                     
-                }
-            } 
-        }
-    }
+    //             }
+    //         } 
+    //     }
+    // }
      $user = $order->user; // giả sử đơn hàng có quan hệ belongsTo với user
     $user->notify(new OrderStatusUpdated($order));
 
