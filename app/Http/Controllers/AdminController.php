@@ -28,11 +28,16 @@ class AdminController extends Controller
 
         // Dữ liệu cho các card thống kê
         $totalProducts = Product::count();
-        $totalOrders = Orders::count();
+        
+        $totalOrdersQuery = Orders::query();
+        if ($queryStartDate && $queryEndDate) {
+            $totalOrdersQuery->whereBetween('created_at', [$queryStartDate, $queryEndDate]);
+        }
+        $totalOrders = $totalOrdersQuery->count();
+
         $totalCustomers = User::where('role', '!=', 'admin')->count();
 
         // Doanh thu tháng này (chỉ tính đơn hàng đã hoàn thành)
-        // Giả sử cột tổng tiền của đơn hàng là 'total' và trạng thái hoàn thành là 'completed'
         $totalRevenueThisMonth = Orders::where('status', 'completed')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
@@ -41,21 +46,67 @@ class AdminController extends Controller
         // Sản phẩm mới trong 30 ngày gần nhất
         $newProducts = Product::where('created_at', '>=', now()->subDays(30))->count();
 
-        // --- Dữ liệu cho Biểu đồ Doanh thu 7 ngày gần nhất ---
-        $revenueLast7DaysLabels = [];
-        $revenueLast7DaysData = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::today()->subDays($i);
-            $revenueLast7DaysLabels[] = $date->format('d/m');
-            $revenue = Orders::where('status', 'completed') // Chỉ tính đơn hàng hoàn thành
-                ->whereDate('created_at', $date)
-                ->sum('total'); // Sử dụng cột 'total'
-            $revenueLast7DaysData[] = $revenue;
+        // --- Dữ liệu cho Biểu đồ Doanh thu ---
+        $revenueChartLabels = [];
+        $revenueChartData = [];
+
+        $revenueQueryBase = Orders::where('status', 'completed');
+
+        if ($queryStartDate && $queryEndDate) {
+            $dailyRevenue = $revenueQueryBase
+                ->whereBetween('created_at', [$queryStartDate, $queryEndDate])
+                ->select(
+                    DB::raw("DATE(created_at) as order_date"),
+                    DB::raw("SUM(total) as daily_total")
+                )
+                ->groupBy('order_date')
+                ->orderBy('order_date', 'ASC')
+                ->get()
+                ->keyBy(function ($item) {
+                    return Carbon::parse($item->order_date)->format('Y-m-d');
+                });
+
+            $currentDate = $queryStartDate->clone();
+            while ($currentDate <= $queryEndDate) {
+                $dateKey = $currentDate->format('Y-m-d');
+                $revenueChartLabels[] = $currentDate->format('d/m/Y');
+                $revenueChartData[] = $dailyRevenue->get($dateKey)->daily_total ?? 0;
+                $currentDate->addDay();
+            }
+        } else {
+            // Default: Last 7 days
+            $startOf7Days = Carbon::today()->subDays(6)->startOfDay();
+            $endOf7Days = Carbon::today()->endOfDay();
+
+            $dailyRevenue = $revenueQueryBase
+                ->whereBetween('created_at', [$startOf7Days, $endOf7Days])
+                ->select(
+                    DB::raw("DATE(created_at) as order_date"),
+                    DB::raw("SUM(total) as daily_total")
+                )
+                ->groupBy('order_date')
+                ->orderBy('order_date', 'ASC')
+                ->get()
+                ->keyBy(function ($item) {
+                    return Carbon::parse($item->order_date)->format('Y-m-d');
+                });
+            
+            for ($i = 6; $i >= 0; $i--) {
+                $date = Carbon::today()->subDays($i);
+                $dateKey = $date->format('Y-m-d');
+                $revenueChartLabels[] = $date->format('d/m');
+                $revenueChartData[] = $dailyRevenue->get($dateKey)->daily_total ?? 0;
+            }
         }
 
+
         // --- Dữ liệu cho Biểu đồ Tỷ lệ Trạng thái Đơn hàng ---
-        // Các trạng thái từ OrderController: pending, shipping, completed, cancelled
-        $orderStatusCounts = Orders::select('status', DB::raw('count(*) as count'))
+        $orderStatusQuery = Orders::query();
+        if ($queryStartDate && $queryEndDate) {
+            $orderStatusQuery->whereBetween('created_at', [$queryStartDate, $queryEndDate]);
+        }
+        
+        $orderStatusCounts = $orderStatusQuery->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->pluck('count', 'status')->all();
 
@@ -64,18 +115,26 @@ class AdminController extends Controller
             'shipping' => 'Đang giao',
             'completed' => 'Hoàn thành',
             'cancelled' => 'Thất bại',
+            // Thêm các trạng thái khác nếu có
         ];
 
         $orderStatusLabels = [];
         $orderStatusData = [];
+        // Đảm bảo thứ tự và đầy đủ các trạng thái
+        foreach ($statusTranslations as $statusKey => $displayName) {
+            $orderStatusLabels[] = $displayName;
+            $orderStatusData[] = $orderStatusCounts[$statusKey] ?? 0;
+        }
+        // Xử lý các trạng thái không có trong $statusTranslations (nếu có)
         foreach ($orderStatusCounts as $status => $count) {
-            $orderStatusLabels[] = $statusTranslations[$status] ?? ucfirst($status);
-            $orderStatusData[] = $count;
+            if (!array_key_exists($status, $statusTranslations)) {
+                $orderStatusLabels[] = ucfirst($status);
+                $orderStatusData[] = $count;
+            }
         }
 
+
         // --- Dữ liệu cho Sản phẩm bán chạy nhất (Top 5) ---
-        // Sử dụng bảng 'order_details' với các cột 'product_id', 'order_id', 'quantity'
-        // và bảng 'orders' có cột 'status'
         $bestSellingQuery = DB::table('order_details')
             ->join('products', 'order_details.product_id', '=', 'products.id')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
@@ -87,9 +146,9 @@ class AdminController extends Controller
 
         $bestSellingProductsRaw = $bestSellingQuery
             ->select('products.name as product_name', DB::raw('SUM(order_details.quantity) as total_quantity_sold'))
-            ->groupBy('products.id', 'products.name') // Group by product ID and name
+            ->groupBy('products.id', 'products.name')
             ->orderByDesc('total_quantity_sold')
-            ->limit(5) // Lấy top 5 sản phẩm
+            ->limit(5)
             ->get();
         $bestSellingProductLabels = [];
         $bestSellingProductData = [];
@@ -101,21 +160,23 @@ class AdminController extends Controller
         // --- Dữ liệu cho Sản phẩm bán ế nhất (Top 5) ---
         $salesSubquery = DB::table('order_details')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
-            ->where('orders.status', 'completed')
-            ->select('order_details.product_id', DB::raw('SUM(order_details.quantity) as total_sold'))
-            ->groupBy('order_details.product_id');
-
+            ->where('orders.status', 'completed');
+            
         if ($queryStartDate && $queryEndDate) {
             $salesSubquery->whereBetween('orders.created_at', [$queryStartDate, $queryEndDate]);
         }
+        
+        $salesSubquery->select('order_details.product_id', DB::raw('SUM(order_details.quantity) as total_sold'))
+            ->groupBy('order_details.product_id');
+
 
         $leastSellingProductsRaw = DB::table('products')
             ->leftJoinSub($salesSubquery, 'sales', function ($join) {
                 $join->on('products.id', '=', 'sales.product_id');
             })
             ->select('products.name as product_name', DB::raw('COALESCE(sales.total_sold, 0) as total_quantity_sold'))
-            ->orderBy('total_quantity_sold', 'asc') // Sắp xếp theo số lượng bán (0 trước)
-            ->orderBy('products.name', 'asc')       // Sau đó theo tên sản phẩm để nhất quán
+            ->orderBy('total_quantity_sold', 'asc')
+            ->orderBy('products.name', 'asc')
             ->limit(5)
             ->get();
 
@@ -129,20 +190,20 @@ class AdminController extends Controller
         // Truyền dữ liệu vào view
         return view('admin.dashboard', compact(
             'totalProducts',
-            'totalOrders',
+            'totalOrders', // Đã được lọc
             'totalCustomers',
             'totalRevenueThisMonth',
             'newProducts',
-            'revenueLast7DaysLabels',
-            'revenueLast7DaysData',
+            'revenueChartLabels', 
+            'revenueChartData',   
             'orderStatusLabels',
             'orderStatusData',
-            'bestSellingProductLabels', // Dữ liệu cho nhãn biểu đồ sản phẩm bán chạy
-            'bestSellingProductData',    // Dữ liệu cho giá trị biểu đồ sản phẩm bán chạy
+            'bestSellingProductLabels',
+            'bestSellingProductData',
             'leastSellingProductLabels',
             'leastSellingProductData',
-            'startDateInput', // Để điền lại form filter
-            'endDateInput'    // Để điền lại form filter
+            'startDateInput',
+            'endDateInput'
         ));
     }
 }
