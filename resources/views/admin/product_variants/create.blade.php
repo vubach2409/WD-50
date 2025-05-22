@@ -88,6 +88,15 @@
                             </td>
                         </tr>
                         <tr>
+                            <th>Mô tả</th>
+                            <td>
+                                <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
+                                @error('description')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Số lượng kho</th>
                             <td>
                                 <input type="number" name="stock" class="form-control" value="{{ old('stock', 1) }}">

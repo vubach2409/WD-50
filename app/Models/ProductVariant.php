@@ -19,7 +19,8 @@ class ProductVariant extends Model
         'sku', 
         'price', 
         'image', 
-        'stock'
+        'stock',
+        'description'
     ];
     public function color()
     {
