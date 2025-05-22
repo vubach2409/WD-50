@@ -81,7 +81,7 @@
                         </span>
                     </h4>
 
-                    <p>{{ $variant->description }}</p>
+                    <p id="variantDescription" style="display:none;"></p>
                     <p><strong>SKU:</strong> <span id="variantSku">{{ $product->sku ?? 'Chưa chọn' }}</span></p>
                     <p><strong>Kho:</strong> <span id="stockStatus">Chưa chọn</span></p>
 
@@ -346,6 +346,14 @@
                     variantPriceBox.classList.remove('d-none');
                     defaultPriceBox.classList.add('d-none');
 
+                    const variantDescriptionEl = document.getElementById('variantDescription');
+                    if (selected.description && selected.description.trim() !== '') {
+                        variantDescriptionEl.textContent = selected.description;
+                        variantDescriptionEl.style.display = 'block';
+                    } else {
+                        variantDescriptionEl.style.display = 'none';
+                        variantDescriptionEl.textContent = '';
+                    }
                     if (selected.image) {
                         let carousel = document.querySelector('#productCarousel .carousel-inner');
                         let activeItem = carousel.querySelector('.carousel-item.active');
@@ -365,6 +373,8 @@
                         addToCartBtn.disabled = true;
                     }
                 } else {
+                    variantDescriptionEl.style.display = 'none';
+                    variantDescriptionEl.textContent = '';
                     priceBox.textContent = Number(@json($product->price_sale)).toLocaleString('vi-VN') + ' ₫';
                     skuBox.textContent = 'Chưa chọn';
                     stockBox.textContent = 'Chưa chọn';
