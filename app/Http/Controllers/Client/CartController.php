@@ -30,11 +30,25 @@ class CartController extends Controller
                 ->where('session_id', Session::getId())
                 ->get();
         }
-        $cartItems = Carts::where('user_id', Auth::id())->with('product')->get();
-        $totalPrice = $cartItems->sum(function ($item) {
 
-            return $item->quantity * $item->variant->price;
+        // Lọc các item lỗi
+        $cartItems = $cartItems->filter(function ($item) {
+            return $item->product && (!$item->variant_id || $item->variant);
         });
+
+        // Tính tổng tiền an toàn
+        $totalPrice = $cartItems->sum(function ($item) {
+            $price = 0;
+
+            if ($item->variant && $item->variant->price) {
+                $price = $item->variant->price;
+            } elseif ($item->product && $item->product->price) {
+                $price = $item->product->price;
+            }
+
+            return $item->quantity * $price;
+        });
+
         return view('client.cart', compact('cartItems', 'totalPrice'));
     }
 
@@ -258,14 +272,17 @@ class CartController extends Controller
             ->get();
 
         if ($cartItems->isEmpty()) {
-            return response()->json([
-                'empty' => true
-            ]);
+            return response()->json(['empty' => true]);
         }
 
         $items = [];
 
         foreach ($cartItems as $item) {
+            // Nếu thiếu product hoặc variant (khi có variant_id) thì bỏ qua
+            if (!$item->product || ($item->variant_id && !$item->variant)) {
+                continue;
+            }
+
             $variantData = null;
             if ($item->variant) {
                 $variantData = $item->variant->toArray();
@@ -274,10 +291,12 @@ class CartController extends Controller
                 $variantData['size_name'] = $item->variant->size->name ?? null;
             }
 
+            $price = $item->variant ? $item->variant->price : $item->product->price;
+
             $items[] = [
-                'name' => $item->product->name,
+                'name' => $variantData['variant_name'] ?? $item->product->name,
                 'quantity' => $item->quantity,
-                'price' => $item->variant ? $item->variant->price : $item->product->price,
+                'price' => $price,
                 'product' => [
                     'image' => $item->product->image,
                 ],
@@ -285,12 +304,16 @@ class CartController extends Controller
             ];
         }
 
+        if (empty($items)) {
+            return response()->json(['empty' => true]);
+        }
+
         return response()->json([
             'empty' => false,
             'items' => $items,
-            'total_quantity' => $cartItems->sum('quantity'),
-            'total_price' => $cartItems->sum(function ($item) {
-                return ($item->variant ? $item->variant->price : $item->product->price) * $item->quantity;
+            'total_quantity' => collect($items)->sum('quantity'),
+            'total_price' => collect($items)->sum(function ($item) {
+                return $item['price'] * $item['quantity'];
             }),
         ]);
     }

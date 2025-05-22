@@ -70,23 +70,17 @@
                                                 <form action="{{ route('cart.update', $item->id ?? 0) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
-
                                                     <input type="number" class="form-control quantity-input"
                                                         data-id="{{ $item->id }}" value="{{ $item->quantity }}"
                                                         min="1" max="{{ $item->variant->stock }}" />
+                                                </form>
 
                                             <td>{{ number_format($item->variant->price * $item->quantity) }}₫</td>
-                                            {{-- <input type="number" name="quantity" value="{{ $item->quantity }}"
-                                                min="1" max="{{ $item->variant->stock }}" class="form-control"
-                                                style="width: 80px; display:inline-block;" />
-                                            <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button> --}}
+
 
                 </form>
                 </td>
-                {{-- <td>
-                    {{ number_format($item->variant->price * $item->quantity, 0, ',', '.') }}
-                    VNĐ
-                </td> --}}
+
                 <td>
                     <form action="{{ route('cart.remove', $item->id) }}" method="POST" style="display:inline;">
                         @csrf
@@ -230,6 +224,7 @@
     </div>
     @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
     <script>
         $(document).ready(function() {
             $('.quantity-input').on('change', function() {
@@ -261,4 +256,5 @@
 
         });
     </script>
+     
 @endsection
