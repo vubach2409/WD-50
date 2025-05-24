@@ -98,6 +98,8 @@
                                 </td>
                                 <td class="align-middle">
                                     <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-info">Chi tiết</a>
+                                    <a href="{{ route('admin.product_variants.create', $product->id) }}" class="btn btn-primary">Thêm biến thể</a>
+
                                 </td>
                             </tr>
                         @endforeach

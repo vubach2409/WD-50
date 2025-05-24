@@ -479,3 +479,4 @@ if (document.getElementById('leastSellingProductsChart') && leastSellingProductL
         });
     </script>
 @endsection
+
