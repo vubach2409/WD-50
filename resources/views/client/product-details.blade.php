@@ -81,7 +81,7 @@
                         </span>
                     </h4>
 
-                    <p id="variantDescription" style="display:none;"></p>
+                    <p>{{ $product->short_description }}</p>
                     <p><strong>SKU:</strong> <span id="variantSku">{{ $product->sku ?? 'Chưa chọn' }}</span></p>
                     <p><strong>Kho:</strong> <span id="stockStatus">Chưa chọn</span></p>
 

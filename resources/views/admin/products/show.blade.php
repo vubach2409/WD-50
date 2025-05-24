@@ -28,7 +28,10 @@
                                 <strong>Thương hiệu:</strong> {{ $product->brand->name }}
                             </li>
                             <li class="list-group-item">
-                                <strong>Mô tả:</strong> {{ $product->description ?? 'Không có mô tả' }}
+                                <strong>Mô tả ngắn:</strong> {{ $product->short_description ?? 'Không có mô tả' }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Mô tả chi tiết:</strong> {{ $product->description ?? 'Không có mô tả' }}
                             </li>
                             <li class="list-group-item">
                                 <strong>Ngày tạo:</strong> {{ $product->created_at->format('d/m/Y') }}

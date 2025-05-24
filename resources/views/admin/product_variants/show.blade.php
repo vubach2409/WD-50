@@ -42,9 +42,6 @@
                                 <strong>Giá: </strong> {{ number_format($variant->price) }} đ
                             </li>
                             <li class="list-group-item">
-                                <strong>Mô tả: </strong> {{ $variant->description ?? 'Không có mô tả' }}
-                            </li>
-                            <li class="list-group-item">
                                 <strong>Tồn kho: </strong> {{ $variant->stock }}
                             </li>
                             <li class="list-group-item">

@@ -100,7 +100,17 @@
                         </tr>
 
                         <tr>
-                            <th>Mô tả sản phẩm</th>
+                            <th>Mô tả ngắn</th>
+                            <td>
+                                <textarea name="short_description" class="form-control @error('short_description') is-invalid @enderror" rows="4">{{ old('short_description', $product->short_description) }}</textarea>
+                                @error('short_description')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Mô tả chi tiết sản phẩm</th>
                             <td>
                                 <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4">{{ old('description', $product->description) }}</textarea>
                                 @error('description')

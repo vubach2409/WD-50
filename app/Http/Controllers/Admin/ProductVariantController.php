@@ -71,7 +71,6 @@ class ProductVariantController extends Controller
                 }
             },
         ],
-        'description' => 'nullable|string|max:255',
         'stock' => 'required|integer|min:0',
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ], [
@@ -84,8 +83,6 @@ class ProductVariantController extends Controller
         'price.required' => 'Giá không được để trống.',
         'price.numeric' => 'Giá phải là số.',
         'price.min' => 'Giá phải lớn hơn hoặc bằng 0.',
-        'description.max' => 'Mô tả không được vượt quá 255 ký tự.',
-        'description.string' => 'Mô tả phải là chuỗi ký tự.',
         'stock.required' => 'Số lượng tồn kho không được để trống.',
         'stock.integer' => 'Số lượng tồn kho phải là số nguyên.',
         'stock.min' => 'Số lượng tồn kho không thể nhỏ hơn 0.',
@@ -154,7 +151,6 @@ class ProductVariantController extends Controller
                 }
             },
         ],
-        'description' => 'nullable|string|max:255',
         'stock' => 'required|integer|min:0',
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ], [
@@ -167,8 +163,6 @@ class ProductVariantController extends Controller
         'price.required' => 'Giá không được để trống.',
         'price.numeric' => 'Giá phải là số.',
         'price.min' => 'Giá phải lớn hơn hoặc bằng 0.',
-        'description.max' => 'Mô tả không được vượt quá 255 ký tự.',
-        'description.string' => 'Mô tả phải là chuỗi ký tự.',
         'stock.required' => 'Số lượng tồn kho không được để trống.',
         'stock.integer' => 'Số lượng tồn kho phải là số nguyên.',
         'stock.min' => 'Số lượng tồn kho không thể nhỏ hơn 0.',

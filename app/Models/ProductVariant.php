@@ -20,7 +20,6 @@ class ProductVariant extends Model
         'price', 
         'image', 
         'stock',
-        'description'
     ];
     public function color()
     {
