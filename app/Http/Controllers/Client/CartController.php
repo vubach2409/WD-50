@@ -117,10 +117,32 @@ class CartController extends Controller
 
 
     // Cập nhật số lượng sản phẩm trong giỏ hàng
+    protected function calculateCartTotal()
+    {
+        // Giả sử bạn lưu cart trong session hoặc DB
+        $cart = session('cart', []);
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+        return $total;
+    }
     public function update(Request $request, $id)
     {
-        $cartItem = Carts::findOrFail($id);
-        $stock = $cartItem->variant->stock;
+        // Tìm cart item thuộc về người dùng hiện tại
+        $cartItem = Carts::with(['product', 'variant'])
+            ->where('id', $id)
+            ->where(function ($q) {
+                if (Auth::check()) {
+                    $q->where('user_id', Auth::id());
+                } else {
+                    $q->where('session_id', Session::getId());
+                }
+            })
+            ->firstOrFail();
+
+        // Lấy tồn kho: ưu tiên variant nếu có, fallback về product
+        $stock = $cartItem->variant->stock ?? $cartItem->product->stock ?? 0;
 
         $validatedData = $request->validate([
             'quantity' => ['required', 'integer', 'min:1', 'max:' . $stock],
@@ -131,10 +153,37 @@ class CartController extends Controller
             'quantity.max' => 'Số lượng yêu cầu vượt quá hàng tồn kho. Chỉ còn lại ' . $stock . ' sản phẩm.',
         ]);
 
+        // Cập nhật số lượng
         $cartItem->quantity = $validatedData['quantity'];
         $cartItem->save();
 
-        return response()->json(['success' => 'Cập nhật giỏ hàng thành công.']);
+        // Tính lại giá dòng này
+        $unitPrice = $cartItem->variant->price ?? $cartItem->product->price ?? 0;
+        $itemTotal = $unitPrice * $cartItem->quantity;
+
+        // Lấy toàn bộ giỏ hàng hiện tại
+        $cartItems = Carts::with(['product', 'variant'])
+            ->where(function ($q) {
+                if (Auth::check()) {
+                    $q->where('user_id', Auth::id());
+                } else {
+                    $q->where('session_id', Session::getId());
+                }
+            })
+            ->get();
+
+        // Tính tổng tiền toàn bộ giỏ hàng
+        $grandTotal = $cartItems->sum(function ($item) {
+            $price = $item->variant->price ?? $item->product->price ?? 0;
+            return $item->quantity * $price;
+        });
+
+        return response()->json([
+            'success' => 'Cập nhật số lượng thành công.',
+            'new_total_price' => number_format($cartItem->variant->price * $cartItem->quantity, 0, ',', '.'),
+            'grand_total' => number_format($this->calculateCartTotal(auth()->id()), 0, ',', '.'),
+            'discount' => session('voucher')['discount'] ?? 0
+        ]);
     }
 
 
