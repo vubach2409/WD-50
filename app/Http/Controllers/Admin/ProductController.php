@@ -179,7 +179,7 @@ class ProductController extends Controller
     }
     public function trash()
     {
-        $products = Product::onlyTrashed()->paginate(8);
+        $products = Product::onlyTrashed()->orderByDesc('created_at', 'desc')->paginate(8);
         return view('admin.products.trash', compact('products'));
     }
     public function restore($id)

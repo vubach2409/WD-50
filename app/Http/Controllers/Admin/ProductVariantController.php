@@ -17,7 +17,7 @@ class ProductVariantController extends Controller
     {
         return view('admin.product_variants.index', [
             'product' => $product,
-            'variants' => $product->variants
+            'variants' => $product->variants()->orderByDesc('created_at')->get()
         ]);
     }
 
@@ -193,7 +193,7 @@ class ProductVariantController extends Controller
 
     public function trash(Product $product)
     {
-        $variants = $product->variants()->onlyTrashed()->get();
+        $variants = $product->variants()->onlyTrashed()->orderByDesc('created_at')->get();
 
         return view('admin.product_variants.trash', [
             'product' => $product,

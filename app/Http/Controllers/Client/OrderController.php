@@ -23,7 +23,7 @@ class OrderController extends Controller
         // $transactions = Transaction::where('user_id', $user->id)->latest()->get();
         // return view('client.account.index',compact('user','orders','transactions'));
         $orders = Orders::where('user_id', auth()->id())
-        ->orderBy('created_at', 'desc')
+        ->orderBy('id', 'desc')
         ->paginate(10);
 
     return view('client.account.orders.index', compact('orders'));
@@ -40,18 +40,34 @@ class OrderController extends Controller
     }
     
     public function showOrder()
-    {
-        $userId = Auth::id(); // hoặc auth()->id()
-    
-        $ordersByStatus = [
-            'pending' => Orders::where('user_id', $userId)->where('status', 'pending')->get(),
-            'completed' => Orders::where('user_id', $userId)->where('status', 'completed')->get(),
-            'cancelled' => Orders::where('user_id', $userId)->where('status', 'cancelled')->get(),
-            'shipping' => Orders::where('user_id', $userId)->where('status', 'shipping')->get(),
-        ];
-    
-        return view('client.account.orders.index', compact('ordersByStatus'));
-    }
+{
+    $userId = auth()->id();
+
+    $ordersByStatus = [
+        'pending' => Orders::where('user_id', $userId)
+                        ->where('status', 'pending')
+                        ->orderBy('id', 'desc')
+                        ->get(),
+
+        'completed' => Orders::where('user_id', $userId)
+                        ->where('status', 'completed')
+                        ->orderBy('id', 'desc')
+                        ->get(),
+
+        'cancelled' => Orders::where('user_id', $userId)
+                        ->where('status', 'cancelled')
+                        ->orderBy('id', 'desc')
+                        ->get(),
+
+        'shipping' => Orders::where('user_id', $userId)
+                        ->where('status', 'shipping')
+                        ->orderBy('id', 'desc')
+                        ->get(),
+    ];
+
+    return view('client.account.orders.index', compact('ordersByStatus'));
+}
+
     public function cancelOrder($id){
         // Tìm đơn hàng cần huỷ
 
