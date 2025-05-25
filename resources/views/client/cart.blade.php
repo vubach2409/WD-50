@@ -80,7 +80,7 @@
                                                 -
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="item-total">
                                             @if ($item->variant)
                                                 {{ number_format($item->variant->price * $item->quantity, 0, ',', '.') }}
                                                 VNĐ
@@ -180,9 +180,11 @@
 
                                     <div class="row mb-3">
                                         <div class="col-md-6"><span class="text-black">Tạm tính</span></div>
-                                        <div class="col-md-6 text-right"><strong
-                                                class="text-black">{{ number_format($totalPrice, 0, ',', '.') }}
-                                                VNĐ</strong></div>
+                                        <div class="col-md-6 text-right">
+                                            <strong id="sub-total" class="text-black">
+                                                {{ number_format($totalPrice, 0, ',', '.') }} VNĐ
+                                            </strong>
+                                        </div>
                                     </div>
 
                                     @if ($discount)
@@ -194,11 +196,14 @@
                                         </div>
                                     @endif
 
+                                    <!-- Tổng -->
                                     <div class="row mb-5">
                                         <div class="col-md-6"><span class="text-black">Tổng</span></div>
-                                        <div class="col-md-6 text-right"><strong
-                                                class="text-black">{{ number_format($finalTotal, 0, ',', '.') }}
-                                                VNĐ</strong></div>
+                                        <div class="col-md-6 text-right">
+                                            <strong id="grand-total" class="text-black">
+                                                {{ number_format($finalTotal, 0, ',', '.') }} VNĐ
+                                            </strong>
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -239,10 +244,12 @@
                     },
                     success: function(response) {
                         // Cập nhật tiền từng sản phẩm
-                        $row.find('td').eq(5).text(response.new_total_price + ' VNĐ');
+                        const newPriceFormatted = response.new_total_price.toLocaleString(
+                            'vi-VN') + ' VNĐ';
+                        $row.find('.item-total').text(newPriceFormatted);
 
                         // Cập nhật tổng đơn hàng
-                        $('.text-right strong.text-black').last().text(response.grand_total +
+                        $('#grand-total').text(response.grand_total.toLocaleString('vi-VN') +
                             ' VNĐ');
 
                         // Nếu có giảm giá
@@ -250,16 +257,15 @@
                             $('.text-success').text('-' + response.discount.toLocaleString(
                                 'vi-VN') + ' VNĐ');
                         }
+                        $('#sub-total').text(response.sub_total.toLocaleString('vi-VN') + ' VNĐ');
 
                         toastr.success(response.success || 'Cập nhật thành công!');
                     },
                     error: function(xhr) {
-                        console.log('XHR response:', xhr.responseText);
-                        if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON
-                            .errors.quantity) {
+                        if (xhr.responseJSON?.errors?.quantity) {
                             toastr.error(xhr.responseJSON.errors.quantity[0]);
-                        } else if (xhr.responseJSON && xhr.responseJSON.stock !== undefined) {
-                            toastr.error('Số lượng vượt quá hàng tồn kho. Còn lại: ' + xhr
+                        } else if (xhr.responseJSON?.stock !== undefined) {
+                            toastr.error('Số lượng vượt quá tồn kho. Còn lại: ' + xhr
                                 .responseJSON.stock);
                         } else {
                             toastr.error('Đã xảy ra lỗi, vui lòng thử lại.');
