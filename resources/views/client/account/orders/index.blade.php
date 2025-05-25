@@ -104,13 +104,12 @@
                                                                     Xem chi tiết
                                                                 </a>
                                                                 @if ($order->status == 'pending')
-                                                                    <form
-                                                                        action="{{ route('account.orders.cancel', $order->id) }}"
-                                                                        method="POST">
+                                                                    <form action="{{ route('account.orders.cancel', $order->id) }}"
+                                                                        method="POST"
+                                                                        onsubmit="return confirm('Bạn có chắn muốn hủy đơn hàng này không?');">
                                                                         @csrf
                                                                         @method('PUT')
-                                                                        <button type="submit"
-                                                                            class="badge bg-danger btn-sm">Hủy đơn</button>
+                                                                        <button type="submit" class="badge bg-danger btn-sm">Hủy đơn</button>
                                                                     </form>
                                                                 @endif
 

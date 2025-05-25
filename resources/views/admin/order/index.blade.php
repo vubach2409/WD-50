@@ -76,15 +76,24 @@
                                         <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
-                                            <select name="status" class="form-control" onchange="this.form.submit()">
-                                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>
-                                                    Chờ xử lý</option>
-                                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>
-                                                    Đang giao</option>
-                                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>
-                                                    Đã giao</option>
-                                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
-                                                    Đã hủy</option>
+                                            <select name="status" class="form-control"
+                                                onchange="
+                                                    if (this.value === 'cancelled') {
+                                                        if (confirm('Hủy đơn hàng này?')) {
+                                                            this.form.submit();
+                                                        } else {
+                                                            this.value = '{{ $order->status }}';
+                                                        }
+                                                    } else if (confirm('Thay đổi trạng thái đơn hàng?')) {
+                                                        this.form.submit();
+                                                    } else {
+                                                        this.value = '{{ $order->status }}';
+                                                    }
+                                                ">
+                                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
+                                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang giao</option>
+                                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Đã giao</option>
+                                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Huỷ đơn</option>
                                             </select>
                                         </form>
                                     @elseif ($order->status == 'completed')
