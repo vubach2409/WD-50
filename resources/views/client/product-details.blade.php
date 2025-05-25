@@ -119,10 +119,10 @@
                                 <div class="mb-3">
                                     <label for="quantity" class="form-label">Số lượng:</label>
                                     <input type="number" class="form-control" id="quantity" name="quantity" value="1"
-                                        min="1" disabled>
+                                        min="1" >
                                 </div>
 
-                                <button class="btn btn-primary w-100" type="submit" id="addToCartBtn" disabled>
+                                <button class="btn btn-primary w-100" type="submit" id="addToCartBtn">
                                     <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
                                 </button>
                             </form>
