@@ -112,33 +112,52 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng!');
     }
 
-
-
-
-
     // Cập nhật số lượng sản phẩm trong giỏ hàng
+    protected function calculateCartTotal()
+    {
+        // Giả sử bạn lưu cart trong session hoặc DB
+        $cart = session('cart', []);
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+        return $total;
+    }
     public function update(Request $request, $id)
     {
-        $cartItem = Carts::findOrFail($id);
-        $stock = $cartItem->variant->stock;
-
-        $validatedData = $request->validate([
-            'quantity' => ['required', 'integer', 'min:1', 'max:' . $stock],
-        ], [
-            'quantity.required' => 'Vui lòng nhập số lượng.',
-            'quantity.integer' => 'Số lượng phải là một số nguyên.',
-            'quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
-            'quantity.max' => 'Số lượng yêu cầu vượt quá hàng tồn kho. Chỉ còn lại ' . $stock . ' sản phẩm.',
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem->quantity = $validatedData['quantity'];
+        $cartItem = Carts::findOrFail($id);
+
+        if ($request->quantity > $cartItem->variant->stock) {
+            return response()->json(['stock' => $cartItem->variant->stock], 422);
+        }
+
+        $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
-        return response()->json(['success' => 'Cập nhật giỏ hàng thành công.']);
+        // Tính tiền từng sản phẩm
+        $newTotalPrice = $cartItem->variant->price * $cartItem->quantity;
+
+        // Tổng tiền đơn hàng (dựa trên user hoặc session)
+        $cartItems = Carts::where('user_id', auth()->id())->get();
+        $grandTotal = $cartItems->sum(fn($item) => $item->variant->price * $item->quantity);
+        $subTotal = $cartItems->sum(fn($item) => $item->variant->price * $item->quantity);
+
+        // Trừ giảm giá nếu có
+        $discount = session('voucher')['discount'] ?? 0;
+        $grandTotal = max(0, $grandTotal - $discount);
+
+        return response()->json([
+            'new_total_price' => $newTotalPrice,
+            'grand_total' => $grandTotal,
+            'sub_total' => $subTotal,
+            'discount' => $discount,
+            'success' => 'Cập nhật số lượng thành công',
+        ]);
     }
-
-
-
 
     // Xóa sản phẩm khỏi giỏ hàng
     public function removeFromCart($id)
