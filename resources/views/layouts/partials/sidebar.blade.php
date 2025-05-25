@@ -179,7 +179,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNice"
             aria-expanded="true" aria-controls="collapseNice">
             <i class="fas fa-comments"></i>
-            <span>Quản lý Bình luận</span>
+            <span>Quản lý Đánh giá</span>
         </a>
         <div id="collapseNice" class="collapse {{ request()->routeIs('admin.feedbacks.*') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
