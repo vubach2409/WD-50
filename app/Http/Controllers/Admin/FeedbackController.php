@@ -3,31 +3,42 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Feedbacks;
 use Illuminate\Http\Request;
+use App\Models\Feedbacks;
+use App\Models\ProductVariant;
 
 class FeedbackController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $feedbacks = Feedbacks::with(['product', 'user'])->latest()->paginate(10);
-        return view('admin.feedback.index', compact('feedbacks'));
+        $variantId = $request->input('variant_id');
+
+        $variants = ProductVariant::with('product')->get();
+
+        $feedbacks = Feedbacks::with(['user', 'variation.product'])
+            ->when($variantId, function ($query, $variantId) {
+                return $query->where('variation_id', $variantId);
+            })
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.feedback.index', compact('feedbacks', 'variants', 'variantId'));
     }
 
     public function destroy($id)
     {
-        $feedback = Feedbacks::findOrFail($id);
-        $feedback->delete();
+        $fb = Feedbacks::findOrFail($id);
+        $fb->delete();
 
-        return redirect()->route('admin.feedbacks.index')->with('success', 'Đã xóa đánh giá!');
+        return redirect()->route('admin.feedbacks.index')->with('success', 'Xóa đánh giá thành công.');
     }
+
     public function toggleHide($id)
     {
-        $feedback = Feedbacks::findOrFail($id);
-        $feedback->is_hidden = !$feedback->is_hidden; // Đảo trạng thái
-        $feedback->save();
+        $fb = Feedbacks::findOrFail($id);
+        $fb->is_hidden = !$fb->is_hidden;
+        $fb->save();
 
-        return redirect()->route('admin.feedbacks.index')->with('success', 'Cập nhật trạng thái ẩn/hiện thành công.');
+        return redirect()->route('admin.feedbacks.index')->with('success', 'Cập nhật trạng thái đánh giá thành công.');
     }
-
 }
