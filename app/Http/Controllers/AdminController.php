@@ -46,7 +46,7 @@ class AdminController extends Controller
         // Sản phẩm mới trong 30 ngày gần nhất
         $newProducts = Product::where('created_at', '>=', now()->subDays(30))->count();
 
-        // --- Dữ liệu cho Biểu đồ Doanh thu ---
+        // --- Dữ liệu cho Biểu đồ Doanh thu ---    
         $revenueChartLabels = [];
         $revenueChartData = [];
 
@@ -136,8 +136,9 @@ class AdminController extends Controller
 
         // --- Dữ liệu cho Sản phẩm bán chạy nhất (Top 5) ---
         $bestSellingQuery = DB::table('order_details')
-            ->join('products', 'order_details.product_id', '=', 'products.id')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->join('product_variants', 'order_details.variant_id', '=', 'product_variants.id') // Join với bảng biến thể
+            ->join('products', 'product_variants.product_id', '=', 'products.id') // Join với bảng sản phẩm thông qua biến thể
             ->where('orders.status', 'completed');
 
         if ($queryStartDate && $queryEndDate) {
@@ -145,46 +146,72 @@ class AdminController extends Controller
         }
 
         $bestSellingProductsRaw = $bestSellingQuery
-            ->select('products.name as product_name', DB::raw('SUM(order_details.quantity) as total_quantity_sold'))
-            ->groupBy('products.id', 'products.name')
+            ->select(
+                'products.name as product_name',
+                'product_variants.variation_name as variant_name', // Lấy tên biến thể
+                DB::raw('SUM(order_details.quantity) as total_quantity_sold')
+            )
+            ->groupBy('products.id', 'products.name', 'product_variants.id', 'product_variants.variation_name') // Nhóm theo cả sản phẩm và biến thể
             ->orderByDesc('total_quantity_sold')
             ->limit(5)
             ->get();
+
         $bestSellingProductLabels = [];
         $bestSellingProductData = [];
-        foreach ($bestSellingProductsRaw as $product) {
-            $bestSellingProductLabels[] = $product->product_name;
-            $bestSellingProductData[] = $product->total_quantity_sold;
+        foreach ($bestSellingProductsRaw as $item) {
+            // Kết hợp tên sản phẩm và tên biến thể cho nhãn
+            $label = $item->product_name . ($item->variant_name ? ' - ' . $item->variant_name : '');
+            $bestSellingProductLabels[] = $label;
+            $bestSellingProductData[] = $item->total_quantity_sold;
         }
 
         // --- Dữ liệu cho Sản phẩm bán ế nhất (Top 5) ---
-        $salesSubquery = DB::table('order_details')
+        // Subquery để tính tổng số lượng bán cho mỗi biến thể sản phẩm
+        $salesPerVariantSubquery = DB::table('order_details')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->where('orders.status', 'completed');
             
         if ($queryStartDate && $queryEndDate) {
-            $salesSubquery->whereBetween('orders.created_at', [$queryStartDate, $queryEndDate]);
+            $salesPerVariantSubquery->whereBetween('orders.created_at', [$queryStartDate, $queryEndDate]);
         }
         
-        $salesSubquery->select('order_details.product_id', DB::raw('SUM(order_details.quantity) as total_sold'))
-            ->groupBy('order_details.product_id');
+        $salesPerVariantSubquery->select(
+                'order_details.variant_id', // Quan trọng: ID của biến thể sản phẩm
+                DB::raw('SUM(order_details.quantity) as total_sold')
+            )
+            ->groupBy('order_details.variant_id');
 
-
-        $leastSellingProductsRaw = DB::table('products')
-            ->leftJoinSub($salesSubquery, 'sales', function ($join) {
-                $join->on('products.id', '=', 'sales.product_id');
+        // Lấy tất cả các biến thể sản phẩm và join với subquery doanh số
+        $leastSellingProductsQuery = DB::table('product_variants') // Bắt đầu từ product_variants
+            ->join('products', 'product_variants.product_id', '=', 'products.id') // Join với products để lấy tên sản phẩm
+            ->leftJoinSub($salesPerVariantSubquery, 'sales', function ($join) {
+                $join->on('product_variants.id', '=', 'sales.variant_id'); // Join dựa trên variant_id
             })
-            ->select('products.name as product_name', DB::raw('COALESCE(sales.total_sold, 0) as total_quantity_sold'))
+            ->select(
+                'products.name as product_name',
+                'product_variants.variation_name as variant_name', // Lấy tên biến thể
+                DB::raw('COALESCE(sales.total_sold, 0) as total_quantity_sold')
+            )
+            // Điều kiện: số lượng bán phải lớn hơn 0
+            ->having('total_quantity_sold', '>', 0)
+            // Sắp xếp theo số lượng bán tăng dần để chọn ra top 5 bán ít nhất (nhưng > 0)
             ->orderBy('total_quantity_sold', 'asc')
-            ->orderBy('products.name', 'asc')
-            ->limit(5)
-            ->get();
+            ->orderBy('products.name', 'asc') // Sắp xếp phụ theo tên sản phẩm
+            ->orderBy('product_variants.variation_name', 'asc') // Sắp xếp phụ theo tên biến thể
+            ->limit(5);
+
+        $leastSellingProductsList = $leastSellingProductsQuery->get();
+
+        // Sắp xếp lại danh sách 5 sản phẩm này theo số lượng bán giảm dần để hiển thị
+        $leastSellingProductsSortedForDisplay = $leastSellingProductsList->sortByDesc('total_quantity_sold');
 
         $leastSellingProductLabels = [];
         $leastSellingProductData = [];
-        foreach ($leastSellingProductsRaw as $product) {
-            $leastSellingProductLabels[] = $product->product_name;
-            $leastSellingProductData[] = $product->total_quantity_sold;
+        foreach ($leastSellingProductsSortedForDisplay as $item) {
+            // Kết hợp tên sản phẩm và tên biến thể cho nhãn
+            $label = $item->product_name . ($item->variant_name ? ' - ' . $item->variant_name : '');
+            $leastSellingProductLabels[] = $label;
+            $leastSellingProductData[] = $item->total_quantity_sold;
         }
 
         // Truyền dữ liệu vào view

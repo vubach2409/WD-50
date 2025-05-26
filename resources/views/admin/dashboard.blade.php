@@ -7,7 +7,7 @@
             <h1 class="h3 mb-0 text-gray-800">Bảng điều khiển</h1>
         </div>
 
-        
+
 
         <!-- Content Row - Cards -->
         <div class="row">
@@ -77,7 +77,8 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Doanh Thu (Tháng {{ \Carbon\Carbon::now()->month }}/{{ \Carbon\Carbon::now()->year }})</div>
+                                    Doanh Thu (Tháng {{ \Carbon\Carbon::now()->month }}/{{ \Carbon\Carbon::now()->year }})
+                                </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
                                     {{ number_format($totalRevenueThisMonth ?? 0, 0, ',', '.') }} VND</div>
                             </div>
@@ -95,17 +96,19 @@
             <div class="row">
                 <div class="col-md-3 mb-2">
                     <label for="start_date" class="form-label">Lọc từ ngày:</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control" value="{{ $startDateInput ?? '' }}">
+                    <input type="date" id="start_date" name="start_date" class="form-control"
+                        value="{{ $startDateInput ?? '' }}">
                 </div>
                 <div class="col-md-3 mb-2">
                     <label for="end_date" class="form-label">Đến ngày:</label>
-                    <input type="date" id="end_date" name="end_date" class="form-control" value="{{ $endDateInput ?? '' }}">
+                    <input type="date" id="end_date" name="end_date" class="form-control"
+                        value="{{ $endDateInput ?? '' }}">
                 </div>
                 <div class="col-md-3 align-self-md-end mb-2">
                     <button type="submit" class="btn btn-primary">Lọc</button>
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary ms-2">Xóa lọc</a>
                 </div>
-            </div>            
+            </div>
         </form>
 
         @if ($errors->any())
@@ -126,8 +129,9 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">
                             Doanh Thu
-                            @if($startDateInput && $endDateInput)
-                                từ {{ \Carbon\Carbon::parse($startDateInput)->format('d/m/Y') }} đến {{ \Carbon\Carbon::parse($endDateInput)->format('d/m/Y') }}
+                            @if ($startDateInput && $endDateInput)
+                                từ {{ \Carbon\Carbon::parse($startDateInput)->format('d/m/Y') }} đến
+                                {{ \Carbon\Carbon::parse($endDateInput)->format('d/m/Y') }}
                             @else
                                 7 Ngày Gần Nhất
                             @endif
@@ -147,8 +151,9 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">
                             Tỷ Lệ Trạng Thái Đơn Hàng
-                            @if($startDateInput && $endDateInput)
-                                ({{ \Carbon\Carbon::parse($startDateInput)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($endDateInput)->format('d/m/Y') }})
+                            @if ($startDateInput && $endDateInput)
+                                ({{ \Carbon\Carbon::parse($startDateInput)->format('d/m/Y') }} -
+                                {{ \Carbon\Carbon::parse($endDateInput)->format('d/m/Y') }})
                             @else
                                 (Tất cả)
                             @endif
@@ -163,48 +168,87 @@
             </div>
         </div>
 
-        <!-- Content Row - Best and Least Selling Products Charts -->
+        <!-- Content Row - Best and Least Selling Products Tables -->
         <div class="row">
-            <!-- Best Selling Products Chart -->
+
+            <!-- Best Selling Products Table -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Top 5 Sản Phẩm Bán Chạy Nhất</h6>
                     </div>
                     <div class="card-body">
-                        @if (!empty($bestSellingProductLabels) && count($bestSellingProductLabels) > 0 && !empty($bestSellingProductData) && array_sum($bestSellingProductData) > 0)
-                            <div class="chart-container" style="position: relative; height:320px; width:100%">
-                                <canvas id="bestSellingProductsStoreChart"></canvas>
+                        @if (
+                            !empty($bestSellingProductLabels) &&
+                                count($bestSellingProductLabels) > 0 &&
+                                !empty($bestSellingProductData) &&
+                                array_sum($bestSellingProductData ?? []) > 0)
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Sản Phẩm</th>
+                                            <th class="text-center">Số Lượng Bán</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($bestSellingProductLabels as $index => $label)
+                                            <tr>
+                                                <td>{{ $label }}</td>
+                                                <td class="text-center">{{ $bestSellingProductData[$index] ?? 0 }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         @else
                             <p class="text-center mt-3">
-                                Không có dữ liệu sản phẩm bán chạy{{ $startDateInput || $endDateInput ? ' cho khoảng thời gian đã chọn' : '' }}.
+                                Không có dữ liệu sản phẩm bán
+                                chạy{{ $startDateInput || $endDateInput ? ' cho khoảng thời gian đã chọn' : '' }}.
                             </p>
                         @endif
                     </div>
                 </div>
             </div>
 
-            <!-- Least Selling Products Chart -->
+            <!-- Least Selling Products Table -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Top 5 Sản Phẩm Bán Ế Nhất</h6>
                     </div>
                     <div class="card-body">
-                        @if (!empty($leastSellingProductLabels) && count($leastSellingProductLabels) > 0)
-                            <div class="chart-container" style="position: relative; height:320px; width:100%">
-                                <canvas id="leastSellingProductsChart"></canvas>
+                        @if (!empty($leastSellingProductLabels) && count($leastSellingProductLabels) > 0 && !empty($leastSellingProductData))
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên Sản Phẩm</th>
+                                            <th class="text-center">Số Lượng Bán</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($leastSellingProductLabels as $index => $label)
+                                            <tr>
+                                                <td>{{ $label }}</td>
+                                                <td class="text-center">{{ $leastSellingProductData[$index] ?? 0 }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         @else
-                             <p class="text-center mt-3">
-                                Không có dữ liệu sản phẩm bán ế{{ $startDateInput || $endDateInput ? ' cho khoảng thời gian đã chọn' : '' }}.
+                            <p class="text-center mt-3">
+                                Không có dữ liệu sản phẩm bán
+                                ế{{ $startDateInput || $endDateInput ? ' cho khoảng thời gian đã chọn' : '' }}.
                             </p>
                         @endif
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 @endsection
 
@@ -213,7 +257,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const startDateInput = document.getElementById('start_date');
             const endDateInput = document.getElementById('end_date');
             const today = new Date().toISOString().split('T')[0]; // Lấy ngày hiện tại dạng YYYY-MM-DD
@@ -243,30 +287,24 @@
 
             // Dữ liệu từ PHP (đảm bảo các biến này được truyền từ controller)
             const revenueLabels = @json($revenueChartLabels ?? []); // Cập nhật tên biến
-            const revenueData = @json($revenueChartData ?? []);   // Cập nhật tên biến
+            const revenueData = @json($revenueChartData ?? []); // Cập nhật tên biến
             const orderStatusLabels = @json($orderStatusLabels ?? []);
             const orderStatusData = @json($orderStatusData ?? []);
-            // Dữ liệu cho biểu đồ sản phẩm bán chạy
-            const phpBestSellingProductLabels = @json($bestSellingProductLabels ?? []); // Renamed to avoid conflict
-            const phpBestSellingProductData = @json($bestSellingProductData ?? []);   // Renamed to avoid conflict
-            const leastSellingProductLabels = @json($leastSellingProductLabels ?? []);
-            const leastSellingProductData = @json($leastSellingProductData ?? []);
 
 
             // Biểu đồ Doanh thu 7 ngày gần nhất
             if (document.getElementById('revenueChart') && revenueLabels.length > 0) {
                 const revenueCtx = document.getElementById('revenueChart').getContext('2d');
                 new Chart(revenueCtx, {
-                    type: 'line', // Có thể đổi thành 'bar'
+                    type: 'bar', // Có thể đổi thành 'bar'
                     data: {
                         labels: revenueLabels,
                         datasets: [{
                             label: 'Doanh thu (VND)',
                             data: revenueData,
                             borderColor: 'rgba(78, 115, 223, 1)',
-                            backgroundColor: 'rgba(78, 115, 223, 0.05)', // Màu nền dưới đường line
-                            tension: 0.3, // Độ cong của đường
-                            fill: true,
+                            backgroundColor: 'rgba(78, 115, 223, 0.75)', // Màu cho các cột
+                            borderWidth: 1,
                         }]
                     },
                     options: {
@@ -302,111 +340,6 @@
                     }
                 });
             }
-
-            
-            // Biểu đồ Top 5 Sản Phẩm Bán Chạy Nhất (Đã đổi sang Bar Chart)
-if (document.getElementById('bestSellingProductsStoreChart') && phpBestSellingProductLabels.length > 0 && phpBestSellingProductData.reduce((a, b) => a + b, 0) > 0) {
-    const bestSellingCtx = document.getElementById('bestSellingProductsStoreChart').getContext('2d');
-    new Chart(bestSellingCtx, {
-        type: 'bar', // Thay đổi từ 'pie' sang 'bar'
-        data: {
-            labels: phpBestSellingProductLabels,
-            datasets: [{
-                label: 'Số lượng bán',
-                data: phpBestSellingProductData,
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.5)', // Xanh dương
-                    'rgba(75, 192, 192, 0.5)', // Xanh lá
-                    'rgba(255, 206, 86, 0.5)', // Vàng
-                    'rgba(153, 102, 255, 0.5)', // Tím
-                    'rgba(255, 99, 132, 0.5)'  // Đỏ
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },  
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: Math.max(1, ...phpBestSellingProductData) > 5 ? undefined : 1,
-                        precision: 0
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-                title: {
-                    display: false,
-                }
-            }
-        }
-    });
-}
-
-// Biểu đồ Top 5 Sản Phẩm Bán Ế Nhất
-if (document.getElementById('leastSellingProductsChart') && leastSellingProductLabels.length > 0) {
-    const leastSellingCtx = document.getElementById('leastSellingProductsChart').getContext('2d');
-    new Chart(leastSellingCtx, {
-        type: 'bar', // Giữ nguyên là 'bar'
-        data: {
-            labels: leastSellingProductLabels,
-            datasets: [{
-                label: 'Số lượng bán',
-                data: leastSellingProductData,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.5)', // Đỏ
-                    'rgba(255, 159, 64, 0.5)', // Cam
-                    'rgba(255, 205, 86, 0.5)', // Vàng
-                    'rgba(75, 192, 192, 0.5)', // Xanh lá
-                    'rgba(54, 162, 235, 0.5)'  // Xanh dương
-                ],
-                borderColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 159, 64)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(54, 162, 235)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: Math.max(1, ...leastSellingProductData) > 5 ? undefined : 1,
-                        precision: 0
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-                title: {
-                    display: false,
-                }
-            }
-        }
-    });
-}
 
             // Biểu đồ Tỷ lệ Trạng thái Đơn hàng
             if (document.getElementById('orderStatusChart') && orderStatusLabels.length > 0) {
@@ -479,4 +412,3 @@ if (document.getElementById('leastSellingProductsChart') && leastSellingProductL
         });
     </script>
 @endsection
-
