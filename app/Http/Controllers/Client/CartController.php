@@ -127,6 +127,10 @@ class CartController extends Controller
     {
         $request->validate([
             'quantity' => 'required|integer|min:1',
+        ], [
+            'quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1',
+            'quantity.required' => 'Bạn chưa nhập số lượng',
+            'quantity.integer' => 'Số lượng phải là số nguyên',
         ]);
 
         $cartItem = Carts::findOrFail($id);

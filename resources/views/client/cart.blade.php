@@ -3,7 +3,7 @@
 @section('title', 'Giỏ hàng')
 
 @section('content')
-    <div class="untree_co-section before-footer-section">
+    <div class="untree_co-section product-section before-footer-section">
         <div class="container">
             <div class="row mb-5">
 
@@ -73,7 +73,7 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="number" class="form-control quantity-input"
-                                                        data-id="{{ $item->id }}" value="{{ $item->quantity }}"
+                                                        data-id="{{ $item->id }}"  data-original="{{ $item->quantity }}" value="{{ $item->quantity }}"
                                                         min="1" max="{{ $item->variant->stock }}" />
                                                 </form>
                                             @else
@@ -94,7 +94,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">X</button>
+                                                    onclick="return confirm('Bạn có chắc muốn loại sản phẩm này?')">X</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -111,7 +111,7 @@
                                     <form action="{{ route('cart.clear') }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-black btn-sm btn-block">Xoá toàn
+                                        <button type="submit" onclick="return confirm('Bạn có muốn xóa giỏ hàng này không?')" class="btn btn-outline-black btn-sm btn-block">Xoá toàn
                                             bộ</button>
                                     </form>
                                 </div>
@@ -229,50 +229,51 @@
 
     <script>
         $(document).ready(function() {
-            $('.quantity-input').on('change', function() {
-                const cartId = $(this).data('id');
-                const quantity = $(this).val();
-                const $row = $(this).closest('tr');
+    $('.quantity-input').on('change', function() {
+        const cartId = $(this).data('id');
+        const quantity = $(this).val();
+        const $row = $(this).closest('tr');
 
-                $.ajax({
-                    url: '/cart/' + cartId,
-                    method: 'POST',
-                    data: {
-                        _method: 'PUT',
-                        _token: '{{ csrf_token() }}',
-                        quantity: quantity
-                    },
-                    success: function(response) {
-                        // Cập nhật tiền từng sản phẩm
-                        const newPriceFormatted = response.new_total_price.toLocaleString(
-                            'vi-VN') + ' VNĐ';
-                        $row.find('.item-total').text(newPriceFormatted);
+        $.ajax({
+            url: '/cart/' + cartId,
+            method: 'POST',
+            data: {
+                _method: 'PUT',
+                _token: '{{ csrf_token() }}',
+                quantity: quantity
+            },
+            success: function(response) {
+                const newPriceFormatted = response.new_total_price.toLocaleString('vi-VN') + ' VNĐ';
+                $row.find('.item-total').text(newPriceFormatted);
 
-                        // Cập nhật tổng đơn hàng
-                        $('#grand-total').text(response.grand_total.toLocaleString('vi-VN') +
-                            ' VNĐ');
+                $('#grand-total').text(response.grand_total.toLocaleString('vi-VN') + ' VNĐ');
+                if (response.discount && response.discount > 0) {
+                    $('.text-success').text('-' + response.discount.toLocaleString('vi-VN') + ' VNĐ');
+                }
+                $('#sub-total').text(response.sub_total.toLocaleString('vi-VN') + ' VNĐ');
 
-                        // Nếu có giảm giá
-                        if (response.discount && response.discount > 0) {
-                            $('.text-success').text('-' + response.discount.toLocaleString(
-                                'vi-VN') + ' VNĐ');
-                        }
-                        $('#sub-total').text(response.sub_total.toLocaleString('vi-VN') + ' VNĐ');
+                // ✅ Cập nhật lại mốc số lượng gốc
+                $row.find('.quantity-input').data('original', quantity);
 
-                        toastr.success(response.success || 'Cập nhật thành công!');
-                    },
-                    error: function(xhr) {
-                        if (xhr.responseJSON?.errors?.quantity) {
-                            toastr.error(xhr.responseJSON.errors.quantity[0]);
-                        } else if (xhr.responseJSON?.stock !== undefined) {
-                            toastr.error('Số lượng vượt quá tồn kho. Còn lại: ' + xhr
-                                .responseJSON.stock);
-                        } else {
-                            toastr.error('Đã xảy ra lỗi, vui lòng thử lại.');
-                        }
-                    }
-                });
-            });
+                toastr.success(response.success || 'Cập nhật thành công!');
+            },
+            error: function(xhr) {
+                const originalQty = $row.find('.quantity-input').data('original');
+
+                if (xhr.responseJSON?.errors?.quantity) {
+                    toastr.error(xhr.responseJSON.errors.quantity[0]);
+                } else if (xhr.responseJSON?.stock !== undefined) {
+                    toastr.error('Số lượng vượt quá tồn kho. Còn lại: ' + xhr.responseJSON.stock);
+                } else {
+                    toastr.error('Đã xảy ra lỗi, vui lòng thử lại.');
+                }
+
+                // ✅ Reset lại số lượng về gốc
+                $row.find('.quantity-input').val(originalQty);
+            }
         });
+    });
+});
+
     </script>
 @endsection
