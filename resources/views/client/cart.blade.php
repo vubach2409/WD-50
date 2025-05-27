@@ -260,6 +260,7 @@
                         $('#sub-total').text(response.sub_total.toLocaleString('vi-VN') + ' VNĐ');
 
                         toastr.success(response.success || 'Cập nhật thành công!');
+                        loadMiniCart();
                     },
                     error: function(xhr) {
                         if (xhr.responseJSON?.errors?.quantity) {

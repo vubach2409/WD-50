@@ -129,24 +129,62 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem = Carts::findOrFail($id);
+        // Lấy cart item đang cập nhật (có cả sản phẩm hoặc biến thể bị soft delete)
+        $cartItem = Carts::with([
+            'product' => fn($q) => $q->withTrashed(),
+            'variant' => fn($q) => $q->withTrashed()
+        ])->findOrFail($id);
 
-        if ($request->quantity > $cartItem->variant->stock) {
+        // Nếu product bị soft delete
+        if (!$cartItem->product || $cartItem->product->trashed()) {
+            return response()->json(['error' => 'Sản phẩm đã bị xóa hoặc ngừng kinh doanh.'], 404);
+        }
+
+        // Nếu variant bị soft delete
+        if ($cartItem->variant_id && (!$cartItem->variant || $cartItem->variant->trashed())) {
+            return response()->json(['error' => 'Biến thể sản phẩm không còn tồn tại.'], 404);
+        }
+
+        // Kiểm tra tồn kho nếu có variant
+        if ($cartItem->variant && $request->quantity > $cartItem->variant->stock) {
             return response()->json(['stock' => $cartItem->variant->stock], 422);
         }
 
+        // Cập nhật số lượng
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
-        // Tính tiền từng sản phẩm
-        $newTotalPrice = $cartItem->variant->price * $cartItem->quantity;
+        // Tính giá mới
+        $price = $cartItem->variant ? $cartItem->variant->price : $cartItem->product->price;
+        $newTotalPrice = $price * $cartItem->quantity;
 
-        // Tổng tiền đơn hàng (dựa trên user hoặc session)
-        $cartItems = Carts::where('user_id', auth()->id())->get();
-        $grandTotal = $cartItems->sum(fn($item) => $item->variant->price * $item->quantity);
-        $subTotal = $cartItems->sum(fn($item) => $item->variant->price * $item->quantity);
+        // Lấy toàn bộ giỏ hàng (bao gồm cả soft deleted)
+        $cartItems = Carts::with([
+            'product' => fn($q) => $q->withTrashed(),
+            'variant' => fn($q) => $q->withTrashed()
+        ])->where(function ($query) {
+            if (Auth::check()) {
+                $query->where('user_id', Auth::id());
+            } else {
+                $query->where('session_id', Session::getId());
+            }
+        })->get();
 
-        // Trừ giảm giá nếu có
+        // Lọc ra các cart item hợp lệ (không bị soft delete)
+        $validCartItems = $cartItems->filter(
+            fn($item) =>
+            $item->product && !$item->product->trashed() &&
+                (!$item->variant_id || ($item->variant && !$item->variant->trashed()))
+        );
+
+        // Tính lại tổng tiền
+        $grandTotal = $validCartItems->sum(
+            fn($item) => ($item->variant ? $item->variant->price : $item->product->price) * $item->quantity
+        );
+        $subTotal = $validCartItems->sum(
+            fn($item) => ($item->variant ? $item->variant->price : $item->product->price) * $item->quantity
+        );
+
         $discount = session('voucher')['discount'] ?? 0;
         $grandTotal = max(0, $grandTotal - $discount);
 
@@ -155,7 +193,7 @@ class CartController extends Controller
             'grand_total' => $grandTotal,
             'sub_total' => $subTotal,
             'discount' => $discount,
-            'success' => 'Cập nhật số lượng thành công',
+            'success' => 'Cập nhật thành công!',
         ]);
     }
 
