@@ -13,12 +13,21 @@ use Illuminate\Validation\Rule;
 
 class ProductVariantController extends Controller
 {
-    public function index(Product $product)
+    public function index(Product $product, Request $request)
     {
-        return view('admin.product_variants.index', [
-            'product' => $product,
-            'variants' => $product->variants()->orderByDesc('created_at')->get()
-        ]);
+        $variantsQuery = $product->variants()
+            ->whereNotNull('color_id')
+            ->with(['color', 'size'])
+            ->join('sizes', 'product_variants.size_id', '=', 'sizes.id')
+            ->orderBy('sizes.name')
+            ->select('product_variants.*'); 
+
+        $variantsAll = $variantsQuery->get();
+        $colors = $variantsAll->groupBy('color.code');
+        $activeColor = $request->get('color', $colors->keys()->first());
+        $variants = $colors[$activeColor] ?? collect();
+
+        return view('admin.product_variants.index', compact('product', 'colors', 'variants', 'activeColor'));
     }
 
     public function show($productId, $variantId)
@@ -61,16 +70,7 @@ class ProductVariantController extends Controller
         'variation_name' => 'required|string|max:255',
         'sku' => 'required|string|unique:product_variants,sku',
         'price' => [
-            'required', 'numeric', 'min:0',
-            function ($attribute, $value, $fail) use ($product) {
-                $min = $product->price_sale ?? $product->price;
-                $max = $product->price;
-                if ($min > $max) [$min, $max] = [$max, $min];
-                if ($value < $min || $value > $max) {
-                    $fail("Giá biến thể sản phẩm phải nằm trong khoảng từ " . number_format($min, 0, ',', ',') . " đ đến " . number_format($max, 0, ',', ',') . " đ.");
-                }
-            },
-        ],
+            'required', 'numeric', 'min:0',],
         'stock' => 'required|integer|min:0',
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ], [
@@ -142,15 +142,7 @@ class ProductVariantController extends Controller
         'variation_name' => 'required|string|max:255',
         'sku' => 'required|string|unique:product_variants,sku,' . $variant->id,
         'price' => [
-            'required', 'numeric', 'min:0',
-            function ($attribute, $value, $fail) use ($product) {
-                $min = min($product->price, $product->price_sale ?? $product->price);
-                $max = max($product->price, $product->price_sale ?? $product->price);
-                if ($value < $min || $value > $max) {
-                    $fail("Giá biến thể sản phẩm phải nằm trong khoảng từ " . number_format($min, 0, ',', ',') . " đ đến " . number_format($max, 0, ',', ',') . " đ.");
-                }
-            },
-        ],
+            'required', 'numeric', 'min:0',],
         'stock' => 'required|integer|min:0',
         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ], [
@@ -193,7 +185,7 @@ class ProductVariantController extends Controller
 
     public function trash(Product $product)
     {
-        $variants = $product->variants()->onlyTrashed()->orderByDesc('created_at')->get();
+        $variants = $product->variants()->onlyTrashed()->get();
 
         return view('admin.product_variants.trash', [
             'product' => $product,
@@ -239,7 +231,7 @@ class ProductVariantController extends Controller
 
     public function productsWithVariants()
     {
-        $products = Product::with('variants')->paginate(8);
+        $products = Product::with('variants')->orderBy('created_at', 'desc')->paginate(8);
         return view('admin.product_variants.list', compact('products'));
     }
 

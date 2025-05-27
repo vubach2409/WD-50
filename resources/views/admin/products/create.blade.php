@@ -22,30 +22,6 @@
                         </tr>
 
                         <tr>
-                            <th>Giá min</th>
-                            <td>
-                                <input type="number" name="price_sale"
-                                    class="form-control @error('price_sale') is-invalid @enderror"
-                                    placeholder="Nhập giá sản phẩm" value="{{ old('price_sale') }}">
-                                @error('price_sale')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th>Giá max</th>
-                            <td>
-                                <input type="number" name="price"
-                                    class="form-control @error('price') is-invalid @enderror"
-                                    placeholder="Nhập giá sản phẩm" value="{{ old('price') }}">
-                                @error('price')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </td>
-                        </tr>
-
-                        <tr>
                             <th>Danh mục</th>
                             <td>
                                 <select name="category_id" class="form-control @error('category_id') is-invalid @enderror">

@@ -20,56 +20,45 @@
         <div class="container">
             <div class="row">
 
-                <!-- Start Column 1 -->
                 <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
                     <h2 class="mb-4 section-title">Sản phẩm chất lượng cao, thiết kế tinh tế.</h2>
                     <p class="mb-4">Chúng tôi cam kết mang đến cho bạn những sản phẩm nội thất được chế tác từ vật liệu
                         cao cấp, phù hợp với mọi không gian sống. Tạo nên một ngôi nhà hoàn hảo cho bạn và gia đình.</p>
                     <p><a href="{{ route('products') }}" class="btn">Khám phá ngay</a></p>
                 </div>
-                <!-- End Column 1 -->
 
-                <!-- Start Column 2: Display products in 3 columns -->
                 @foreach ($products as $product)
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-5 position-relative">
                         <div class="product-item position-relative overflow-hidden">
-                            <!-- Product image -->
                             <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
                                 <div class="product-image position-relative">
                                     <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
                                         alt="{{ $product->name }}">
 
-                                    <!-- Labels for "New" and "Sale" -->
                                     @if ($product->is_new)
                                         <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                                    @elseif($product->price_sale < $product->price)
+                                    @elseif($product->minPrice < $product->maxPrice)
                                         <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
                                     @endif
                                 </div>
 
-                                <!-- Product info -->
                                 <div class="product-info p-3">
-                                    <!-- Tên sản phẩm (không nền) -->
                                     <h5 class="product-title text-dark mb-1"
                                         style="font-size: 1rem; background-color: transparent;">
                                         {{ $product->name }}
                                     </h5>
 
-                                    <!-- Giá sản phẩm (không nền) -->
                                     <p class="product-price mb-2" style="background-color: transparent;">
-                                        <span
-                                            class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ
-                                            -
+                                        <span class="text-danger fw-bold">
+                                            @if ($product->minPrice === $product->maxPrice)
+                                                {{ number_format($product->minPrice, 0, ',', ',') }} ₫
+                                            @else
+                                                {{ number_format($product->minPrice, 0, ',', ',') }} ₫ - {{ number_format($product->maxPrice, 0, ',', ',') }} ₫
+                                            @endif
                                         </span>
-                                        @if ($product->price_sale < $product->price)
-                                            <span class="text-danger fw-bold">
-                                                {{ number_format($product->price, 0, ',', '.') }}đ
-                                            </span>
-                                        @endif
                                     </p>
                                 </div>
 
-                                <!-- Action button (View product) -->
                                 <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
                                     <a href="{{ route('product.details', $product->id) }}"
                                         class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">
@@ -84,9 +73,7 @@
             </div>
         </div>
     </div>
-    <!-- End Product Section -->
 
-    <!-- Start Why Choose Us Section -->
     <div class="why-choose-section">
         <div class="container">
             <div class="row justify-content-between">
@@ -152,9 +139,7 @@
             </div>
         </div>
     </div>
-    <!-- End Why Choose Us Section -->
 
-    <!-- Start We Help Section -->
     <div class="we-help-section">
         <div class="container">
             <div class="row justify-content-between">
@@ -183,7 +168,6 @@
             </div>
         </div>
     </div>
-    <!-- End We Help Section -->
 
     <div class="popular-product">
         <div class="container">
@@ -191,41 +175,35 @@
                 @foreach ($popularProducts as $product)
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-5 position-relative">
                         <div class="product-item position-relative overflow-hidden">
-                            <!-- Product image -->
                             <a href="{{ route('product.details', $product->id) }}" class="text-decoration-none">
                                 <div class="product-image position-relative">
                                     <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
                                         alt="{{ $product->name }}">
 
-                                    <!-- Labels for "New" and "Sale" -->
                                     @if ($product->is_new)
                                         <span class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                                    @elseif($product->price_sale < $product->price)
+                                    @elseif($product->minPrice < $product->maxPrice)
                                         <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
                                     @endif
                                 </div>
 
-                                <!-- Product info -->
                                 <div class="product-info p-3">
-                                    <!-- Product name -->
                                     <h5 class="product-title text-dark mb-1"
                                         style="font-size: 1rem; background-color: transparent;">
                                         {{ $product->name }}
                                     </h5>
 
-                                    <!-- Product price -->
                                     <p class="product-price mb-2" style="background-color: transparent;">
-                                        <span
-                                            class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ - </span>
-                                        @if ($product->price_sale < $product->price)
-                                            <span class="text-danger fw-bold">
-                                                {{ number_format($product->price, 0, ',', '.') }}đ
-                                            </span>
-                                        @endif
+                                        <span class="text-danger fw-bold">
+                                            @if ($product->minPrice === $product->maxPrice)
+                                                {{ number_format($product->minPrice, 0, ',', ',') }} ₫
+                                            @else
+                                                {{ number_format($product->minPrice, 0, ',', ',') }} ₫ - {{ number_format($product->maxPrice, 0, ',', ',') }} ₫
+                                            @endif
+                                        </span>
                                     </p>
                                 </div>
 
-                                <!-- Action button (View product) -->
                                 <div class="product-action-btn position-absolute top-50 start-50 translate-middle">
                                     <a href="{{ route('product.details', $product->id) }}"
                                         class="btn btn-outline-primary btn-sm rounded-pill px-2 py-2">

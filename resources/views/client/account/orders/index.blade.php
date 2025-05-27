@@ -96,7 +96,7 @@
                                                             <td><span
                                                                     class="badge bg-{{ $statusLabels[$key]['class'] }}">{{ $statusLabels[$key]['label'] }}</span>
                                                             </td>
-                                                            <td>{{ number_format($order->total, 0, ',', '.') }}đ</td>
+                                                            <td>{{ number_format($order->total, 0, ',', '.') }} VNĐ</td>
                                                             <td>{{ $order->payment_method }}</td>
                                                             <td>{{ $order->created_at->format('d/m/Y') }}</td>
                                                             <td><a href="{{ route('account.orders.show', $order) }}"

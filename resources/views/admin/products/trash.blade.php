@@ -21,10 +21,9 @@
                     <tr>
                         <th>STT</th>
                         <th class="text-left">Tên sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Kho</th>
                         <th>Danh mục</th>
                         <th>Thương hiệu</th>
+                        <th>Giá</th> 
                         <th>Ảnh</th>
                         <th>Hành động</th>
                     </tr>
@@ -34,10 +33,19 @@
                         <tr>
                             <td class="align-middle">{{ $index + 1 }}</td>
                             <td class="text-left align-middle">{{ $product->name }}</td>
-                            <td class="align-middle">{{ number_format($product->price) }} đ</td>
-                            <td class="align-middle">{{ $product->stock }}</td>
                             <td class="align-middle">{{ $product->category->name ?? 'Không có' }}</td>
                             <td class="align-middle">{{ $product->brand->name ?? 'Không có' }}</td>
+                            <td class="align-middle">
+                                @if ($product->variantCount === 1)
+                                    {{ number_format($product->variants->first()->price, 0, ',', ',') }} ₫
+                                @elseif ($product->minPrice && $product->maxPrice && $product->minPrice != $product->maxPrice)
+                                    {{ number_format($product->minPrice, 0, ',', ',') }} ₫ - {{ number_format($product->maxPrice, 0, ',', ',') }} ₫
+                                @elseif ($product->minPrice)
+                                    {{ number_format($product->minPrice, 0, ',', ',') }} ₫
+                                @else
+                                    <span class="text-muted fst-italic">Chưa có biến thể</span>
+                                @endif
+                            </td>
                             <td class="align-middle">
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}" width="100" height="100" class="border">

@@ -99,7 +99,7 @@
                                             @if ($product->is_new)
                                                 <span
                                                     class="badge bg-success position-absolute top-0 start-0 m-2">Mới</span>
-                                            @elseif($product->price_sale < $product->price)
+                                            @elseif($product->minPrice < $product->maxPrice)
                                                 <span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot</span>
                                             @endif
                                         </div>
@@ -108,14 +108,16 @@
                                             <h5 class="product-title text-dark mb-1" style="font-size: 1rem;">
                                                 {{ $product->name }}</h5>
                                             <p class="product-price mb-2" style="background-color: transparent;">
-                                                <span
-                                                    class="text-danger fw-bold">{{ number_format($product->price_sale, 0, ',', '.') }}đ
-                                                    -
-                                                </span>
-                                                @if ($product->price_sale < $product->price)
-                                                    <span class="text-danger fw-bold">
-                                                        {{ number_format($product->price, 0, ',', '.') }}đ
-                                                    </span>
+                                                @if ($product->minPrice !== null && $product->maxPrice !== null)
+                                                    @if ($product->minPrice === $product->maxPrice)
+                                                        <span class="text-danger fw-bold">{{ number_format($product->minPrice, 0, ',', ',') }} ₫</span>
+                                                    @else
+                                                        <span class="text-danger fw-bold">
+                                                            {{ number_format($product->minPrice, 0, ',', ',') }} ₫ - {{ number_format($product->maxPrice, 0, ',', ',') }} ₫
+                                                        </span>
+                                                    @endif
+                                                @else
+                                                    <span>Chưa có giá</span>
                                                 @endif
                                             </p>
                                         </div>

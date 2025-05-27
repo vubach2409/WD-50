@@ -15,32 +15,26 @@
         <div class="mb-4">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link {{ request('status') == 'all' ? 'active' : '' }}"
-                       href="{{ route('admin.orders.index', ['status' => 'all']) }}">
-                        Tất cả ({{ $orderCounts['all'] }})
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}"
-                       href="{{ route('admin.orders.index', ['status' => 'pending']) }}">
+                    <a class="nav-link {{ request()->get('status', 'pending') == 'pending' ? 'active fw-bold' : '' }}"
+                    href="{{ route('admin.orders.index', ['status' => 'pending']) }}">
                         Chờ xác nhận ({{ $orderCounts['pending'] }})
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request('status') == 'shipping' ? 'active' : '' }}"
-                       href="{{ route('admin.orders.index', ['status' => 'shipping']) }}">
+                    <a class="nav-link {{ request()->get('status') == 'shipping' ? 'active fw-bold' : '' }}"
+                    href="{{ route('admin.orders.index', ['status' => 'shipping']) }}">
                         Đang giao ({{ $orderCounts['shipping'] }})
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request('status') == 'completed' ? 'active' : '' }}"
-                       href="{{ route('admin.orders.index', ['status' => 'completed']) }}">
+                    <a class="nav-link {{ request()->get('status') == 'completed' ? 'active fw-bold' : '' }}"
+                    href="{{ route('admin.orders.index', ['status' => 'completed']) }}">
                         Đã giao ({{ $orderCounts['completed'] }})
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request('status') == 'cancelled' ? 'active' : '' }}"
-                       href="{{ route('admin.orders.index', ['status' => 'cancelled']) }}">
+                    <a class="nav-link {{ request()->get('status') == 'cancelled' ? 'active fw-bold' : '' }}"
+                    href="{{ route('admin.orders.index', ['status' => 'cancelled']) }}">
                         Đã hủy ({{ $orderCounts['cancelled'] }})
                     </a>
                 </li>
@@ -122,3 +116,10 @@
         </div>  --}}
     </div>
 @endsection
+<style>
+    .nav-tabs .nav-link.active {
+    font-weight: 700;
+    color: #0d6efd !important; /* Màu bootstrap primary */
+}
+
+</style>

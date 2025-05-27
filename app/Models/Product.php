@@ -10,13 +10,26 @@ class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    public function getMinPriceAttribute()
+    {
+        if ($this->relationLoaded('variants') && $this->variants->isNotEmpty()) {
+            return $this->variants->min('price');
+        }
+        return null;
+    }
+
+    public function getMaxPriceAttribute()
+    {
+        if ($this->relationLoaded('variants') && $this->variants->isNotEmpty()) {
+            return $this->variants->max('price');
+        }
+        return null;
+    }
 
     protected $fillable = [
         'name', 
         'description', 
-        'price', 
         'image', 
-        'price_sale',
         'product_detail', 
         'category_id', 
         'brand_id',

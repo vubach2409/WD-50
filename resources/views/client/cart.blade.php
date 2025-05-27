@@ -227,53 +227,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-    $('.quantity-input').on('change', function() {
-        const cartId = $(this).data('id');
-        const quantity = $(this).val();
-        const $row = $(this).closest('tr');
+<script>
+    $(document).ready(function() {
+        $('.quantity-input').on('change', function() {
+            const cartId = $(this).data('id');
+            const quantity = $(this).val();
+            const $row = $(this).closest('tr');
 
-        $.ajax({
-            url: '/cart/' + cartId,
-            method: 'POST',
-            data: {
-                _method: 'PUT',
-                _token: '{{ csrf_token() }}',
-                quantity: quantity
-            },
-            success: function(response) {
-                const newPriceFormatted = response.new_total_price.toLocaleString('vi-VN') + ' VNĐ';
-                $row.find('.item-total').text(newPriceFormatted);
+            $.ajax({
+                url: '/cart/' + cartId,
+                method: 'POST',
+                data: {
+                    _method: 'PUT',
+                    _token: '{{ csrf_token() }}',
+                    quantity: quantity
+                },
+                success: function(response) {
+                    const newPriceFormatted = response.new_total_price.toLocaleString('vi-VN') + ' VNĐ';
+                    $row.find('.item-total').text(newPriceFormatted);
 
-                $('#grand-total').text(response.grand_total.toLocaleString('vi-VN') + ' VNĐ');
-                if (response.discount && response.discount > 0) {
-                    $('.text-success').text('-' + response.discount.toLocaleString('vi-VN') + ' VNĐ');
+                    $('#grand-total').text(response.grand_total.toLocaleString('vi-VN') + ' VNĐ');
+                    if (response.discount && response.discount > 0) {
+                        $('.text-success').text('-' + response.discount.toLocaleString('vi-VN') + ' VNĐ');
+                    }
+                    $('#sub-total').text(response.sub_total.toLocaleString('vi-VN') + ' VNĐ');
+
+                    // ✅ Cập nhật lại mốc số lượng gốc
+                    $row.find('.quantity-input').data('original', quantity);
+
+                    toastr.success(response.success || 'Cập nhật thành công!');
+                    loadMiniCart(); // giữ lại phần mới
+                },
+                error: function(xhr) {
+                    const originalQty = $row.find('.quantity-input').data('original');
+
+                    if (xhr.responseJSON?.errors?.quantity) {
+                        toastr.error(xhr.responseJSON.errors.quantity[0]);
+                    } else if (xhr.responseJSON?.stock !== undefined) {
+                        toastr.error('Số lượng vượt quá tồn kho. Còn lại: ' + xhr.responseJSON.stock);
+                    } else {
+                        toastr.error('Đã xảy ra lỗi, vui lòng thử lại.');
+                    }
+
+                    // ✅ Reset lại số lượng về gốc
+                    $row.find('.quantity-input').val(originalQty);
                 }
-                $('#sub-total').text(response.sub_total.toLocaleString('vi-VN') + ' VNĐ');
-
-                // ✅ Cập nhật lại mốc số lượng gốc
-                $row.find('.quantity-input').data('original', quantity);
-
-                toastr.success(response.success || 'Cập nhật thành công!');
-            },
-            error: function(xhr) {
-                const originalQty = $row.find('.quantity-input').data('original');
-
-                if (xhr.responseJSON?.errors?.quantity) {
-                    toastr.error(xhr.responseJSON.errors.quantity[0]);
-                } else if (xhr.responseJSON?.stock !== undefined) {
-                    toastr.error('Số lượng vượt quá tồn kho. Còn lại: ' + xhr.responseJSON.stock);
-                } else {
-                    toastr.error('Đã xảy ra lỗi, vui lòng thử lại.');
-                }
-
-                // ✅ Reset lại số lượng về gốc
-                $row.find('.quantity-input').val(originalQty);
-            }
+            });
         });
     });
-});
+</script>
 
-    </script>
 @endsection

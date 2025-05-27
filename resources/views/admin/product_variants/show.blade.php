@@ -21,6 +21,9 @@
                                 <strong>Tên biến thể: </strong> {{ $variant->variation_name }}
                             </li>
                             <li class="list-group-item">
+                                <strong>Giá: </strong> {{ number_format($variant->price, 0, ',', ',') }} ₫
+                            </li>
+                            <li class="list-group-item">
                                 <strong>Màu sắc: </strong>
                                 @if ($variant->color)
                                     <span class="d-inline-block align-middle ms-2">
@@ -37,9 +40,6 @@
 
                             <li class="list-group-item">
                                 <strong>Kích thước: </strong> {{ $variant->size->name ?? 'Chưa chọn' }}
-                            </li>
-                            <li class="list-group-item">
-                                <strong>Giá: </strong> {{ number_format($variant->price) }} đ
                             </li>
                             <li class="list-group-item">
                                 <strong>Tồn kho: </strong> {{ $variant->stock }}

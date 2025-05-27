@@ -33,8 +33,7 @@
                         <tr>
                             <th>Giá</th>
                             <td>
-                                <input type="number" name="price" class="form-control" step="0.01"
-                                    value="{{ old('price') }}">
+                                <input type="text" name="price" id="price" class="form-control" value="{{ old('price') }}">
                                 @error('price')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -107,3 +106,34 @@
         </form>
     </div>
 @endsection
+@push('script')
+<script>
+    const priceInput = document.getElementById('price');
+
+    function formatNumber(value) {
+        return value.replace(/\D/g, '') // chỉ giữ số
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ','); // chèn dấu ,
+    }
+
+    function getRawNumber(value) {
+        return value.replace(/,/g, ''); // bỏ dấu ,
+    }
+
+    priceInput.addEventListener('input', function () {
+        const raw = getRawNumber(this.value);
+        this.value = formatNumber(raw);
+    });
+
+    // Khi submit: bỏ dấu , để gửi về server
+    document.querySelector('form').addEventListener('submit', function () {
+        priceInput.value = getRawNumber(priceInput.value);
+    });
+
+    // Format lại nếu có old()
+    window.addEventListener('DOMContentLoaded', () => {
+        if (priceInput.value) {
+            priceInput.value = formatNumber(priceInput.value);
+        }
+    });
+</script>
+@endpush

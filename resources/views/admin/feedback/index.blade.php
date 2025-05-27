@@ -50,7 +50,7 @@
                                         <br>
                                         <small>
                                             <span
-                                                style="display:inline-block; width:16px; height:16px; background-color: {{ $fb->variation->color->name ?? 'Chưa xác định' }}; border:1px solid #ccc; border-radius:4px; vertical-align:middle;"></span>
+                                                style="display:inline-block; width:16px; height:16px; background-color: {{ $fb->variation->color->code ?? 'Chưa xác định' }}; border:1px solid #ccc; border-radius:4px; vertical-align:middle;"></span>
                                             -
                                             {{ $fb->variation->size->name ?? 'Chưa xác định' }}
                                         </small>

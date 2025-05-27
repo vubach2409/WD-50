@@ -34,7 +34,7 @@
                             <tr>
                                 <td class="align-middle">{{ $variant->sku }}</td>
                                 <td class="text-left align-middle">{{ $variant->variation_name }}</td>
-                                <td class="align-middle">{{ number_format($variant->price, 0, ',', '.') }}đ</td>
+                                <td class="align-middle">{{ number_format($variant->price, 0, ',', ',') }}đ</td>
                                 <td class="align-middle">
                                     @if ($variant->image)
                                         <img src="{{ asset('storage/' . $variant->image) }}" alt="Ảnh biến thể"

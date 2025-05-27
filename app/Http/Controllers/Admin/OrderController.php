@@ -16,24 +16,20 @@ class OrderController extends Controller
     // Hiển thị danh sách tất cả đơn hàng
        public function index(Request $request)
     {
-        // Lấy số lượng đơn hàng theo từng trạng thái
         $orderCounts = [
-            'all' => Orders::count(), // Thêm đếm tất cả đơn hàng
             'pending' => Orders::where('status', 'pending')->count(),
             'shipping' => Orders::where('status', 'shipping')->count(),
             'completed' => Orders::where('status', 'completed')->count(),
             'cancelled' => Orders::where('status', 'cancelled')->count(),
         ];
 
-        // Xác định trạng thái đơn hàng để hiển thị
-        $status = $request->get('status', 'all'); // Mặc định là 'all' nếu không có tham số
+        // Lấy trạng thái từ request, mặc định là 'pending' (hoặc bạn muốn mặc định trạng thái khác)
+        $status = $request->get('status', 'pending');
 
-        // Lấy các đơn hàng dựa trên trạng thái được chọn
-        $orders = ($status == 'all')
-            ? Orders::with('user')->get() // Lấy tất cả nếu status là 'all'
-            : Orders::where('status', $status)->with('user')->get();
+        // Lấy đơn hàng theo trạng thái được chọn
+        $orders = Orders::where('status', $status)->with('user')->get();
 
-        // Truyền cả số lượng đơn hàng và danh sách đơn hàng vào view
+        // Truyền dữ liệu đến view
         return view('admin.order.index', compact('orders', 'orderCounts'));
     }
 
@@ -41,94 +37,71 @@ class OrderController extends Controller
     // Cập nhật trạng thái đơn hàng và xử lý liên quan đến thanh toán và stock
     public function update(Request $request, Orders $order)
 {
-    // nếu trạng thái là cancel thì không cho cập nhật nữa
+    // Nếu đơn đã hủy hoặc đã hoàn thành thì không được cập nhật trạng thái
     if ($order->status == 'cancelled') {
-        return redirect()->route('admin.orders.show', ['order' => $order->id])
+        return redirect()->route('admin.orders.index', ['status' => $order->status])
             ->with('error', 'Không thể cập nhật trạng thái của đơn hàng đã hủy!');
     }
 
     if ($order->status == 'completed') {
-        return redirect()->route('admin.orders.show', ['order' => $order->id])
+        return redirect()->route('admin.orders.index', ['status' => $order->status])
             ->with('error', 'Không thể cập nhật trạng thái của đơn hàng đã giao!');
     }
 
-    
-
-    // Kiểm tra xem trạng thái có hợp lệ không
+    // Validate trạng thái mới hợp lệ
     $request->validate([
         'status' => 'required|in:pending,shipping,completed,cancelled'
     ]);
 
     $newStatus = $request->status;
 
-    // Chỉ cho phép chuyển từ pending sang shipping hoặc cancelled
+    // Kiểm tra chuyển trạng thái hợp lệ
     if ($order->status === 'pending' && !in_array($newStatus, ['shipping', 'cancelled'])) {
-        return redirect()->route('admin.orders.show', ['order' => $order->id])
+        return redirect()->route('admin.orders.index', ['status' => $order->status])
             ->with('error', 'Chỉ được phép chuyển từ trạng thái chờ xử lý sang đang giao hoặc đã hủy!');
-        // Chỉ cho phép chuyển từ shippinh sang complete   
-    } else if($order->status === 'shipping' && !in_array($newStatus, ['completed'])){
-        return redirect()->route('admin.orders.show',['order' => $order->id])->with('error','Chỉ được phép chuyển từ đang giao sang đã giao');
-
+    } elseif ($order->status === 'shipping' && !in_array($newStatus, ['completed'])) {
+        return redirect()->route('admin.orders.index', ['status' => $order->status])
+            ->with('error', 'Chỉ được phép chuyển từ đang giao sang đã giao!');
     }
 
-    
-
-    // Nếu không phải trạng thái pending thì không cho cập nhật (đã xử lý ở trên)
     // Cập nhật trạng thái đơn hàng
     $order->status = $newStatus;
     $order->save();
 
-
-    $payment = $order->payment; // Lấy thông tin thanh toán liên quan đến đơn hàng
-    // Kiểm tra nếu trạng thái đơn hàng là 'completed'
-if ($payment) {
-    if ($payment->payment_method === 'cod') {
-        switch ($order->status) {
-            case 'completed':
+    // Cập nhật trạng thái thanh toán theo trạng thái đơn hàng
+    $payment = $order->payment;
+    if ($payment) {
+        if ($payment->payment_method === 'cod') {
+            switch ($order->status) {
+                case 'completed':
+                    $payment->status = 'success';
+                    break;
+                case 'cancelled':
+                    $payment->status = 'failed';
+                    break;
+                default:
+                    $payment->status = 'pending';
+                    break;
+            }
+        } elseif ($payment->payment_method === 'vnpay') {
+            if ($order->status === 'cancelled') {
+                $payment->status = 'cancelled_pending_refund';
+            } elseif ($order->status === 'completed') {
                 $payment->status = 'success';
-                break;
-            case 'cancelled':
-                $payment->status = 'failed';
-                break;
-            default:
-                $payment->status = 'pending';
-                break;
+            }
         }
-    } elseif ($payment->payment_method === 'vnpay') {
-        if ($order->status === 'cancelled') {
-            // Trạng thái riêng cho VNPAY khi đơn bị hủy
-            $payment->status = 'cancelled_pending_refund';
-        } elseif ($order->status === 'completed') {
-            $payment->status = 'success';
-        }
+        $payment->save();
     }
 
-    $payment->save();
-}
-
-
-
-    // if ($order->status == 'completed') {
-    //     foreach ($order->items as $orderItem) {
-    //         if ($orderItem->variant_id) {
-    //             // Nếu đơn hàng là từ biến thể sản phẩm
-    //             $variant = ProductVariant::withTrashed()->find($orderItem->variant_id);
-    //             if ($variant) {
-    //                 // Trừ stock của biến thể
-    //                 $variant->stock -= $orderItem->quantity;
-    //                 $variant->save();
-
-                    
-    //             }
-    //         } 
-    //     }
-    // }
-     $user = $order->user; // giả sử đơn hàng có quan hệ belongsTo với user
+    // Gửi notification cho user
+    $user = $order->user;
     $user->notify(new OrderStatusUpdated($order));
 
-    return redirect()->route('admin.orders.show', ['order' => $order->id])
+    // Redirect về trang danh sách đơn hàng, giữ lại tab trạng thái mới
+    return redirect()->route('admin.orders.index', ['status' => $newStatus])
         ->with('success', 'Trạng thái đơn hàng đã được cập nhật!');
 }
+
 
 
     // Hiển thị chi tiết đơn hàng

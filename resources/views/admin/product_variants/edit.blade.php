@@ -16,7 +16,7 @@
                             <th>Tên biến thể</th>
                             <td>
                                 <input type="text" name="variation_name" class="form-control"
-                                    value="{{ old('variation_name', $variant->variation_name) }}" required>
+                                    value="{{ old('variation_name', $variant->variation_name) }}">
                                 @error('variation_name')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -26,7 +26,7 @@
                             <th>Mã SKU</th>
                             <td>
                                 <input type="text" name="sku" class="form-control"
-                                    value="{{ old('sku', $variant->sku) }}" required>
+                                    value="{{ old('sku', $variant->sku) }}">
                                 @error('sku')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -35,8 +35,8 @@
                         <tr>
                             <th>Giá</th>
                             <td>
-                                <input type="number" name="price" class="form-control"
-                                    value="{{ old('price', $variant->price) }}" step="0.01" required>
+                                <input type="text" name="price" id="price" class="form-control"
+                                    value="{{ number_format(old('price', $variant->price), 0, ',', ',') }}" >
                                 @error('price')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -114,3 +114,23 @@
         </form>
     </div>
 @endsection
+@push('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const priceInput = document.getElementById('price');
+
+            priceInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/[^0-9]/g, ''); 
+                if (value) {
+                    value = Number(value).toLocaleString('en-US'); 
+                }
+                e.target.value = value;
+            });
+
+            const form = priceInput.closest('form');
+            form.addEventListener('submit', function () {
+                priceInput.value = priceInput.value.replace(/,/g, '');
+            });
+        });
+    </script>
+@endpush

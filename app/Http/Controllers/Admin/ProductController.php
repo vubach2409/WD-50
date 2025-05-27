@@ -12,28 +12,28 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+        public function index(Request $request)
     {
-        $query = Product::query();
-
+        $query = Product::with('variants'); // load biến thể
         if ($request->search) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-
-        if ($request->category_id) {    
+        if ($request->category_id) {
             $query->where('category_id', $request->category_id);
         }
-
         if ($request->brand_id) {
             $query->where('brand_id', $request->brand_id);
         }
-
         if ($request->price_range) {
             [$min, $max] = explode('-', $request->price_range);
             if ($max) {
-                $query->whereBetween('price', [$min, $max]);
+                $query->whereHas('variants', function ($q) use ($min, $max) {
+                    $q->whereBetween('price', [$min, $max]);
+                });
             } else {
-                $query->where('price', '>=', $min);
+                $query->whereHas('variants', function ($q) use ($min) {
+                    $q->where('price', '>=', $min);
+                });
             }
         }
 
@@ -42,13 +42,26 @@ class ProductController extends Controller
         $categories = Category::all();
         $brands = Brand::all();
 
+        foreach ($products as $product) {
+            $prices = $product->variants->pluck('price');
+            if ($prices->isNotEmpty()) {
+                $product->minPrice = number_format($prices->min());
+                $product->maxPrice = number_format($prices->max());
+            } else {
+                $product->minPrice = null;
+                $product->maxPrice = null;
+            }
+        }
         return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
 
     public function show($id)
     {
         $product = Product::findOrFail($id);
-        $variants = $product->variants;
+        $variants = $product->variants()
+                            ->orderBy('color_id')
+                            ->orderBy('size_id')
+                            ->get();
         return view('admin.products.show', compact('product', 'variants'));
     }
     public function create()
@@ -73,8 +86,6 @@ class ProductController extends Controller
             ],
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'price_sale' => 'required|numeric|min:0|lte:price',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -83,13 +94,6 @@ class ProductController extends Controller
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.max' => 'Tên sản phẩm không được quá 255 ký tự.',
             'name.unique' => 'Tên sản phẩm này đã tồn tại trong danh mục và thương hiệu đã chọn.',
-            'price.required' => 'Giá sản phẩm không được để trống.',
-            'price.numeric' => 'Giá sản phẩm phải là số.',
-            'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'price_sale.required' => 'Giá sản phẩm không được để trống.',
-            'price_sale.numeric' => 'Giá sản phẩm phải là số.',
-            'price_sale.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'price_sale.lte' => 'Khoảng giá không được nhỏ hơn hoặc bằng giá đầu.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
@@ -132,8 +136,6 @@ class ProductController extends Controller
             ],
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'price_sale' => 'required|numeric|min:0|lte:price',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -142,13 +144,6 @@ class ProductController extends Controller
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.max' => 'Tên sản phẩm không được quá 255 ký tự.',
             'name.unique' => 'Tên sản phẩm này đã tồn tại trong danh mục và thương hiệu đã chọn.',
-            'price.required' => 'Giá sản phẩm không được để trống.',
-            'price.numeric' => 'Giá sản phẩm phải là số.',
-            'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'price_sale.required' => 'Giá sản phẩm không được để trống.',
-            'price_sale.numeric' => 'Giá sản phẩm phải là số.',
-            'price_sale.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'price_sale.lte' => 'Khoảng giá không được nhỏ hơn hoặc bằng giá đầu.',
             'category_id.required' => 'Vui lòng chọn danh mục.',
             'category_id.exists' => 'Danh mục không hợp lệ.',
             'brand_id.required' => 'Vui lòng chọn thương hiệu.',
@@ -179,9 +174,24 @@ class ProductController extends Controller
     }
     public function trash()
     {
-        $products = Product::onlyTrashed()->orderByDesc('created_at', 'desc')->paginate(8);
+        /** @var \Illuminate\Pagination\LengthAwarePaginator $products */
+        $products = Product::onlyTrashed()
+            ->with(['variants' => function ($query) {
+                $query->withTrashed(); // Lấy cả biến thể đã xóa mềm
+            }])
+            ->paginate(8);
+
+        // Tính minPrice, maxPrice, variant_count
+        $products->getCollection()->transform(function ($product) {
+            $product->minPrice = $product->variants->min('price');
+            $product->maxPrice = $product->variants->max('price');
+            $product->variantCount = $product->variants->count();
+            return $product;
+        });
+
         return view('admin.products.trash', compact('products'));
     }
+
     public function restore($id)
     {
         $product = Product::onlyTrashed()->findOrFail($id);

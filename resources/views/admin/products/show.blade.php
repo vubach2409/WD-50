@@ -17,11 +17,6 @@
                                 <strong>Tên sản phẩm:</strong> {{ $product->name }}
                             </li>
                             <li class="list-group-item">
-                                <strong>Khoảng giá:</strong> {{ number_format($product->price_sale) }} đ - <span
-                                    class="text-muted text-decoration-line-through">{{ number_format($product->price) }}
-                                    đ</span>
-                            </li>
-                            <li class="list-group-item">
                                 <strong>Danh mục:</strong> {{ $product->category->name }}
                             </li>
                             <li class="list-group-item">
@@ -89,7 +84,7 @@
                                             @endif
                                         </td>
                                         <td class="align-middle">{{ $variant->size->name }}</td>
-                                        <td class="align-middle">{{ number_format($variant->price) }} đ</td>
+                                        <td class="align-middle">{{ number_format($variant->price) }} ₫</td>
                                         <td class="align-middle">{{ $variant->stock }}</td>
                                     </tr>
                                 @endforeach
@@ -114,8 +109,6 @@
                         <button type="submit" class="btn btn-danger mt-3 px-4"
                             onclick="return confirm('Bạn có chắc chắn?')">Xóa</button>
                     </form>
-                    <a href="{{ route('admin.product_variants.index', ['product' => $product->id]) }}"
-                        class="btn btn-info mt-3 px-4">Xem biến thể</a>
                 </div>
             </div>
         </div>

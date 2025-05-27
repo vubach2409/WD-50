@@ -46,22 +46,22 @@ class OrderController extends Controller
     $ordersByStatus = [
         'pending' => Orders::where('user_id', $userId)
                         ->where('status', 'pending')
-                        ->orderBy('id', 'desc')
+                        ->orderBy('updated_at', 'desc')
                         ->get(),
 
         'completed' => Orders::where('user_id', $userId)
                         ->where('status', 'completed')
-                        ->orderBy('id', 'desc')
+                        ->orderBy('updated_at', 'desc')
                         ->get(),
 
         'cancelled' => Orders::where('user_id', $userId)
                         ->where('status', 'cancelled')
-                        ->orderBy('id', 'desc')
+                        ->orderBy('updated_at', 'desc')
                         ->get(),
 
         'shipping' => Orders::where('user_id', $userId)
                         ->where('status', 'shipping')
-                        ->orderBy('id', 'desc')
+                        ->orderBy('updated_at', 'desc')
                         ->get(),
     ];
 

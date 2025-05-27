@@ -47,6 +47,7 @@
                         <option value="20000000-" {{ request('price_range') == '20000000-' ? 'selected' : '' }}>Trên 20 triệu</option>
                     </select>
                 </div>
+
             </div>
 
             <div class="text-right">
@@ -68,9 +69,9 @@
                         <tr>
                             <th>STT</th>
                             <th class="text-left">Tên sản phẩm</th>
-                            <th>Khoảng giá</th>
                             <th>Danh mục</th>
                             <th>Thương hiệu</th>
+                            <th>Giá</th> 
                             <th>Ảnh</th>
                             <th>Hành động</th>
                         </tr>
@@ -85,13 +86,27 @@
                                         {{ $product->name }}
                                     </a>
                                 </td>
-                                <td class="align-middle">{{ number_format($product->price_sale) }} đ - {{ number_format($product->price) }} đ</td>
                                 <td class="align-middle">{{ $product->category->name }}</td>
                                 <td class="align-middle">{{ $product->brand->name }}</td>
+
+                                <td class="align-middle">
+                                    @php
+                                        $variantCount = $product->variants->count();
+                                    @endphp
+
+                                    @if ($variantCount === 1)
+                                        {{ number_format($product->variants->first()->price, 0, ',', ',') }} ₫
+                                    @elseif ($product->minPrice && $product->maxPrice && $product->minPrice != $product->maxPrice)
+                                        {{ number_format($product->minPrice, 0, ',', ',') }} ₫ - {{ number_format($product->maxPrice, 0, ',', ',') }} ₫
+                                    @elseif ($product->minPrice)
+                                        {{ number_format($product->minPrice, 0, ',', ',') }} ₫
+                                    @else
+                                        <span class="text-muted fst-italic">Chưa có biến thể</span>
+                                    @endif
+                                </td>
                                 <td class="align-middle">
                                     @if ($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}" width="100" height="100"
-                                            class="border">
+                                        <img src="{{ asset('storage/' . $product->image) }}" width="100" height="100" class="border">
                                     @else
                                         <span class="text-muted">Không có ảnh</span>
                                     @endif
@@ -99,7 +114,8 @@
                                 <td class="align-middle">
                                     <a href="{{ route('admin.products.show', ['product' => $product->id]) }}" class="btn btn-info">Chi tiết</a>
                                     <a href="{{ route('admin.product_variants.create', $product->id) }}" class="btn btn-primary">Thêm biến thể</a>
-
+                                    <a href="{{ route('admin.product_variants.index', ['product' => $product->id]) }}"
+                                    class="btn btn-warning">Xem biến thể</a>
                                 </td>
                             </tr>
                         @endforeach
