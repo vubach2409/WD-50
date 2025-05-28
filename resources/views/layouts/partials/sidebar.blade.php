@@ -25,6 +25,14 @@
         Interface
     </div>
 
+    <!-- Quản lý Chat -->
+    <li class="nav-item {{ request()->routeIs('chat.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('chat.index') }}">
+            <i class="fas fa-comments"></i> {{-- Icon cho chat --}}
+            <span>Quản lý Chat</span>
+        </a>
+    </li>
+
     <!-- Quản lý sản phẩm -->
     <li
         class="nav-item {{ request()->routeIs('admin.products.*') || request()->routeIs('admin.product_variants.*') ? 'active' : '' }}">

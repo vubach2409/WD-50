@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ConfirmController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Auth\LoginController;
@@ -352,3 +353,23 @@ Route::middleware(['auth'])->group(function () {
     })->name('account.notifications.markAllRead');
 });
 
+
+Route::middleware(['auth'])->prefix('chat')->name('chat.')->group(function () {
+    // Trang chính của chat: admin thấy danh sách, user vào phòng của mình
+    Route::get('/', [ChatController::class, 'index'])->name('index');
+
+    // Hiển thị phòng chat cụ thể (Dành cho USER từ widget hoặc nếu user có trang chat riêng)
+    // Admin sẽ được redirect về chat.index từ trong ChatController@show nếu cố gắng truy cập.
+    Route::get('/room/{chatRoomId}', [ChatController::class, 'show'])->name('show');
+    // LƯU Ý: Nếu user KHÔNG có trang chat riêng (chỉ dùng widget),
+    // và bạn đã xóa view 'chat.show.blade.php', thì route này có thể không cần thiết
+    // hoặc cần được ChatController@index xử lý khác cho user (ví dụ: redirect về trang chủ của user).
+
+    // API endpoint để gửi tin nhắn
+    Route::post('/room/{chatRoomId}/messages', [ChatController::class, 'storeMessage'])->name('storeMessage');
+
+    // API endpoint để lấy tin nhắn (nếu cần load động ban đầu hoặc load thêm)
+    Route::get('/room/{chatRoomId}/messages', [ChatController::class, 'fetchMessages'])->name('fetchMessages');
+
+    Route::get('/widget-info', [ChatController::class, 'getWidgetInfo'])->name('widgetInfo');
+});
